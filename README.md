@@ -2,7 +2,7 @@
 
 ## Instalación
 
-Este proyecto debería funcionar una vez descargado, y no requiere pasos extra para su instalación.
+Una vez clonado el repositorio, se debe abrir el UnityHub y hacer clic en el botón Add. Se nos abrirá el explorador donde debemos seleccionar la carpeta del proyecto.
 
 ### Dependencias
 
