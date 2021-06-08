@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class gestor : MonoBehaviour
 {
-    public int figureQuantity;
+    public int figureQuantity = 3;
     public GameObject figure;
     public Sprite[] sprites;
     private List<int> index;
@@ -17,7 +17,6 @@ public class gestor : MonoBehaviour
 
     void Start()
     {
-        Rect canvasSize = GameObject.Find("canvas").GetComponent<RectTransform>().rect;
         
         index = new List<int>();
         chooseSprites();
@@ -83,12 +82,12 @@ public class gestor : MonoBehaviour
         {
 
             Vector2 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
-            centerFigures(randomPositionOnScreen);
+            randomPositionOnScreen = centerFigures(randomPositionOnScreen);
 
             while (thereIsSomethingIn(randomPositionOnScreen))
             {
                 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
-                centerFigures(randomPositionOnScreen);
+                randomPositionOnScreen = centerFigures(randomPositionOnScreen);
             }
 
             GameObject veg = Instantiate(figure, randomPositionOnScreen, Quaternion.identity);
