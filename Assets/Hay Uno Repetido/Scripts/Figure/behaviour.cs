@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class comportamiento : MonoBehaviour
+public class behaviour : MonoBehaviour
 {
     public Sprite sprite;
-    public gestor controlador;
-    public int indice;
+    public gestor controller;
+    public int index;
     private Collider2D collider2D;
     // Start is called before the first frame update
     void Start()
@@ -24,14 +24,14 @@ public class comportamiento : MonoBehaviour
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos))
             {
-                if (indice == 0 || indice == 1)
+                if (index == 0 || index == 1)
                 {
-                    controlador.GetComponent<gestor>().clickearon = true;
+                    controller.GetComponent<gestor>().isTouching = true;
                 }
                 else
                 {
-                    controlador.GetComponent<gestor>().errores++;
-                    Debug.Log(controlador.GetComponent<gestor>().errores);
+                    controller.GetComponent<gestor>().mistakes++;
+                    Debug.Log(controller.GetComponent<gestor>().mistakes);
                 }
 
             }
@@ -41,14 +41,14 @@ public class comportamiento : MonoBehaviour
     void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0)) {
-            if (indice == 0 || indice == 1)
+            if (index == 0 || index == 1)
             {
-                controlador.GetComponent<gestor>().clickearon = true;
+                controller.GetComponent<gestor>().isTouching = true;
             }
             else
             {
-                controlador.GetComponent<gestor>().errores++;
-                Debug.Log(controlador.GetComponent<gestor>().errores);
+                controller.GetComponent<gestor>().mistakes++;
+                Debug.Log(controller.GetComponent<gestor>().mistakes);
             }
         }
     }

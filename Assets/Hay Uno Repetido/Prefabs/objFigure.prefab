@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 756254225883395380}
   m_Layer: 0
   m_Name: obj_vegetal
-  m_TagString: vegetal
+  m_TagString: figures
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
