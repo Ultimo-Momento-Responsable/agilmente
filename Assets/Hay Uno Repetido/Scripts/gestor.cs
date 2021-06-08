@@ -17,7 +17,7 @@ public class gestor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Rect canvasSize = GameObject.Find("Canvas").GetComponent<RectTransform>().rect;
+        Rect canvasSize = GameObject.Find("canvas").GetComponent<RectTransform>().rect;
         
         indices = new List<int>();
         elegirSprites();
@@ -96,19 +96,21 @@ public class gestor : MonoBehaviour
         for (int i = 0; i < dificultad; i++)
         {
 
-            float x = Random.Range
-                    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-            float y = Random.Range
-                (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            //float x = Random.Range
+            //        (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+            //float y = Random.Range
+            //    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            Vector2 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
 
-            while (hayEnemigoEn(new Vector2(x,y)))
+            while (hayEnemigoEn(randomPositionOnScreen))
             {
-                x = Random.Range
-                    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-                y = Random.Range
-                (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+                randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
+                //x = Random.Range
+                //    (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+                //y = Random.Range
+                //(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
             }
-            GameObject veg = Instantiate(vegetal, new Vector3(x, y), Quaternion.identity);
+            GameObject veg = Instantiate(vegetal, randomPositionOnScreen, Quaternion.identity);
             veg.GetComponent<comportamiento>().sprite = sprites[indices[i]];
             veg.GetComponent<comportamiento>().controlador = this;
             veg.GetComponent<comportamiento>().indice = i;
