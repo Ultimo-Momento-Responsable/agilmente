@@ -6,13 +6,23 @@ using UnityEngine.Networking;
 public class gestor : MonoBehaviour
 {
     public int figureQuantity = 3;
+    public int maxFigures = 21;
+    public int maxTime;
+    public bool limitTime;
+    public bool limitFigure;
+    public List<int> timeBetweenSuccess;
+    private int auxTime; 
     public GameObject figure;
     public Sprite[] sprites;
+    public AudioSource audioSource;
+    public AudioClip sndSuccess;
     private List<int> index;
     public int mistakes;
     public int totalTime;
     public bool isTouching = false;
     private string json;
+
+    private bool isFinished = false;
 
 
     void Start()
@@ -22,40 +32,47 @@ public class gestor : MonoBehaviour
         chooseSprites();
         createFigures();
         totalTime = (int)Time.time;
+        auxTime = totalTime;
     }
 
     void Update()
     {
-        // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
-        if (isTouching && figureQuantity < 21)
+        if (!isFinished)
         {
-            var objects = GameObject.FindGameObjectsWithTag("figures");
-            foreach (GameObject o in objects)
+            // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
+            if (isTouching && figureQuantity > 0)
             {
-                Destroy(o.gameObject);
+
+                timeBetweenSuccess.Add((int)Time.time - auxTime);
+                auxTime = (int)Time.time;
+                audioSource.PlayOneShot(sndSuccess);
+
+                if (figureQuantity < maxFigures)
+                {
+                    figureQuantity++;
+                }
+
+                resetValues();
             }
-            figureQuantity++;
-            index = new List<int>();
-            chooseSprites();
-            createFigures();
-            isTouching = false;
+            if ((limitFigure && figureQuantity >= maxFigures) || (limitTime && (int)Time.time >= maxTime))
+            {
+                sendData();
+            }
         }
-        if (figureQuantity >= 21)
+        
+    }
+
+    private void resetValues()
+    {
+        var objects = GameObject.FindGameObjectsWithTag("figures");
+        foreach (GameObject o in objects)
         {
-            totalTime = (int)Time.time - totalTime;
-            figureQuantity = -1;
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            json = "{'nombre': 'Hay uno repetido', 'tiempo': " + totalTime + ", 'errores': " + mistakes + ", 'fechaYHora': '" +
-                System.DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss") + "'}";
-            parameters.Add("Content-Type", "application/json");
-            parameters.Add("Content-Length", json.Length.ToString());
-            json = json.Replace("'", "\"");
-            byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
-            //Now we call a new WWW request
-            WWW www = new WWW("http://localhost:8080/juego", postData, parameters);
-            //And we start a new co routine in Unity and wait for the response.
-            StartCoroutine(Upload(www));
+            Destroy(o.gameObject);
         }
+        index = new List<int>();
+        chooseSprites();
+        createFigures();
+        isTouching = false;
     }
 
     // Función que selecciona las figuras que se mostrarán en pantalla por cada nivel.
@@ -146,5 +163,25 @@ public class gestor : MonoBehaviour
             //Something goes wrong, print the error response
             Debug.Log(www.error);
         }
+    }
+
+    void sendData()
+    {
+        isFinished = true;
+        totalTime = (int)Time.time - totalTime;
+        figureQuantity = -1;
+        resetValues();
+        Dictionary<string, string> parameters = new Dictionary<string, string>();
+        json = "{'nombre': 'Hay uno repetido', 'tiempo': " + totalTime + ", 'errores': " + mistakes + ", 'fechaYHora': '" +
+            System.DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss") + "'}";
+        parameters.Add("Content-Type", "application/json");
+        parameters.Add("Content-Length", json.Length.ToString());
+        json = json.Replace("'", "\"");
+        byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
+        //Now we call a new WWW request
+        WWW www = new WWW("http://localhost:8080/juego", postData, parameters);
+        //And we start a new co routine in Unity and wait for the response.
+        StartCoroutine(Upload(www));
+
     }
 }

@@ -321,8 +321,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e86a912292917748918945cdb5ae018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dificultad: 3
-  vegetal: {fileID: 8632990507630729472, guid: ed6113b53ee99394599cca9cdf319ba9, type: 3}
+  figureQuantity: 3
+  figure: {fileID: 8632990507630729472, guid: ed6113b53ee99394599cca9cdf319ba9, type: 3}
   sprites:
   - {fileID: 21300000, guid: 6a41599655b11f54588d69605f846b6d, type: 3}
   - {fileID: 21300000, guid: 5624b2c719c85de4694acfabe23758bb, type: 3}
@@ -345,9 +345,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7261012faf5650c48829df1691795755, type: 3}
   - {fileID: 21300000, guid: e54720f417acf3544843bce29215c40a, type: 3}
   - {fileID: 21300000, guid: 5ff6a4ffd9697b14d9878470ba87417c, type: 3}
-  errores: 0
-  tiempo: 0
-  clickearon: 0
+  mistakes: 0
+  totalTime: 0
+  isTouching: 0
 --- !u!4 &1324103836
 Transform:
   m_ObjectHideFlags: 0
