@@ -4,22 +4,26 @@ using UnityEngine;
 
 public class Gestor : MonoBehaviour
 {
+
+    private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
+    private const string PROD_ENDPOINT = "200.127.223.168:8082/hay-uno-repetido";
+
     public int a_figureQuantity = 3;
     public int a_successes = 0;
     public int maxFigures = 21;
-    public int maxTime = 60;
+    public float maxTime = 60f;
     public bool limitTime = true;
     public bool limitFigure;
-    public List<int> a_timeBetweenSuccess;
-    private int auxTime; 
+    public List<float> a_timeBetweenSuccess;
+    private float auxTime; 
     public GameObject figure;
     public Sprite[] sprites;
     public AudioSource audioSource;
     public AudioClip sndSuccess;
     private List<int> index;
     public int a_mistakes;
-    public int a_totalTime;
-    public int initTime;
+    public float a_totalTime;
+    public float initTime;
     public bool isTouching = false;
     public bool isMakingMistake = false;
     private string json;
@@ -36,7 +40,7 @@ public class Gestor : MonoBehaviour
         index = new List<int>();
         chooseSprites();
         createFigures();
-        initTime = (int)Time.time;
+        initTime = Time.time;
         auxTime = initTime;
     }
 
@@ -44,13 +48,13 @@ public class Gestor : MonoBehaviour
     {
         if (!isFinished)
         {
-            a_totalTime = (int)Time.time - initTime;
+            a_totalTime = Time.time - initTime;
             // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
             if (isTouching && a_figureQuantity > 0)
             {
 
-                a_timeBetweenSuccess.Add((int)Time.time - auxTime);
-                auxTime = (int)Time.time;
+                a_timeBetweenSuccess.Add(Time.time - auxTime);
+                auxTime = Time.time;
                 audioSource.PlayOneShot(sndSuccess);
 
                 if (a_figureQuantity < maxFigures)
@@ -61,14 +65,14 @@ public class Gestor : MonoBehaviour
 
                 resetValues();
             }
-            if ((limitFigure && a_figureQuantity >= maxFigures) || (limitTime && (int)Time.time >= maxTime))
+            if ((limitFigure && a_figureQuantity >= maxFigures) || (limitTime && Time.time >= maxTime))
             {
                 sendData();
             }
         }
         if (isMakingMistake) {
             isMakingMistake = false;
-            Camera.main.GetComponent<ScreenShake>().TriggerShake(0.5f);
+            Camera.main.GetComponent<ScreenShake>().TriggerShake(0.2f);
         }
         
     }
@@ -76,8 +80,8 @@ public class Gestor : MonoBehaviour
     private void OnApplicationQuit()
     {
         canceled = true;
+        sendData();
     }
-
 
     private void resetValues()
     {
@@ -193,6 +197,7 @@ public class Gestor : MonoBehaviour
         a_figureQuantity = -1;
         
 
+
         string tBS = "[";
         foreach (int v in a_timeBetweenSuccess)
         {
@@ -212,7 +217,7 @@ public class Gestor : MonoBehaviour
         json = json.Replace("'", "\"");
         Debug.Log(json);
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
-        WWW www = new WWW("http://localhost:8080/hay-uno-repetido", postData, parameters);
+        WWW www = new WWW(DEV_ENDPOINT, postData, parameters);
         StartCoroutine(Upload(www));
         resetValues();
     }
