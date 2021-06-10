@@ -10,7 +10,7 @@ public class Gestor : MonoBehaviour
 
     public int a_figureQuantity = 3;
     public int a_successes = 0;
-    public int maxFigures = 21;
+    public int maxFigures = 20;
     public float maxTime = 60f;
     public bool limitTime = true;
     public bool limitFigure;
@@ -130,13 +130,13 @@ public class Gestor : MonoBehaviour
 
             GameObject fig = Instantiate(figure, randomPositionOnScreen, Quaternion.identity);
             
-            fig.GetComponent<Behaviour>().sprite = sprites[index[i]];
-            fig.GetComponent<Behaviour>().controller = this;
-            fig.GetComponent<Behaviour>().index = i;
+            fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
+            fig.GetComponent<FigureBehaviour>().controller = this;
+            fig.GetComponent<FigureBehaviour>().index = i;
             if (i < 2)
             {
                 GameObject part = Instantiate(particles, randomPositionOnScreen, Quaternion.identity);
-                fig.GetComponent<Behaviour>().ps = part.GetComponent<ParticleSystem>();
+                fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
         }

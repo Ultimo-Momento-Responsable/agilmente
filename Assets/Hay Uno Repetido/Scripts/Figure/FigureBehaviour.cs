@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Behaviour : MonoBehaviour
+public class FigureBehaviour : MonoBehaviour
 {
     public Sprite sprite;
     public Gestor controller;
@@ -44,6 +44,7 @@ public class Behaviour : MonoBehaviour
 
     void OnMouseOver()
     {
+        Debug.Log("LALA");
         if (Input.GetMouseButtonDown(0)) {
             if (index == 0 || index == 1)
             {
