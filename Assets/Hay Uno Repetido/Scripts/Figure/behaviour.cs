@@ -1,13 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class behaviour : MonoBehaviour
+public class Behaviour : MonoBehaviour
 {
     public Sprite sprite;
-    public gestor controller;
+    public Gestor controller;
     public int index;
     private Collider2D collider2D;
+    public ParticleSystem ps;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,12 +25,17 @@ public class behaviour : MonoBehaviour
             {
                 if (index == 0 || index == 1)
                 {
-                    controller.GetComponent<gestor>().isTouching = true;
+                    controller.GetComponent<Gestor>().isTouching = true;
+                    ps.Stop();
+                    ps.Play();
                 }
                 else
                 {
-                    controller.GetComponent<gestor>().mistakes++;
-                    Debug.Log(controller.GetComponent<gestor>().mistakes);
+                    if (Camera.main.GetComponent<ScreenShake>().shakeDuration <= 0)
+                    {
+                        controller.GetComponent<Gestor>().a_mistakes++;
+                        controller.GetComponent<Gestor>().isMakingMistake = true;
+                    }
                 }
 
             }
@@ -43,12 +47,17 @@ public class behaviour : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) {
             if (index == 0 || index == 1)
             {
-                controller.GetComponent<gestor>().isTouching = true;
+                controller.GetComponent<Gestor>().isTouching = true;
+                ps.Stop();
+                ps.Play();
             }
             else
             {
-                controller.GetComponent<gestor>().mistakes++;
-                Debug.Log(controller.GetComponent<gestor>().mistakes);
+                if (Camera.main.GetComponent<ScreenShake>().shakeDuration <= 0)
+                {
+                    controller.GetComponent<Gestor>().a_mistakes++;
+                    controller.GetComponent<Gestor>().isMakingMistake = true;
+                }
             }
         }
     }

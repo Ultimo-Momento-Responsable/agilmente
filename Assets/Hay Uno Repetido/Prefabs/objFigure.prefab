@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1880533155622270188}
   - component: {fileID: 756254225883395380}
   m_Layer: 0
-  m_Name: obj_vegetal
+  m_Name: objFigure
   m_TagString: figures
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,8 +97,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 0}
-  controlador: {fileID: 0}
-  indice: 0
+  controller: {fileID: 0}
+  index: 0
+  exp: {fileID: 0}
 --- !u!61 &756254225883395380
 BoxCollider2D:
   m_ObjectHideFlags: 0
