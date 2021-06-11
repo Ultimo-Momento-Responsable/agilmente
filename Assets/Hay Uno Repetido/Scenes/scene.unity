@@ -543,7 +543,7 @@ MonoBehaviour:
   a_figureQuantity: 3
   a_successes: 0
   maxFigures: 20
-  maxTime: 60
+  maxTime: 5
   limitTime: 1
   limitFigure: 0
   a_timeBetweenSuccess: []

@@ -202,15 +202,16 @@ public class Gestor : MonoBehaviour
 
 
         string tBS = "[";
-        foreach (int v in a_timeBetweenSuccess)
+        foreach (float v in a_timeBetweenSuccess)
         {
-            tBS +=  v.ToString() + ",";
+            tBS +=  v.ToString().Replace(",", ".") + ",";
         }
         tBS = tBS.Remove(tBS.Length - 1);
         tBS += "]";
+        print(tBS);
         //Se genera el JSON para ser enviado al endpoint
         Dictionary<string, string> parameters = new Dictionary<string, string>();
-        json = "{'name': 'Hay Uno Repetido', 'totalTime': " + a_totalTime + ", 'mistakes': " + a_mistakes +
+        json = "{'name': 'Hay Uno Repetido', 'totalTime': " + a_totalTime.ToString().Replace(",", ".") + ", 'mistakes': " + a_mistakes +
             ", 'successes': " + a_successes + ", 'timeBetweenSuccesses': " + tBS + ", 'canceled': " + canceled +", 'dateTime': '" +
             System.DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss") + "'}";
         json = json.Replace("False", "false");
