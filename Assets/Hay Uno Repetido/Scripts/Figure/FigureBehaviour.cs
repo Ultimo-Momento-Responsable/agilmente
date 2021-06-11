@@ -44,7 +44,6 @@ public class FigureBehaviour : MonoBehaviour
 
     void OnMouseOver()
     {
-        Debug.Log("LALA");
         if (Input.GetMouseButtonDown(0)) {
             if (index == 0 || index == 1)
             {

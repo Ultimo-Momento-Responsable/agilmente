@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -99,18 +100,20 @@ public class Gestor : MonoBehaviour
     // Función que selecciona las figuras que se mostrarán en pantalla por cada nivel.
     void chooseSprites()
     {
-        int repeatedIndex = (int)Random.Range(0, sprites.Length);
+        int repeatedIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
         index.Add(repeatedIndex);
         index.Add(repeatedIndex);
         for (int i = 2; i < a_figureQuantity; i++)
         {
-            int randIndex = (int)Random.Range(0, sprites.Length);
+            int randIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
             while (index.Contains(randIndex))
             {
-                randIndex = (int)Random.Range(0, sprites.Length);
+                randIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
             }
             index.Add(randIndex);
         }
+        Debug.Log(a_figureQuantity);
+        Console.WriteLine(String.Join(", ", index));
     }
 
     //Función que instancia las figuras que se mostrarán al inicio y al aumentar cada nivel
@@ -119,23 +122,23 @@ public class Gestor : MonoBehaviour
         for (int i = 0; i < a_figureQuantity; i++)
         {
 
-            Vector2 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
-            randomPositionOnScreen = centerFigures(randomPositionOnScreen);
+            Vector2 RandomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            RandomPositionOnScreen = centerFigures(RandomPositionOnScreen);
 
-            while (thereIsSomethingIn(randomPositionOnScreen))
+            while (thereIsSomethingIn(RandomPositionOnScreen))
             {
-                randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
-                randomPositionOnScreen = centerFigures(randomPositionOnScreen);
+                RandomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                RandomPositionOnScreen = centerFigures(RandomPositionOnScreen);
             }
 
-            GameObject fig = Instantiate(figure, randomPositionOnScreen, Quaternion.identity);
+            GameObject fig = Instantiate(figure, RandomPositionOnScreen, Quaternion.identity);
             
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = this;
             fig.GetComponent<FigureBehaviour>().index = i;
             if (i < 2)
             {
-                GameObject part = Instantiate(particles, randomPositionOnScreen, Quaternion.identity);
+                GameObject part = Instantiate(particles, RandomPositionOnScreen, Quaternion.identity);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
@@ -157,25 +160,25 @@ public class Gestor : MonoBehaviour
     }
 
     //Función que centra las figuras, esto se hace para evitar que las mismas se generen en los bordes.
-    Vector2 centerFigures(Vector2 randomPositionOnScreen)
+    Vector2 centerFigures(Vector2 RandomPositionOnScreen)
     {
-        if (randomPositionOnScreen.x < 0)
+        if (RandomPositionOnScreen.x < 0)
         {
-            randomPositionOnScreen.x += 0.5f;
+            RandomPositionOnScreen.x += 0.5f;
         }
         else
         {
-            randomPositionOnScreen.x -= 0.5f;
+            RandomPositionOnScreen.x -= 0.5f;
         }
-        if (randomPositionOnScreen.y < 0)
+        if (RandomPositionOnScreen.y < 0)
         {
-            randomPositionOnScreen.y += 0.5f;
+            RandomPositionOnScreen.y += 0.5f;
         }
         else
         {
-            randomPositionOnScreen.y -= 0.5f;
+            RandomPositionOnScreen.y -= 0.5f;
         }
-        return randomPositionOnScreen;
+        return RandomPositionOnScreen;
     }
 
     public IEnumerator Upload(WWW www)
