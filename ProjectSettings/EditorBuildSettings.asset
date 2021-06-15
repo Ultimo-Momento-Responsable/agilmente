@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Hay Uno Repetido/_Scenes/SampleScene.unity
+    path: 
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/mainScene.unity
+    guid: 8bf753094686f844b899a8c2a69a7efd
+  - enabled: 1
+    path: Assets/Hay Uno Repetido/Scenes/HayUnoRepetidoScene.unity
+    guid: 7d79c1377f91cef44bb940665e17ec0f
   m_configObjects: {}

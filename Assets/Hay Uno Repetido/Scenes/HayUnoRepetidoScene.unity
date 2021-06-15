@@ -217,8 +217,8 @@ GameObject:
   - component: {fileID: 601624658}
   - component: {fileID: 601624660}
   m_Layer: 0
-  m_Name: mainCamera
-  m_TagString: MainCamera
+  m_Name: HayUnoRepetidoCamera
+  m_TagString: camera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -540,13 +540,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e86a912292917748918945cdb5ae018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  a_figureQuantity: 3
-  a_successes: 0
+  camera: {fileID: 601624657}
+  figureQuantity: 3
   maxFigures: 20
-  maxTime: 5
+  maxTime: 15
   limitTime: 1
   limitFigure: 0
-  a_timeBetweenSuccess: []
   figure: {fileID: 8632990507630729472, guid: ed6113b53ee99394599cca9cdf319ba9, type: 3}
   sprites:
   - {fileID: 21300000, guid: b866cc37472cc7846a79c0e35551ee08, type: 3}
@@ -571,11 +570,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 156569dc4d3650e4cb3da9a69dd9b86c, type: 3}
   audioSource: {fileID: 1216273299}
   sndSuccess: {fileID: 8300000, guid: 42191cf678c9840428b68b388461533a, type: 3}
-  a_mistakes: 0
   a_totalTime: 0
   initTime: 0
   isTouching: 0
   isMakingMistake: 0
+  hayUnoRepetido: {fileID: 0}
   particles: {fileID: 1116839700}
 --- !u!4 &1324103836
 Transform:

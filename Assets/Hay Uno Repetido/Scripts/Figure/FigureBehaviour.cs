@@ -19,7 +19,7 @@ public class FigureBehaviour : MonoBehaviour
     {
         if (Input.touchCount == 1)
         {
-            Vector3 wp = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos))
             {
@@ -31,10 +31,10 @@ public class FigureBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    if (Camera.main.GetComponent<ScreenShake>().shakeDuration <= 0)
+                    if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
                     {
-                        controller.GetComponent<Gestor>().a_mistakes++;
-                        controller.GetComponent<Gestor>().isMakingMistake = true;
+                        controller.hayUnoRepetido.Mistakes++;
+                        controller.isMakingMistake = true;
                     }
                 }
 
@@ -53,10 +53,10 @@ public class FigureBehaviour : MonoBehaviour
             }
             else
             {
-                if (Camera.main.GetComponent<ScreenShake>().shakeDuration <= 0)
+                if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
                 {
-                    controller.GetComponent<Gestor>().a_mistakes++;
-                    controller.GetComponent<Gestor>().isMakingMistake = true;
+                    controller.hayUnoRepetido.Mistakes++;
+                    controller.isMakingMistake = true;
                 }
             }
         }
