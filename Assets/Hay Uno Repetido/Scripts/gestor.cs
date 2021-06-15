@@ -23,14 +23,12 @@ public class Gestor : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip sndSuccess;
     private List<int> index;
-    public float a_totalTime;
     public float initTime;
     public bool isTouching = false;
     public bool isMakingMistake = false;
     private string json;
     private bool canceled = false;
     public HayUnoRepetido hayUnoRepetido;
-    private bool isFinished = false;
 
     public GameObject particles;
 
@@ -46,28 +44,26 @@ public class Gestor : MonoBehaviour
 
     void Update()
     {
-        if (!isFinished)
+        hayUnoRepetido.TotalTime = Time.time - initTime;
+        // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
+        if (isTouching && figureQuantity > 0)
         {
-            a_totalTime = Time.time - initTime;
-            // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
-            if (isTouching && figureQuantity > 0)
-            {
-                hayUnoRepetido.TimeBetweenSuccesses[hayUnoRepetido.Successes] = Time.time - auxTime;
-                auxTime = Time.time;
-                audioSource.PlayOneShot(sndSuccess);
+            hayUnoRepetido.TimeBetweenSuccesses[hayUnoRepetido.Successes] = Time.time - auxTime;
+            auxTime = Time.time;
+            audioSource.PlayOneShot(sndSuccess);
 
-                if (figureQuantity < maxFigures)
-                {
-                    figureQuantity++;
-                }
-                hayUnoRepetido.Successes++;
-                resetValues();
-            }
-            if ((limitFigure && figureQuantity >= maxFigures) || (limitTime && Time.time >= maxTime))
+            if (figureQuantity < maxFigures)
             {
-                sendData();
+                figureQuantity++;
             }
+            hayUnoRepetido.Successes++;
+            resetValues();
         }
+        if ((limitFigure && figureQuantity >= maxFigures) || (limitTime && Time.time >= maxTime))
+        {
+            sendData();
+        }
+        
         if (isMakingMistake) {
             isMakingMistake = false;
             camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
@@ -107,18 +103,20 @@ public class Gestor : MonoBehaviour
 
     void sendData()
     {
-        isFinished = true;
         figureQuantity = -1;
-
-        hayUnoRepetido.TotalTime = a_totalTime;
 
         string tBS = "[";
         foreach (float v in hayUnoRepetido.TimeBetweenSuccesses)
         {
+            if (v == 0)
+            {
+                break;
+            }
             tBS +=  v.ToString().Replace(",", ".") + ",";
         }
         tBS = tBS.Remove(tBS.Length - 1);
         tBS += "]";
+        print(tBS);
         //Se genera el JSON para ser enviado al endpoint
         Dictionary<string, string> parameters = new Dictionary<string, string>();
         json = "{'name': 'Hay Uno Repetido', 'totalTime': " + hayUnoRepetido.TotalTime.ToString().Replace(",", ".") + ", 'mistakes': " + hayUnoRepetido.Mistakes +
@@ -132,8 +130,6 @@ public class Gestor : MonoBehaviour
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(DEV_ENDPOINT, postData, parameters);
         StartCoroutine(Upload(www));
-        resetValues();
         SceneManager.LoadScene("mainScene");
-        Destroy(gameObject);
     }
 }
