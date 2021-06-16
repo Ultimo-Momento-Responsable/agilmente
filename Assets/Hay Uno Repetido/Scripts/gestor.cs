@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Gestor : MonoBehaviour
 {
@@ -12,10 +13,10 @@ public class Gestor : MonoBehaviour
 
     public Camera camera;
 
-    public int figureQuantity = 3;
-    public int maxFigures = 20;
-    public float maxTime = 60f;
-    public bool limitTime = true;
+    public int figureQuantity;
+    public int maxFigures;
+    public float maxTime;
+    public bool limitTime;
     public bool limitFigure;
     private float auxTime; 
     public GameObject figure;
@@ -32,19 +33,32 @@ public class Gestor : MonoBehaviour
 
     public GameObject particles;
 
+    public Text timer;
 
     void Start()
     {
+        
         hayUnoRepetido = ScriptableObject.CreateInstance<HayUnoRepetido>();
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity,camera,figure,sprites,index,this,particles);
         initTime = Time.time;
         auxTime = initTime;
+        print(hayUnoRepetido.TotalTime);
     }
 
     void Update()
     {
+        
         hayUnoRepetido.TotalTime = Time.time - initTime;
+        if (limitTime)
+        {
+            timer.text = ((int) maxTime - (int)hayUnoRepetido.TotalTime).ToString();
+        } else
+        {
+            timer.text = "Nivel " + (hayUnoRepetido.Successes + 1).ToString();
+        }
+        
+
         // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
         if (isTouching && figureQuantity > 0)
         {
@@ -57,9 +71,13 @@ public class Gestor : MonoBehaviour
                 figureQuantity++;
             }
             hayUnoRepetido.Successes++;
+            if (limitFigure && figureQuantity >= maxFigures)
+            {
+                sendData();
+            }
             resetValues();
         }
-        if ((limitFigure && figureQuantity >= maxFigures) || (limitTime && Time.time >= maxTime))
+        if (limitTime && (hayUnoRepetido.TotalTime >= maxTime))
         {
             sendData();
         }

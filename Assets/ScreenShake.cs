@@ -3,7 +3,7 @@ using UnityEngine;
 public class ScreenShake : MonoBehaviour
 {
 
-    private Transform transform;
+    private new Transform transform;
     public float shakeDuration = 0f;
     private float shakeMagnitude = 0.4f;
     private float dampingSpeed = 1.0f;

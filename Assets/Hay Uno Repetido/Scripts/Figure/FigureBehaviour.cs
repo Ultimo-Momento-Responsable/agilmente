@@ -5,7 +5,7 @@ public class FigureBehaviour : MonoBehaviour
     public Sprite sprite;
     public Gestor controller;
     public int index;
-    private Collider2D collider2D;
+    private new Collider2D collider2D;
     public ParticleSystem ps;
     // Start is called before the first frame update
     void Start()

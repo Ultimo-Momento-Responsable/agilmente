@@ -5,8 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class playGame : MonoBehaviour
 {
-    Gestor gestor;
-    private Collider2D collider2D;
+    private new Collider2D collider2D;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +15,6 @@ public class playGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 wp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
