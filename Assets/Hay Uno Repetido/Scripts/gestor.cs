@@ -30,6 +30,8 @@ public class Gestor : MonoBehaviour
     private string json;
     private bool canceled = false;
     public HayUnoRepetido hayUnoRepetido;
+    private int dontTouchTimer = 20;
+    private bool dontTouchAgain = false;
 
     public GameObject particles;
 
@@ -57,11 +59,11 @@ public class Gestor : MonoBehaviour
         {
             timer.text = "Nivel " + (hayUnoRepetido.Successes + 1).ToString();
         }
-        
 
         // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
-        if (isTouching && figureQuantity > 0)
+        if (isTouching && figureQuantity > 0 && !dontTouchAgain)
         {
+            dontTouchAgain = true;
             hayUnoRepetido.TimeBetweenSuccesses[hayUnoRepetido.Successes] = Time.time - auxTime;
             auxTime = Time.time;
             audioSource.PlayOneShot(sndSuccess);
@@ -77,6 +79,15 @@ public class Gestor : MonoBehaviour
             }
             resetValues();
         }
+
+        if (dontTouchAgain) {
+            dontTouchTimer--;
+        }
+        if (dontTouchTimer <= 0)
+        {
+            dontTouchAgain = false;
+        }
+
         if (limitTime && (hayUnoRepetido.TotalTime >= maxTime))
         {
             sendData();
@@ -87,6 +98,7 @@ public class Gestor : MonoBehaviour
             camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
         }
     }
+
 
     private void OnApplicationQuit()
     {

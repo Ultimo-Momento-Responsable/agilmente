@@ -157,8 +157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -90, y: -20}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -155.8, y: -90.2}
+  m_SizeDelta: {x: 267.3, y: 119.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &159968976
 MonoBehaviour:
@@ -182,11 +182,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 25
-    m_FontStyle: 0
+    m_FontSize: 60
+    m_FontStyle: 1
     m_BestFit: 0
-    m_MinSize: 2
-    m_MaxSize: 40
+    m_MinSize: 0
+    m_MaxSize: 67
     m_Alignment: 2
     m_AlignByGeometry: 0
     m_RichText: 0
@@ -680,10 +680,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 601624657}
   figureQuantity: 3
-  maxFigures: 7
-  maxTime: 15
-  limitTime: 0
-  limitFigure: 1
+  maxFigures: 15
+  maxTime: 25
+  limitTime: 1
+  limitFigure: 0
   figure: {fileID: 8632990507630729472, guid: ed6113b53ee99394599cca9cdf319ba9, type: 3}
   sprites:
   - {fileID: 21300000, guid: b866cc37472cc7846a79c0e35551ee08, type: 3}
