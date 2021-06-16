@@ -89,8 +89,8 @@ public class HayUnoRepetido : ScriptableObject
     // Función que chequea que no haya nada en el lugar donde se crea la figura.
     public bool thereIsSomethingIn(Vector2 posición)
     {
-        Vector2 p1 = posición - new Vector2(0.2f, 0.2f);
-        Vector2 p2 = posición + new Vector2(0.2f, 0.2f);
+        Vector2 p1 = posición - new Vector2(0.5f, 0.5f);
+        Vector2 p2 = posición + new Vector2(0.5f, 0.5f);
         Collider2D collider = Physics2D.OverlapArea(p1, p2);
 
         if (collider != null)

@@ -23,18 +23,21 @@ public class FigureBehaviour : MonoBehaviour
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos))
             {
-                if (index == 0 || index == 1)
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
-                    controller.GetComponent<Gestor>().isTouching = true;
-                    ps.Stop();
-                    ps.Play();
-                }
-                else
-                {
-                    if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
+                    if (index == 0 || index == 1)
                     {
-                        controller.hayUnoRepetido.Mistakes++;
-                        controller.isMakingMistake = true;
+                        controller.GetComponent<Gestor>().isTouching = true;
+                        ps.Stop();
+                        ps.Play();
+                    }
+                    else
+                    {
+                        if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
+                        {
+                            controller.hayUnoRepetido.Mistakes++;
+                            controller.isMakingMistake = true;
+                        }
                     }
                 }
 

@@ -31,7 +31,7 @@ public class Gestor : MonoBehaviour
     private bool canceled = false;
     public HayUnoRepetido hayUnoRepetido;
     private int dontTouchTimer = 20;
-    private bool dontTouchAgain = false;
+    public bool dontTouchAgain = false;
 
     public GameObject particles;
 
