@@ -43,7 +43,6 @@ public class HayUnoRepetidoController : MonoBehaviour
         hayUnoRepetido.createFigures(figureQuantity,camera,figure,sprites,index,this,particles);
         initTime = Time.time;
         auxTime = initTime;
-        print(hayUnoRepetido.totalTime);
     }
 
     void Update()

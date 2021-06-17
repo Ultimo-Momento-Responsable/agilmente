@@ -712,6 +712,7 @@ MonoBehaviour:
   isTouching: 0
   isMakingMistake: 0
   hayUnoRepetido: {fileID: 0}
+  dontTouchAgain: 0
   particles: {fileID: 1116839700}
   timer: {fileID: 159968976}
 --- !u!114 &1324103836
