@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ScreenShake : MonoBehaviour
 {
-
     private Transform transform;
     public float shakeDuration = 0f;
     private float shakeMagnitude = 0.4f;
@@ -39,6 +38,10 @@ public class ScreenShake : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Activa el screen shake.
+    /// </summary>
+    /// <param name="shakeDuration">Duración del efecto.</param>
     public void TriggerShake(float shakeDuration)
     {
         this.shakeDuration = shakeDuration;

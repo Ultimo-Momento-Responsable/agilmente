@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 1324103836}
   - component: {fileID: 1324103835}
   m_Layer: 0
-  m_Name: controladorHayUnoRepe
+  m_Name: HayUnoRepetidoController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

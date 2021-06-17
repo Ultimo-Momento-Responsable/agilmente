@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gestor : MonoBehaviour
+public class HayUnoRepetidoController : MonoBehaviour
 {
 
     private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
@@ -34,10 +34,8 @@ public class Gestor : MonoBehaviour
 
     public GameObject particles;
 
-
     void Start()
     {
-        
         index = new List<int>();
         chooseSprites();
         createFigures();
@@ -50,10 +48,9 @@ public class Gestor : MonoBehaviour
         if (!isFinished)
         {
             a_totalTime = Time.time - initTime;
-            // Acá verifica si la figura correcta fue tocada, en ese caso sube un nivel.
+
             if (isTouching && a_figureQuantity > 0)
             {
-
                 a_timeBetweenSuccess.Add(Time.time - auxTime);
                 auxTime = Time.time;
                 audioSource.PlayOneShot(sndSuccess);
@@ -84,6 +81,9 @@ public class Gestor : MonoBehaviour
         sendData();
     }
 
+    /// <summary>
+    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// </summary>
     private void resetValues()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
@@ -97,7 +97,10 @@ public class Gestor : MonoBehaviour
         isTouching = false;
     }
 
-    // Función que selecciona las figuras que se mostrarán en pantalla por cada nivel.
+    /// <summary>
+    /// Función que selecciona las figuras que se mostrarán en pantalla por 
+    /// cada nivel.
+    /// </summary>
     void chooseSprites()
     {
         int repeatedIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
@@ -112,11 +115,11 @@ public class Gestor : MonoBehaviour
             }
             index.Add(randIndex);
         }
-        Debug.Log(a_figureQuantity);
-        Console.WriteLine(String.Join(", ", index));
     }
-
-    //Función que instancia las figuras que se mostrarán al inicio y al aumentar cada nivel
+    /// <summary>
+    /// Función que instancia las figuras que se mostrarán al inicio y al 
+    /// aumentar cada nivel.
+    /// </summary>
     void createFigures()
     {
         for (int i = 0; i < a_figureQuantity; i++)
@@ -145,7 +148,9 @@ public class Gestor : MonoBehaviour
         }
     }
 
-    // Función que chequea que no haya nada en el lugar donde se crea la figura.
+    /// <summary>
+    /// Función que chequea que no haya nada en el lugar donde se crea la figura.
+    /// </summary>
     bool thereIsSomethingIn(Vector2 posición)
     {
         Vector2 p1 = posición - new Vector2(0.2f, 0.2f);
@@ -159,7 +164,10 @@ public class Gestor : MonoBehaviour
         return false;
     }
 
-    //Función que centra las figuras, esto se hace para evitar que las mismas se generen en los bordes.
+    /// <summary>
+    /// Función que centra las figuras, esto se hace para evitar que las mismas
+    /// se generen en los bordes.
+    /// </summary>
     Vector2 centerFigures(Vector2 RandomPositionOnScreen)
     {
         if (RandomPositionOnScreen.x < 0)
@@ -181,26 +189,25 @@ public class Gestor : MonoBehaviour
         return RandomPositionOnScreen;
     }
 
+    /// <summary>
+    /// Función que se encarga de enviar los datos al backend (agilmente-core).
+    /// </summary>
+    /// <param name="www">Request HTTP (POST).</param>
+    /// <returns>Corrutina.</returns>
     public IEnumerator Upload(WWW www)
     {
         yield return www;
-        if (www.error == null)
-        {
-            //Print server response
-        }
-        else
-        {
-            //Something goes wrong, print the error response
-        }
     }
 
+    /// <summary>
+    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// (agilmente-core).
+    /// </summary>
     void sendData()
     {
         isFinished = true;
         a_figureQuantity = -1;
         
-
-
         string tBS = "[";
         foreach (float v in a_timeBetweenSuccess)
         {
@@ -208,8 +215,7 @@ public class Gestor : MonoBehaviour
         }
         tBS = tBS.Remove(tBS.Length - 1);
         tBS += "]";
-        print(tBS);
-        //Se genera el JSON para ser enviado al endpoint
+
         Dictionary<string, string> parameters = new Dictionary<string, string>();
         json = "{'name': 'Hay Uno Repetido', 'totalTime': " + a_totalTime.ToString().Replace(",", ".") + ", 'mistakes': " + a_mistakes +
             ", 'successes': " + a_successes + ", 'timeBetweenSuccesses': " + tBS + ", 'canceled': " + canceled +", 'dateTime': '" +
@@ -219,7 +225,6 @@ public class Gestor : MonoBehaviour
         parameters.Add("Content-Type", "application/json");
         parameters.Add("Content-Length", json.Length.ToString());
         json = json.Replace("'", "\"");
-        Debug.Log(json);
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(DEV_ENDPOINT, postData, parameters);
         StartCoroutine(Upload(www));
