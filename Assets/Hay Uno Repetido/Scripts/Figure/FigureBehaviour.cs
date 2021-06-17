@@ -5,7 +5,7 @@ public class FigureBehaviour : MonoBehaviour
     public Sprite sprite;
     public HayUnoRepetidoController controller;
     public int index;
-    private Collider2D collider2D;
+    private new Collider2D collider2D;
     public ParticleSystem ps;
 
     void Start()
@@ -18,22 +18,25 @@ public class FigureBehaviour : MonoBehaviour
     {
         if (Input.touchCount == 1)
         {
-            Vector3 wp = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos))
             {
-                if (index == 0 || index == 1)
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
-                    controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
-                    ps.Stop();
-                    ps.Play();
-                }
-                else
-                {
-                    if (Camera.main.GetComponent<ScreenShake>().shakeDuration <= 0)
+                    if (index == 0 || index == 1)
                     {
-                        controller.GetComponent<HayUnoRepetidoController>().a_mistakes++;
-                        controller.GetComponent<HayUnoRepetidoController>().isMakingMistake = true;
+                        controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
+                        ps.Stop();
+                        ps.Play();
+                    }
+                    else
+                    {
+                        if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
+                        {
+                            controller.hayUnoRepetido.mistakes++;
+                            controller.isMakingMistake = true;
+                        }
                     }
                 }
 
@@ -62,10 +65,10 @@ public class FigureBehaviour : MonoBehaviour
             }
             else
             {
-                if (Camera.main.GetComponent<ScreenShake>().shakeDuration <= 0)
+                if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
                 {
-                    controller.GetComponent<HayUnoRepetidoController>().a_mistakes++;
-                    controller.GetComponent<HayUnoRepetidoController>().isMakingMistake = true;
+                    controller.hayUnoRepetido.mistakes++;
+                    controller.isMakingMistake = true;
                 }
             }
         }
