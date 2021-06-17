@@ -151,7 +151,7 @@ public class Gestor : MonoBehaviour
         Dictionary<string, string> parameters = new Dictionary<string, string>();
         json = "{'name': 'Hay Uno Repetido', 'totalTime': " + hayUnoRepetido.TotalTime.ToString().Replace(",", ".") + ", 'mistakes': " + hayUnoRepetido.Mistakes +
             ", 'successes': " + hayUnoRepetido.Successes + ", 'timeBetweenSuccesses': " + tBS + ", 'canceled': " + canceled +", 'dateTime': '" +
-            System.DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss") + "'}";
+            System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") + "'}";
         json = json.Replace("False", "false");
         json = json.Replace("True", "true");
         parameters.Add("Content-Type", "application/json");
