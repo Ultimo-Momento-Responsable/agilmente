@@ -9,7 +9,7 @@ public class HayUnoRepetidoController : MonoBehaviour
 {
 
     private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
-    private const string PROD_ENDPOINT = "200.127.223.168:8082/hay-uno-repetido";
+    private const string PROD_ENDPOINT = "3.23.85.46:8080/hay-uno-repetido";
 
     public Camera camera;
 
@@ -153,8 +153,11 @@ public class HayUnoRepetidoController : MonoBehaviour
         parameters.Add("Content-Type", "application/json");
         parameters.Add("Content-Length", json.Length.ToString());
         json = json.Replace("'", "\"");
+        print(json);
+        print(PROD_ENDPOINT);
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
-        WWW www = new WWW(DEV_ENDPOINT, postData, parameters);
+        WWW www = new WWW(PROD_ENDPOINT, postData, parameters);
+        print(www.error);
         StartCoroutine(Upload(www));
         SceneManager.LoadScene("mainScene");
     }
