@@ -7,13 +7,16 @@ public class HayUnoRepetido : ScriptableObject
     private int a_successes;
     private float[] a_timeBetweenSuccesses;
     private float a_totalTime;
+    public bool onTutorial = true;
+    public HayUnoRepetidoController hayUnoRepetidoController;
 
-    public HayUnoRepetido()
+    public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
     {
         a_mistakes = 0;
         a_successes = 0;
         a_totalTime = 0f;
         a_timeBetweenSuccesses = new float[100];
+        this.hayUnoRepetidoController = hayUnoRepetidoController;
     }
 
     /// <summary>
@@ -53,28 +56,37 @@ public class HayUnoRepetido : ScriptableObject
     {
         for (int i = 0; i < figureQuantity; i++)
         {
-
-            Vector2 randomPositionOnScreen = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-            randomPositionOnScreen = centerFigures(randomPositionOnScreen);
-
-            while (thereIsSomethingIn(randomPositionOnScreen))
+            Vector2 figurePosition;
+            if (!onTutorial)
             {
-                randomPositionOnScreen = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-                randomPositionOnScreen = centerFigures(randomPositionOnScreen);
-            }
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = centerFigures(figurePosition);
 
-            GameObject fig = Instantiate(figure, randomPositionOnScreen, Quaternion.identity);
+                while (thereIsSomethingIn(figurePosition))
+                {
+                    figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                    figurePosition = centerFigures(figurePosition);
+                }
+            }
+            else
+            {
+                figurePosition = camera.ViewportToWorldPoint(new Vector2((i + 1) * 0.25f, 0.5f));
+            }
+            
+
+            GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
 
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
             if (i < 2)
             {
-                GameObject part = Instantiate(particles, randomPositionOnScreen, Quaternion.identity);
+                GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
         }
+
     }
 
     /// <summary>

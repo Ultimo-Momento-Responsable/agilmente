@@ -18,7 +18,7 @@ public class HayUnoRepetidoController : MonoBehaviour
     public float maxTime;
     public bool limitTime;
     public bool limitFigure;
-    private float auxTime; 
+    public float auxTime; 
     public GameObject figure;
     public Sprite[] sprites;
     public AudioSource audioSource;
@@ -32,66 +32,86 @@ public class HayUnoRepetidoController : MonoBehaviour
     public HayUnoRepetido hayUnoRepetido;
     private int dontTouchTimer = 20;
     public bool dontTouchAgain = false;
+    public bool onTutorial = true;
 
     public GameObject particles;
     public Text timer;
+    public Text tutorial;
 
     void Start()
     {
-        hayUnoRepetido = ScriptableObject.CreateInstance<HayUnoRepetido>();
+        hayUnoRepetido = new HayUnoRepetido(this);
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
-        hayUnoRepetido.createFigures(figureQuantity,camera,figure,sprites,index,this,particles);
-        initTime = Time.time;
-        auxTime = initTime;
+        hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
     }
 
     void Update()
     {
-        hayUnoRepetido.totalTime = Time.time - initTime;
-        if (limitTime)
+        if (hayUnoRepetido.onTutorial)
         {
-            timer.text = ((int) maxTime - (int)hayUnoRepetido.totalTime).ToString();
-        } else
-        {
-            timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
-        }
-
-        if (isTouching && figureQuantity > 0 && !dontTouchAgain)
-        {
-            dontTouchAgain = true;
-            hayUnoRepetido.timeBetweenSuccesses[hayUnoRepetido.successes] = Time.time - auxTime;
-            auxTime = Time.time;
-            audioSource.PlayOneShot(sndSuccess);
-
-            if (figureQuantity < maxFigures)
+            if (isTouching)
             {
-                figureQuantity++;
+                audioSource.PlayOneShot(sndSuccess);
+                hayUnoRepetido.onTutorial = false;
+                tutorial.text = "";
+                resetValues();
+                initTime = Time.time;
+                auxTime = initTime;
             }
-            hayUnoRepetido.successes++;
-            if (limitFigure && figureQuantity >= maxFigures)
+        } 
+        else 
+        {
+            hayUnoRepetido.totalTime = Time.time - initTime;
+            if (limitTime)
+            {
+                timer.text = ((int)maxTime - (int)hayUnoRepetido.totalTime).ToString();
+            }
+            else
+            {
+                timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
+            }
+
+            if (isTouching && figureQuantity > 0 && !dontTouchAgain)
+            {
+                dontTouchAgain = true;
+                hayUnoRepetido.timeBetweenSuccesses[hayUnoRepetido.successes] = Time.time - auxTime;
+                auxTime = Time.time;
+                audioSource.PlayOneShot(sndSuccess);
+
+                if (figureQuantity < maxFigures)
+                {
+                    figureQuantity++;
+                }
+                hayUnoRepetido.successes++;
+                if (limitFigure && figureQuantity >= maxFigures)
+                {
+                    sendData();
+                }
+                resetValues();
+            }
+
+            if (dontTouchAgain)
+            {
+                dontTouchTimer--;
+            }
+            if (dontTouchTimer <= 0)
+            {
+                dontTouchAgain = false;
+            }
+
+            if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
             {
                 sendData();
             }
-            resetValues();
-        }
 
-        if (dontTouchAgain) {
-            dontTouchTimer--;
-        }
-        if (dontTouchTimer <= 0)
-        {
-            dontTouchAgain = false;
-        }
-
-        if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
-        {
-            sendData();
+            if (isMakingMistake)
+            {
+                isMakingMistake = false;
+                camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+            }
         }
         
-        if (isMakingMistake) {
-            isMakingMistake = false;
-            camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
-        }
+        
     }
 
     private void OnApplicationQuit()
