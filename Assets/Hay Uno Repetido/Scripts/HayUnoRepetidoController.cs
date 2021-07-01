@@ -11,32 +11,35 @@ public class HayUnoRepetidoController : MonoBehaviour
     private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/hay-uno-repetido";
 
+    private List<int> index;
+    private string json;
+    private bool canceled = false;
+    private int dontTouchTimer = 20;
+
     public Camera camera;
+    public GameObject figure;
+    public Sprite[] sprites;
+    public AudioSource audioSource;
+    public AudioClip sndSuccess;
+    public HayUnoRepetido hayUnoRepetido;
+    public GameObject particles;
+    public Text timer;
+    public Text tutorial;
+    public GameObject tutorialHand;
+
 
     public int figureQuantity;
     public int maxFigures;
     public float maxTime;
     public bool limitTime;
     public bool limitFigure;
-    public float auxTime; 
-    public GameObject figure;
-    public Sprite[] sprites;
-    public AudioSource audioSource;
-    public AudioClip sndSuccess;
-    private List<int> index;
+    public float auxTime;
     public float initTime;
     public bool isTouching = false;
     public bool isMakingMistake = false;
-    private string json;
-    private bool canceled = false;
-    public HayUnoRepetido hayUnoRepetido;
-    private int dontTouchTimer = 20;
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
-
-    public GameObject particles;
-    public Text timer;
-    public Text tutorial;
+      
 
     void Start()
     {
@@ -51,8 +54,11 @@ public class HayUnoRepetidoController : MonoBehaviour
         {
             if (isTouching)
             {
+                dontTouchAgain = true;
                 audioSource.PlayOneShot(sndSuccess);
                 hayUnoRepetido.onTutorial = false;
+                Destroy(GameObject.FindGameObjectWithTag("tutorial"));
+                Destroy(GameObject.FindGameObjectWithTag("title"));
                 tutorial.text = "";
                 resetValues();
                 initTime = Time.time;
@@ -90,15 +96,6 @@ public class HayUnoRepetidoController : MonoBehaviour
                 resetValues();
             }
 
-            if (dontTouchAgain)
-            {
-                dontTouchTimer--;
-            }
-            if (dontTouchTimer <= 0)
-            {
-                dontTouchAgain = false;
-            }
-
             if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
             {
                 sendData();
@@ -110,8 +107,16 @@ public class HayUnoRepetidoController : MonoBehaviour
                 camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
-        
-        
+
+        if (dontTouchAgain)
+        {
+            dontTouchTimer--;
+        }
+        if (dontTouchTimer <= 0)
+        {
+            dontTouchAgain = false;
+        }
+
     }
 
     private void OnApplicationQuit()
@@ -173,11 +178,8 @@ public class HayUnoRepetidoController : MonoBehaviour
         parameters.Add("Content-Type", "application/json");
         parameters.Add("Content-Length", json.Length.ToString());
         json = json.Replace("'", "\"");
-        print(json);
-        print(PROD_ENDPOINT);
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(PROD_ENDPOINT, postData, parameters);
-        print(www.error);
         StartCoroutine(Upload(www));
         SceneManager.LoadScene("mainScene");
     }

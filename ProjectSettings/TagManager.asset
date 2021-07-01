@@ -7,6 +7,8 @@ TagManager:
   - figures
   - particles
   - camera
+  - tutorial
+  - title
   layers:
   - Default
   - TransparentFX
@@ -43,4 +45,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: figures
+    uniqueID: 1711888993
+    locked: 0
+  - name: UI
+    uniqueID: 3116603815
     locked: 0

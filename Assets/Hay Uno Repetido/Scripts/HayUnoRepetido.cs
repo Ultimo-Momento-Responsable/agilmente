@@ -26,15 +26,15 @@ public class HayUnoRepetido : ScriptableObject
     public List<int> chooseSprites(Sprite[] sprites, int figureQuantity)
     {
         List<int> index = new List<int>();
-        int repeatedIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
+        int repeatedIndex = UnityEngine.Random.Range(0, sprites.Length);
         index.Add(repeatedIndex);
         index.Add(repeatedIndex);
         for (int i = 2; i < figureQuantity; i++)
         {
-            int randIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
+            int randIndex = UnityEngine.Random.Range(0, sprites.Length);
             while (index.Contains(randIndex))
             {
-                randIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
+                randIndex = UnityEngine.Random.Range(0, sprites.Length);
             }
             index.Add(randIndex);
         }
@@ -54,6 +54,7 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
     {
+        int handPosition = Random.Range(0, 2);
         for (int i = 0; i < figureQuantity; i++)
         {
             Vector2 figurePosition;
@@ -70,7 +71,11 @@ public class HayUnoRepetido : ScriptableObject
             }
             else
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2((i + 1) * 0.25f, 0.5f));
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.45f));
+                while (thereIsSomethingIn(figurePosition))
+                {
+                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.45f));
+                }
             }
             
 
@@ -79,8 +84,13 @@ public class HayUnoRepetido : ScriptableObject
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
-            if (i < 2)
+
+            if (i < 2) 
             {
+                if (i == handPosition && onTutorial) // Si está en tutorial
+                {
+                    Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
