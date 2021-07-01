@@ -71,10 +71,10 @@ public class HayUnoRepetido : ScriptableObject
             }
             else
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.45f));
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
                 while (thereIsSomethingIn(figurePosition))
                 {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.45f));
+                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
                 }
             }
             
@@ -89,7 +89,8 @@ public class HayUnoRepetido : ScriptableObject
             {
                 if (i == handPosition && onTutorial) // Si está en tutorial
                 {
-                    Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                    GameObject tHand = Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                    tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
@@ -117,11 +118,11 @@ public class HayUnoRepetido : ScriptableObject
         }
         if (randomPositionOnScreen.y < 0)
         {
-            randomPositionOnScreen.y += 0.5f;
+            randomPositionOnScreen.y += 1.5f;
         }
         else
         {
-            randomPositionOnScreen.y -= 0.5f;
+            randomPositionOnScreen.y -= 1.5f;
         }
         return randomPositionOnScreen;
     }

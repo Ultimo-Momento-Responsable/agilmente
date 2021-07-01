@@ -8,7 +8,9 @@ public class TutorialHand : MonoBehaviour
     public Sprite touchingHand;
     public Sprite hand;
     SpriteRenderer sr;
+    public float yPos;
     
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,15 +20,14 @@ public class TutorialHand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(transform.position.x, myCurve.Evaluate((Time.time % myCurve.length)) -2.3f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, myCurve.Evaluate((Time.time % myCurve.length)) + yPos, transform.position.z);
         if (myCurve.Evaluate((Time.time % myCurve.length)) > 0.98f)
         {
             sr.sprite = touchingHand;
-            print(myCurve.Evaluate((Time.time % myCurve.length)));
         }
         else
         {
-            sr.sprite = hand;
+            sr.sprite = hand;   
         }
     }
 }
