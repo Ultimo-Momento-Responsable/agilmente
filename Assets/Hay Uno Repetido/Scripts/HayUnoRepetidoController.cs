@@ -57,6 +57,7 @@ public class HayUnoRepetidoController : MonoBehaviour
                 dontTouchAgain = true;
                 audioSource.PlayOneShot(sndSuccess);
                 hayUnoRepetido.onTutorial = false;
+                GameObject.FindGameObjectWithTag("tutorial").SetActive(false);
                 Destroy(GameObject.FindGameObjectWithTag("tutorial"));
                 Destroy(GameObject.FindGameObjectWithTag("title"));
                 tutorial.text = "";

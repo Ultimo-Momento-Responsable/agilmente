@@ -23,11 +23,18 @@ public class TutorialHand : MonoBehaviour
         transform.position = new Vector3(transform.position.x, myCurve.Evaluate((Time.time % myCurve.length)) + yPos, transform.position.z);
         if (myCurve.Evaluate((Time.time % myCurve.length)) > 0.98f)
         {
-            sr.sprite = touchingHand;
+            if (sr != null)
+            {
+                sr.sprite = touchingHand;
+            }
         }
         else
         {
-            sr.sprite = hand;   
+            if (sr != null)
+            {
+                sr.sprite = hand;
+            }
+            
         }
     }
 }
