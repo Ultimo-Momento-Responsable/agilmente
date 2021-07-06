@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,71 +10,106 @@ public class HayUnoRepetidoController : MonoBehaviour
     private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/hay-uno-repetido";
 
+    private List<int> index;
+    private string json;
+    private bool canceled = false;
+    private int dontTouchTimer = 20;
+
     public Camera camera;
+    public GameObject figure;
+    public Sprite[] sprites;
+    public AudioSource audioSource;
+    public AudioClip sndSuccess;
+    public HayUnoRepetido hayUnoRepetido;
+    public GameObject particles;
+    public Text timer;
+    public Text tutorial;
+    public GameObject tutorialHand;
+
 
     public int figureQuantity;
     public int maxFigures;
     public float maxTime;
     public bool limitTime;
     public bool limitFigure;
-    private float auxTime; 
-    public GameObject figure;
-    public Sprite[] sprites;
-    public AudioSource audioSource;
-    public AudioClip sndSuccess;
-    private List<int> index;
+    public float auxTime;
     public float initTime;
     public bool isTouching = false;
     public bool isMakingMistake = false;
-    private string json;
-    private bool canceled = false;
-    public HayUnoRepetido hayUnoRepetido;
-    private int dontTouchTimer = 20;
     public bool dontTouchAgain = false;
-
-    public GameObject particles;
-    public Text timer;
+    public bool onTutorial = true;
+      
 
     void Start()
     {
-        hayUnoRepetido = ScriptableObject.CreateInstance<HayUnoRepetido>();
+        hayUnoRepetido = new HayUnoRepetido(this);
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
-        hayUnoRepetido.createFigures(figureQuantity,camera,figure,sprites,index,this,particles);
-        initTime = Time.time;
-        auxTime = initTime;
+        hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
     }
 
     void Update()
     {
-        hayUnoRepetido.totalTime = Time.time - initTime;
-        if (limitTime)
+        if (hayUnoRepetido.onTutorial)
         {
-            timer.text = ((int) maxTime - (int)hayUnoRepetido.totalTime).ToString();
-        } else
-        {
-            timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
-        }
-
-        if (isTouching && figureQuantity > 0 && !dontTouchAgain)
-        {
-            dontTouchAgain = true;
-            hayUnoRepetido.timeBetweenSuccesses[hayUnoRepetido.successes] = Time.time - auxTime;
-            auxTime = Time.time;
-            audioSource.PlayOneShot(sndSuccess);
-
-            if (figureQuantity < maxFigures)
+            if (isTouching)
             {
-                figureQuantity++;
+                dontTouchAgain = true;
+                audioSource.PlayOneShot(sndSuccess);
+                hayUnoRepetido.onTutorial = false;
+                GameObject.FindGameObjectWithTag("tutorial").SetActive(false);
+                Destroy(GameObject.FindGameObjectWithTag("tutorial"));
+                Destroy(GameObject.FindGameObjectWithTag("title"));
+                tutorial.text = "";
+                resetValues();
+                initTime = Time.time;
+                auxTime = initTime;
             }
-            hayUnoRepetido.successes++;
-            if (limitFigure && figureQuantity >= maxFigures)
+        } 
+        else 
+        {
+            hayUnoRepetido.totalTime = Time.time - initTime;
+            if (limitTime)
+            {
+                timer.text = ((int)maxTime - (int)hayUnoRepetido.totalTime).ToString();
+            }
+            else
+            {
+                timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
+            }
+
+            if (isTouching && figureQuantity > 0 && !dontTouchAgain)
+            {
+                dontTouchAgain = true;
+                hayUnoRepetido.timeBetweenSuccesses[hayUnoRepetido.successes] = Time.time - auxTime;
+                auxTime = Time.time;
+                audioSource.PlayOneShot(sndSuccess);
+
+                if (figureQuantity < maxFigures)
+                {
+                    figureQuantity++;
+                }
+                hayUnoRepetido.successes++;
+                if (limitFigure && figureQuantity >= maxFigures)
+                {
+                    sendData();
+                }
+                resetValues();
+            }
+
+            if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
             {
                 sendData();
             }
-            resetValues();
+
+            if (isMakingMistake)
+            {
+                isMakingMistake = false;
+                camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+            }
         }
 
-        if (dontTouchAgain) {
+        if (dontTouchAgain)
+        {
             dontTouchTimer--;
         }
         if (dontTouchTimer <= 0)
@@ -83,15 +117,6 @@ public class HayUnoRepetidoController : MonoBehaviour
             dontTouchAgain = false;
         }
 
-        if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
-        {
-            sendData();
-        }
-        
-        if (isMakingMistake) {
-            isMakingMistake = false;
-            camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
-        }
     }
 
     private void OnApplicationQuit()
@@ -153,11 +178,8 @@ public class HayUnoRepetidoController : MonoBehaviour
         parameters.Add("Content-Type", "application/json");
         parameters.Add("Content-Length", json.Length.ToString());
         json = json.Replace("'", "\"");
-        print(json);
-        print(PROD_ENDPOINT);
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(PROD_ENDPOINT, postData, parameters);
-        print(www.error);
         StartCoroutine(Upload(www));
         SceneManager.LoadScene("mainScene");
     }

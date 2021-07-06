@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 673044371436029049}
   - component: {fileID: 1880533155622270188}
   - component: {fileID: 756254225883395380}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: objFigure
   m_TagString: figures
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8632990507630729472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.16}
   m_LocalScale: {x: 0.15, y: 0.15, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -70,8 +70,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1711888993
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b866cc37472cc7846a79c0e35551ee08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

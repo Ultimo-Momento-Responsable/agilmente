@@ -7,13 +7,16 @@ public class HayUnoRepetido : ScriptableObject
     private int a_successes;
     private float[] a_timeBetweenSuccesses;
     private float a_totalTime;
+    public bool onTutorial = true;
+    public HayUnoRepetidoController hayUnoRepetidoController;
 
-    public HayUnoRepetido()
+    public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
     {
         a_mistakes = 0;
         a_successes = 0;
         a_totalTime = 0f;
         a_timeBetweenSuccesses = new float[100];
+        this.hayUnoRepetidoController = hayUnoRepetidoController;
     }
 
     /// <summary>
@@ -23,15 +26,15 @@ public class HayUnoRepetido : ScriptableObject
     public List<int> chooseSprites(Sprite[] sprites, int figureQuantity)
     {
         List<int> index = new List<int>();
-        int repeatedIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
+        int repeatedIndex = UnityEngine.Random.Range(0, sprites.Length);
         index.Add(repeatedIndex);
         index.Add(repeatedIndex);
         for (int i = 2; i < figureQuantity; i++)
         {
-            int randIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
+            int randIndex = UnityEngine.Random.Range(0, sprites.Length);
             while (index.Contains(randIndex))
             {
-                randIndex = (int)UnityEngine.Random.Range(0, sprites.Length);
+                randIndex = UnityEngine.Random.Range(0, sprites.Length);
             }
             index.Add(randIndex);
         }
@@ -51,30 +54,52 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
     {
+        int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
+
         for (int i = 0; i < figureQuantity; i++)
         {
-
-            Vector2 randomPositionOnScreen = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-            randomPositionOnScreen = centerFigures(randomPositionOnScreen);
-
-            while (thereIsSomethingIn(randomPositionOnScreen))
+            Vector2 figurePosition;
+            if (!onTutorial)
             {
-                randomPositionOnScreen = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-                randomPositionOnScreen = centerFigures(randomPositionOnScreen);
-            }
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = centerFigures(figurePosition);
 
-            GameObject fig = Instantiate(figure, randomPositionOnScreen, Quaternion.identity);
+                while (thereIsSomethingIn(figurePosition))
+                {
+                    figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                    figurePosition = centerFigures(figurePosition);
+                }
+            }
+            else
+            {
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
+                while (thereIsSomethingIn(figurePosition))
+                {
+                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
+                }
+            }
+            
+
+            GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
 
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
-            if (i < 2)
+
+            // Si está en tutorial crea la mano en una fruta repetida
+            if (i < 2) 
             {
-                GameObject part = Instantiate(particles, randomPositionOnScreen, Quaternion.identity);
+                if (i == handPosition && onTutorial) 
+                {
+                    GameObject tHand = Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                    tHand.GetComponent<TutorialHand>().yPos = -2.8f;
+                }
+                GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
         }
+
     }
 
     /// <summary>
@@ -95,11 +120,11 @@ public class HayUnoRepetido : ScriptableObject
         }
         if (randomPositionOnScreen.y < 0)
         {
-            randomPositionOnScreen.y += 0.5f;
+            randomPositionOnScreen.y += 1.5f;
         }
         else
         {
-            randomPositionOnScreen.y -= 0.5f;
+            randomPositionOnScreen.y -= 1.5f;
         }
         return randomPositionOnScreen;
     }
