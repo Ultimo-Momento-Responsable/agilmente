@@ -26,7 +26,7 @@ namespace Tests
         {
             juego = ScriptableObject.CreateInstance<HayUnoRepetido>();
             Vector2 v2 = juego.centerFigures(new Vector2(-1,2));
-            Vector2 comparacion = new Vector2(-0.5f, 1.5f);
+            Vector2 comparacion = new Vector2(-0.5f, 0.5f);
             Assert.AreEqual(v2, comparacion);
         }
 

@@ -54,7 +54,8 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
     {
-        int handPosition = Random.Range(0, 2);
+        int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
+
         for (int i = 0; i < figureQuantity; i++)
         {
             Vector2 figurePosition;
@@ -85,9 +86,10 @@ public class HayUnoRepetido : ScriptableObject
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
 
+            // Si está en tutorial crea la mano en una fruta repetida
             if (i < 2) 
             {
-                if (i == handPosition && onTutorial) // Si está en tutorial
+                if (i == handPosition && onTutorial) 
                 {
                     GameObject tHand = Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
