@@ -65,10 +65,13 @@ public class FigureBehaviour : MonoBehaviour
             }
             else
             {
-                if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
+                if (!controller.hayUnoRepetido.onTutorial)
                 {
-                    controller.hayUnoRepetido.mistakes++;
-                    controller.isMakingMistake = true;
+                    if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
+                    {
+                        controller.hayUnoRepetido.mistakes++;
+                        controller.isMakingMistake = true;
+                    }
                 }
             }
         }
