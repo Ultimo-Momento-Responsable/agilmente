@@ -52,6 +52,7 @@ public class FigureBehaviour : MonoBehaviour
     /// <summary>
     /// Verifica si el usuario tapeó la fruta correcta, y el comportamiento 
     /// correspondiente.
+    /// El screen shake está desactivado durante el tutorial.
     /// </summary>
     void checkIfUserTappedFigure()
     {
