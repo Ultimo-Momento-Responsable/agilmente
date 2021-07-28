@@ -14,6 +14,8 @@ public class HayUnoRepetidoController : MonoBehaviour
     private string json;
     private bool canceled = false;
     private int dontTouchTimer = 20;
+    private GameObject[] figures;
+    private GameObject pause;
 
     public Camera camera;
     public GameObject figure;
@@ -25,6 +27,7 @@ public class HayUnoRepetidoController : MonoBehaviour
     public Text timer;
     public Text tutorial;
     public GameObject tutorialHand;
+    public GameObject pauseButton;
 
 
     public int figureQuantity;
@@ -45,6 +48,9 @@ public class HayUnoRepetidoController : MonoBehaviour
         hayUnoRepetido = new HayUnoRepetido(this);
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        pause = GameObject.FindGameObjectWithTag("pause");
+        pause.SetActive(false);
+        figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
     void Update()
@@ -57,12 +63,13 @@ public class HayUnoRepetidoController : MonoBehaviour
                 audioSource.PlayOneShot(sndSuccess);
                 hayUnoRepetido.onTutorial = false;
                 GameObject.FindGameObjectWithTag("tutorial").SetActive(false);
-                Destroy(GameObject.FindGameObjectWithTag("tutorial"));
-                Destroy(GameObject.FindGameObjectWithTag("title"));
+                GameObject.FindGameObjectWithTag("tutorialhand").SetActive(false);
+                GameObject.FindGameObjectWithTag("title").SetActive(false);
                 tutorial.text = "";
                 resetValues();
                 initTime = Time.time;
                 auxTime = initTime;
+                pauseButton.SetActive(true);
             }
         } 
         else 
@@ -181,6 +188,39 @@ public class HayUnoRepetidoController : MonoBehaviour
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(PROD_ENDPOINT, postData, parameters);
         StartCoroutine(Upload(www));
+        SceneManager.LoadScene("mainScene");
+    }
+
+    /// <summary>
+    /// Función que se encarga de pausar/despausar el juego.
+    /// </summary>
+    public void pauseGame()
+    {
+        if (Time.timeScale == 1)
+        {    //si la velocidad es 1
+            Time.timeScale = 0;     //que la velocidad del juego sea 0
+            pause.SetActive(true);
+            figures = GameObject.FindGameObjectsWithTag("figures");
+            foreach (GameObject f in figures)
+            {
+                f.SetActive(false);
+            }
+        }
+        else if (Time.timeScale == 0)
+        {   // si la velocidad es 0
+            Time.timeScale = 1;     // que la velocidad del juego regrese a 1
+            pause.SetActive(false);
+            foreach (GameObject f in figures)
+            {
+                f.SetActive(true);
+            }
+        }
+    }
+    public void backToMainMenu()
+    {
+        canceled = true;
+        sendData();
+        pauseGame();
         SceneManager.LoadScene("mainScene");
     }
 }

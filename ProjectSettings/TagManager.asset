@@ -9,6 +9,7 @@ TagManager:
   - camera
   - tutorial
   - title
+  - pause
   layers:
   - Default
   - TransparentFX

@@ -10,7 +10,7 @@ public class TutorialHand : MonoBehaviour
     
     void Start()
     {
-        sr = GameObject.FindGameObjectWithTag("tutorial").GetComponent<SpriteRenderer>();
+        sr = GameObject.FindGameObjectWithTag("tutorialhand").GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -18,10 +18,7 @@ public class TutorialHand : MonoBehaviour
         transform.position = new Vector3(transform.position.x, myCurve.Evaluate((Time.time % myCurve.length)) + yPos, transform.position.z);
         if (myCurve.Evaluate((Time.time % myCurve.length)) > 0.98f)
         {
-            if (sr != null)
-            {
-                sr.sprite = touchingHand;
-            }
+             sr.sprite = touchingHand;
         }
         else
         {

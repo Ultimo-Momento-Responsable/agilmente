@@ -16,28 +16,15 @@ public class FigureBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1) // si se pulsa la pantalla
         {
             Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
-            if (collider2D == Physics2D.OverlapPoint(touchPos))
+            if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posici√≥n donde se pulsa es donde se encuentra la figura
             {
                 if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
-                    if (index == 0 || index == 1)
-                    {
-                        controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
-                        ps.Stop();
-                        ps.Play();
-                    }
-                    else
-                    {
-                        if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
-                        {
-                            controller.hayUnoRepetido.mistakes++;
-                            controller.isMakingMistake = true;
-                        }
-                    }
+                    checkIfUserTappedFigure();
                 }
 
             }
@@ -46,27 +33,30 @@ public class FigureBehaviour : MonoBehaviour
 
     void OnMouseOver()
     {
-        checkIfUserTappedFigure();
+        if (Input.GetMouseButtonDown(0)) // si se pulsa con el mouse
+        {
+            checkIfUserTappedFigure();
+        }
     }
 
     /// <summary>
-    /// Verifica si el usuario tapeÛ la fruta correcta, y el comportamiento 
+    /// Verifica si el usuario tape√≥ la fruta correcta, y el comportamiento 
     /// correspondiente.
-    /// El screen shake est· desactivado durante el tutorial.
+    /// El screen shake est√° desactivado durante el tutorial.
     /// </summary>
     void checkIfUserTappedFigure()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (index == 0 || index == 1)
         {
-            if (index == 0 || index == 1)
+            controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
+            ps.Stop();
+            ps.Play();
+        }
+        else
+        {
+            if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
             {
-                controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
-                ps.Stop();
-                ps.Play();
-            }
-            else
-            {
-                if (!controller.hayUnoRepetido.onTutorial)
+              if (!controller.hayUnoRepetido.onTutorial)
                 {
                     if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
                     {
