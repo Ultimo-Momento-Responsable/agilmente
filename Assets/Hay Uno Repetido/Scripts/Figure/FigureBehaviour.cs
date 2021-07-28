@@ -24,20 +24,7 @@ public class FigureBehaviour : MonoBehaviour
             {
                 if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
-                    if (index == 0 || index == 1)
-                    {
-                        controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
-                        ps.Stop();
-                        ps.Play();
-                    }
-                    else
-                    {
-                        if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
-                        {
-                            controller.hayUnoRepetido.mistakes++;
-                            controller.isMakingMistake = true;
-                        }
-                    }
+                    checkIfUserTappedFigure();
                 }
 
             }
@@ -46,7 +33,10 @@ public class FigureBehaviour : MonoBehaviour
 
     void OnMouseOver()
     {
-        checkIfUserTappedFigure();
+        if (Input.GetMouseButtonDown(0))
+        {
+            checkIfUserTappedFigure();
+        }
     }
 
     /// <summary>
@@ -55,21 +45,18 @@ public class FigureBehaviour : MonoBehaviour
     /// </summary>
     void checkIfUserTappedFigure()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (index == 0 || index == 1)
         {
-            if (index == 0 || index == 1)
+            controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
+            ps.Stop();
+            ps.Play();
+        }
+        else
+        {
+            if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
             {
-                controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
-                ps.Stop();
-                ps.Play();
-            }
-            else
-            {
-                if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
-                {
-                    controller.hayUnoRepetido.mistakes++;
-                    controller.isMakingMistake = true;
-                }
+                controller.hayUnoRepetido.mistakes++;
+                controller.isMakingMistake = true;
             }
         }
     }
