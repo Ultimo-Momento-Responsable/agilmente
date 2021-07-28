@@ -223,8 +223,4 @@ public class HayUnoRepetidoController : MonoBehaviour
         pauseGame();
         SceneManager.LoadScene("mainScene");
     }
-    public void quitGame()
-    {
-        Application.Quit();
-    }
 }
