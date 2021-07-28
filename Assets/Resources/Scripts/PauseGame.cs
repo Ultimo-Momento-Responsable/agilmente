@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PauseGame : MonoBehaviour
@@ -14,11 +12,11 @@ public class PauseGame : MonoBehaviour
 
     void Update()
     {
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1) // si se pulsa la pantalla
         {
-            Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position);
+            Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position); 
             Vector2 touchPos = new Vector2(wp.x, wp.y);
-            if (collider2D == Physics2D.OverlapPoint(touchPos))
+            if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posición donde se pulsa es donde se encuentra el botón de pausa
             {
                 controller.pauseGame();
             }
@@ -26,7 +24,7 @@ public class PauseGame : MonoBehaviour
     }
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // si se pulsa con el mouse
         {
             controller.pauseGame();
         }
