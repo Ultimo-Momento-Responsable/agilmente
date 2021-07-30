@@ -124,6 +124,11 @@ public class HayUnoRepetidoController : MonoBehaviour
             dontTouchAgain = false;
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseGame();
+        }
+
     }
 
     private void OnApplicationQuit()
