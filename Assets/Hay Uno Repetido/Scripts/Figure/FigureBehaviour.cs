@@ -20,7 +20,7 @@ public class FigureBehaviour : MonoBehaviour
         {
             Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
-            if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posici√≥n donde se pulsa es donde se encuentra la figura
+            if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posiciÛn donde se pulsa es donde se encuentra la figura
             {
                 if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
@@ -40,9 +40,8 @@ public class FigureBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica si el usuario tape√≥ la fruta correcta, y el comportamiento 
+    /// Verifica si el usuario tapeÛ la fruta correcta, y el comportamiento 
     /// correspondiente.
-    /// El screen shake est√° desactivado durante el tutorial.
     /// </summary>
     void checkIfUserTappedFigure()
     {
@@ -56,14 +55,8 @@ public class FigureBehaviour : MonoBehaviour
         {
             if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
             {
-              if (!controller.hayUnoRepetido.onTutorial)
-                {
-                    if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
-                    {
-                        controller.hayUnoRepetido.mistakes++;
-                        controller.isMakingMistake = true;
-                    }
-                }
+                controller.hayUnoRepetido.mistakes++;
+                controller.isMakingMistake = true;
             }
         }
     }
