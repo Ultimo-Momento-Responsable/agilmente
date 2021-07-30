@@ -35,14 +35,16 @@ public class LoginController : MonoBehaviour
             loginButton.interactable = true;
         }
     }
-
-    // cuando se clickea el botón de ingresar, busca el paciente en la base de datos.
+    /**
+     * cuando se clickea el botón de ingresar, busca el paciente en la base de datos.
+     */
     public void getPatient()
     {
         this.StartCoroutine(this.getPatientRoutine("localhost:8080/patient/lc" + loginCode.text, this.getPatientResponseCallback));
     }
-
-    // Se hace un get a los pacientes para ver si ese código de Logueo existe
+    /**
+     * Se hace un get a los pacientes para ver si ese código de Logueo existe
+     */
     private IEnumerator getPatientRoutine(string url, Action<string> callback = null)
     {
         var request = UnityWebRequest.Get(url);
@@ -54,7 +56,9 @@ public class LoginController : MonoBehaviour
             callback(data);
     }
 
-    // Una vez que obtiene los datos del paciente se modifica el json settings.json para que no pida nuevamente el logueo
+    /**
+     * Una vez que obtiene los datos del paciente se modifica el json settings.json para que no pida nuevamente el logueo
+     */
     private void getPatientResponseCallback(string data)
     {
         if (data != "null")
@@ -74,7 +78,8 @@ public class LoginController : MonoBehaviour
                 settings.Login.isLogged = false;
                 settings.Login.patient = new Patient();
                 settings.Login.patient.id = patientJson.id;
-                settings.Login.patient.name = patientJson.firstName + " " + patientJson.lastName;
+                settings.Login.patient.firstName = patientJson.firstName;
+                settings.Login.patient.lastName = patientJson.lastName;
                 File.WriteAllText(Application.dataPath + "/settings.json", JsonUtility.ToJson(settings));
             }
             else if (patientJson.loginCode == "" && patientJson.logged == true)
@@ -89,7 +94,8 @@ public class LoginController : MonoBehaviour
                 settings.Login.loginCode = patientJson.loginCode;
                 settings.Login.patient = new Patient();
                 settings.Login.patient.id = patientJson.id;
-                settings.Login.patient.name = patientJson.firstName + " " + patientJson.lastName;
+                settings.Login.patient.firstName = patientJson.firstName;
+                settings.Login.patient.lastName = patientJson.lastName;
                 patientJson.logged = true;
                 patientJson.loginCode = null;
                 File.WriteAllText(Application.dataPath + "/settings.json", JsonUtility.ToJson(settings));
@@ -102,7 +108,9 @@ public class LoginController : MonoBehaviour
         }
     }
 
-    // Se hace un put en la base de datos para decirle que el paciente está logueado y que el código no sirve más
+    /**
+     * Se hace un put en la base de datos para decirle que el paciente está logueado y que el código no sirve más
+     */
     private IEnumerator putPatientRoutine(string url)
     {
         var json = JsonUtility.ToJson(patientJson);
@@ -138,7 +146,8 @@ public class Login
 public class Patient
 {
     public long id;
-    public string name;
+    public string firstName;
+    public string lastName;
 }
 
 public class PatientJson
