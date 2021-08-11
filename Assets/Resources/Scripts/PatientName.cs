@@ -9,7 +9,7 @@ public class PatientName : MonoBehaviour
     {
         settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.dataPath + "/settings.json"));
         Text welcomePatientText = GetComponent<Text>();
-        welcomePatientText.text = "¡Bienvenido " + settings.Login.patient.firstName + "!";
+        welcomePatientText.text = "¡Hola de nuevo " + settings.Login.patient.firstName + "!";
 
     }
 }
