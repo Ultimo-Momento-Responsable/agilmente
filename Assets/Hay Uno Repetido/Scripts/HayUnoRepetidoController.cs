@@ -56,6 +56,7 @@ public class HayUnoRepetidoController : MonoBehaviour
         if (maxFigures == -1)
         {
             limitFigure = false;
+            maxFigures = 20;
         }
         print(maxTime);
         print(maxFigures);

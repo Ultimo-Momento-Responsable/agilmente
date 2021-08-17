@@ -12,6 +12,7 @@ TagManager:
   - pause
   - tutorialhand
   - hayUnoRepeController
+  - gameCard
   layers:
   - Default
   - TransparentFX

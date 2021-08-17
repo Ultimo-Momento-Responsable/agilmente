@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,8 +22,9 @@ public class MainSceneController : MonoBehaviour
     public Text gameName;
     public Text numberOfSessions;
     private PlanningList planningRequestJson;
-    private Planning planning;
     public Camera camera;
+    public Button gameCard;
+    public GameObject gameCanvas;
 
 
     public void Start()
@@ -62,15 +64,41 @@ public class MainSceneController : MonoBehaviour
         highlightButton(gameButton.GetComponent<Image>(), gameSprite[0]);
         highlightButton(profileButton.GetComponent<Image>(), profileSprite[1]);
         highlightButton(homeButton.GetComponent<Image>(), homeSprite[1]);
-
+        GameObject.FindGameObjectWithTag("gameCard").SetActive(false);
         bodyText.SetActive(true);
         bodyText.GetComponent<Text>().text = "Juegos pendientes"; 
         print("Boton jugar clickeado");
 
-        
+        int i = 0;
+
+        foreach (Planning planningCards in planningRequestJson.planningList)
+        {
+            Button gameCardInstance = Instantiate(gameCard);
+            btnClickPlayGame(gameCardInstance, i);
+            gameCardInstance.transform.parent = gameCanvas.transform;
+            gameCardInstance.transform.localScale = new Vector2(1, 1);
+            gameCardInstance.transform.localPosition = new Vector3(0, 222.5f + (i*-222.5f), 0);
+            foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
+            {
+                if (gameName.gameObject.name == "GameName")
+                {
+                    gameName.text = planningCards.game;
+                }
+                if (gameName.gameObject.name == "NumberOfSessions")
+                {
+                    gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
+                }
+            }
+            i++;
+
+        }
+
     }
 
-            //figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+    void btnClickPlayGame(Button btnPlayGame, int index)
+    {
+        btnPlayGame.onClick.AddListener(() => playGame(index));
+    }
 
 
 
@@ -129,6 +157,7 @@ public class MainSceneController : MonoBehaviour
 
     public void playGame(int index)
     {
+        print("llega a ejecutar Play Game");
         if (planningRequestJson.planningList[index].game == "Encuentra al Repetido")
         {
             if (planningRequestJson.planningList[index].parameters[0].name=="figureQuantity")
