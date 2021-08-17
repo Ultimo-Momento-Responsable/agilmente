@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static MainSceneController;
 
 public class HayUnoRepetidoController : MonoBehaviour
 {
@@ -31,10 +32,10 @@ public class HayUnoRepetidoController : MonoBehaviour
 
 
     public int figureQuantity;
-    public int maxFigures;
-    public float maxTime;
-    public bool limitTime;
-    public bool limitFigure;
+    private int maxFigures;
+    private float maxTime;
+    private bool limitTime = true;
+    private bool limitFigure = true;
     public float auxTime;
     public float initTime;
     public bool isTouching = false;
@@ -46,6 +47,18 @@ public class HayUnoRepetidoController : MonoBehaviour
     void Start()
     {
         hayUnoRepetido = new HayUnoRepetido(this);
+        maxFigures = SessionHayUnoRepetido.maxFigures;
+        maxTime = SessionHayUnoRepetido.maxTime;
+        if (maxTime == -1)
+        {
+            limitTime = false;
+        }
+        if (maxFigures == -1)
+        {
+            limitFigure = false;
+        }
+        print(maxTime);
+        print(maxFigures);
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         pause = GameObject.FindGameObjectWithTag("pause");
@@ -81,7 +94,7 @@ public class HayUnoRepetidoController : MonoBehaviour
             }
             else
             {
-                timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
+                timer.text = (hayUnoRepetido.successes + 1).ToString();
             }
 
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
@@ -91,7 +104,7 @@ public class HayUnoRepetidoController : MonoBehaviour
                 auxTime = Time.time;
                 audioSource.PlayOneShot(sndSuccess);
 
-                if (figureQuantity < maxFigures)
+                if (figureQuantity <= maxFigures)
                 {
                     figureQuantity++;
                 }

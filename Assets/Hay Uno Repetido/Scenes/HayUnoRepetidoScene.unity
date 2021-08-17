@@ -764,7 +764,7 @@ GameObject:
   - component: {fileID: 1324103839}
   m_Layer: 0
   m_Name: HayUnoRepetidoController
-  m_TagString: Untagged
+  m_TagString: hayUnoRepeController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -813,10 +813,6 @@ MonoBehaviour:
   tutorialHand: {fileID: 3986258821511131952, guid: d3b6ed57b81dff54aaa1be0576a7ac5f, type: 3}
   pauseButton: {fileID: 1485317794}
   figureQuantity: 3
-  maxFigures: 15
-  maxTime: 25
-  limitTime: 1
-  limitFigure: 0
   auxTime: 0
   initTime: 0
   isTouching: 0

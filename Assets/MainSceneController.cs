@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainSceneController : MonoBehaviour
@@ -122,8 +124,23 @@ public class MainSceneController : MonoBehaviour
         //recorrer con un for, para Guille es solo el primero
         planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
         gameName.text = planningRequestJson.planningList[0].game;
-        numberOfSessions.text = "Quedan" + planningRequestJson.planningList[0].numberOfSession + "sesiones restantes";
+        numberOfSessions.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
+    }
 
+    public void playGame(int index)
+    {
+        if (planningRequestJson.planningList[index].game == "Encuentra al Repetido")
+        {
+            if (planningRequestJson.planningList[index].parameters[0].name=="figureQuantity")
+            {
+                SessionHayUnoRepetido.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
+
+            } else
+            {
+                SessionHayUnoRepetido.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
+            }
+            SceneManager.LoadScene("HayUnoRepetidoScene");
+        }
     }
 
     [System.Serializable]
@@ -131,6 +148,7 @@ public class MainSceneController : MonoBehaviour
     {
         public int numberOfSession;
         public string game;
+        public Params[] parameters;
 
     }
     //recibir del JSON para planningRequest
@@ -141,7 +159,24 @@ public class MainSceneController : MonoBehaviour
     [System.Serializable]
     public class PlanningList
     {
-        public Planning[] planningList; 
+        public Planning[] planningList;
     }
+
+    [System.Serializable]
+    public class Params
+    {
+        public long id;
+        public string name;
+        public string value;
+    }
+    
+    [System.Serializable]
+    public class SessionHayUnoRepetido
+    {
+        static public float maxTime = -1;
+        static public int maxFigures = -1;
+        
+    }
+
 
 }
