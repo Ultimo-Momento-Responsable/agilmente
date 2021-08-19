@@ -19,8 +19,7 @@ public class MainSceneController : MonoBehaviour
     public Sprite[] homeSprite;
     public Sprite[] profileSprite;
     public Sprite[] gameSprite;
-    public Text gameName;
-    public Text numberOfSessions;
+    public GameObject gameText;
     private PlanningList planningRequestJson;
     public Camera camera;
     public Button gameCard;
@@ -57,8 +56,6 @@ public class MainSceneController : MonoBehaviour
     public void btnGames()
     {
         title.text = "Jugar";
-        gameName.text = planningRequestJson.planningList[0].game;
-        numberOfSessions.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
 
         clearCards();
 
@@ -66,41 +63,48 @@ public class MainSceneController : MonoBehaviour
         highlightButton(profileButton.GetComponent<Image>(), profileSprite[1]);
         highlightButton(homeButton.GetComponent<Image>(), homeSprite[1]);
         bodyText.SetActive(true);
-        bodyText.GetComponent<Text>().text = "Juegos pendientes"; 
-        print("Boton jugar clickeado");
+        bodyText.GetComponent<Text>().text = "Juegos pendientes";
 
+        if (isThereAPlanning())
+        {
+            gameText.SetActive(false);
+        }
+        else
+        {
+            gameText.SetActive(true);
+        }
 
         /**
          * Por cada juego pendiente, genera una card con la informacion del juego
          * Define un contenedor scrolleable con tamaño igual a la cantidad de cards generadas
          */
-
-        int i = 0;
-        cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, cardContainer.GetComponent<RectTransform>().sizeDelta.y + (planningRequestJson.planningList.Length *1.5f));
-        foreach (Planning planningCards in planningRequestJson.planningList)
+        if (planningRequestJson != null)
         {
-            Button gameCardInstance = Instantiate(gameCard);
-            btnClickPlayGame(gameCardInstance, i);
-            gameCardInstance.transform.parent = cardContainer.transform;
-            gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
-            gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //Tamaño de cards + offset
-            print(4.45f + (i * -1.8f));
-
-            foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
+            int i = 0;
+            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, cardContainer.GetComponent<RectTransform>().sizeDelta.y + (planningRequestJson.planningList.Length * 1.5f));
+            foreach (Planning planningCards in planningRequestJson.planningList)
             {
-                if (gameName.gameObject.name == "GameName")
+                Button gameCardInstance = Instantiate(gameCard);
+                
+                gameCardInstance.transform.parent = cardContainer.transform;
+                gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
+                gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //Tamaño de cards + offset
+
+                foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
                 {
-                    gameName.text = planningCards.game;
+                    if (gameName.gameObject.name == "GameName")
+                    {
+                        gameName.text = planningCards.game;
+                    }
+                    if (gameName.gameObject.name == "NumberOfSessions")
+                    {
+                        gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
+                    }
                 }
-                if (gameName.gameObject.name == "NumberOfSessions")
-                {
-                    gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
-                }
+                btnClickPlayGame(gameCardInstance, i);
+                i++;
             }
-            i++;
-
         }
-
     }
 
     /**
@@ -126,7 +130,12 @@ public class MainSceneController : MonoBehaviour
         bodyText.SetActive(true);
         settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.dataPath + "/settings.json"));
         bodyText.GetComponent<Text>().text = "¡Hola de nuevo " + settings.Login.patient.firstName + "!";
-        print("Boton inicio clickeado");
+        gameText.SetActive(true);
+        if (isThereAPlanning())
+        {
+            gameText.GetComponent<Text>().text = "¡Juega ahora!";
+            generateCard();
+        }
     }
     
     /**
@@ -134,6 +143,7 @@ public class MainSceneController : MonoBehaviour
      */
     public void btnProfile()
     {
+        gameText.SetActive(false);
         clearCards();
         title.text = "Perfil";
         highlightButton(gameButton.GetComponent<Image>(), gameSprite[1]);
@@ -142,7 +152,6 @@ public class MainSceneController : MonoBehaviour
 
 
         bodyText.SetActive(false);
-        print("Boton perfil clickeado");
     }
 
     /**
@@ -173,8 +182,46 @@ public class MainSceneController : MonoBehaviour
      */
     private void getPlanningResponseCallback(string data) { 
         planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
-        gameName.text = planningRequestJson.planningList[0].game;
-        numberOfSessions.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
+        if (isThereAPlanning())
+        {
+            gameText.GetComponent<Text>().text = "¡Juega ahora!";
+            generateCard();
+
+        }
+    }
+
+    /**
+     * Checkea si hay planning
+     */
+    private bool isThereAPlanning()
+    {
+        if (planningRequestJson != null)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Crea la card del inicio
+     */
+    private void generateCard()
+    {
+        Button gameCardInstance = Instantiate(gameCard);
+        gameCardInstance.transform.SetParent(gameCanvas.transform);
+        gameCardInstance.transform.localScale = new Vector2(1, 1);
+        gameCardInstance.transform.position = new Vector3(0, -0.1f, 0);
+        foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
+        {
+            if (gameName.gameObject.name == "GameName")
+            {
+                gameName.text = planningRequestJson.planningList[0].game;
+            }
+            if (gameName.gameObject.name == "NumberOfSessions")
+            {
+                gameName.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
+            }
+        }
     }
 
     /**
