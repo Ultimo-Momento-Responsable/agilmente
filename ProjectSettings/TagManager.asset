@@ -10,6 +10,9 @@ TagManager:
   - tutorial
   - title
   - pause
+  - tutorialhand
+  - hayUnoRepeController
+  - gameCard
   layers:
   - Default
   - TransparentFX
