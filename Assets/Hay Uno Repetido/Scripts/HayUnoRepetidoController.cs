@@ -108,7 +108,7 @@ public class HayUnoRepetidoController : MonoBehaviour
                     figureQuantity++;
                 }
                 hayUnoRepetido.successes++;
-                if (limitFigure && figureQuantity >= maxFigures)
+                if (limitFigure && (figureQuantity > maxFigures))
                 {
                     sendData();
                 }

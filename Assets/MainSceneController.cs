@@ -249,10 +249,11 @@ public class MainSceneController : MonoBehaviour
             if (planningRequestJson.planningList[index].parameters[0].name=="figureQuantity")
             {
                 SessionHayUnoRepetido.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
-
+                SessionHayUnoRepetido.maxTime = -1;
             } else
             {
                 SessionHayUnoRepetido.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
+                SessionHayUnoRepetido.maxFigures = -1;
             }
             SceneManager.LoadScene("HayUnoRepetidoScene");
         }
