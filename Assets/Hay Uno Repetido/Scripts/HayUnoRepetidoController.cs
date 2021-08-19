@@ -58,8 +58,6 @@ public class HayUnoRepetidoController : MonoBehaviour
             limitFigure = false;
             maxFigures = 20;
         }
-        print(maxTime);
-        print(maxFigures);
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         pause = GameObject.FindGameObjectWithTag("pause");

@@ -78,10 +78,10 @@ public class MainSceneController : MonoBehaviour
          * Por cada juego pendiente, genera una card con la informacion del juego
          * Define un contenedor scrolleable con tamaño igual a la cantidad de cards generadas
          */
-        if (planningRequestJson != null)
+        if (planningRequestJson.planningList.Length != 0)
         {
             int i = 0;
-            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, cardContainer.GetComponent<RectTransform>().sizeDelta.y + (planningRequestJson.planningList.Length * 1.5f));
+            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, (planningRequestJson.planningList.Length * 1.55f));
             foreach (Planning planningCards in planningRequestJson.planningList)
             {
                 Button gameCardInstance = Instantiate(gameCard);
@@ -98,7 +98,13 @@ public class MainSceneController : MonoBehaviour
                     }
                     if (gameName.gameObject.name == "NumberOfSessions")
                     {
-                        gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
+                        if (planningCards.numberOfSession != -1)
+                        {
+                            gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
+                        } else
+                        {
+                            gameName.text = "";
+                        }
                     }
                 }
                 btnClickPlayGame(gameCardInstance, i);
@@ -195,7 +201,7 @@ public class MainSceneController : MonoBehaviour
      */
     private bool isThereAPlanning()
     {
-        if (planningRequestJson != null)
+        if (planningRequestJson.planningList.Length != 0)
         {
             return true;
         }
@@ -219,9 +225,18 @@ public class MainSceneController : MonoBehaviour
             }
             if (gameName.gameObject.name == "NumberOfSessions")
             {
-                gameName.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
+                if (planningRequestJson.planningList[0].numberOfSession != -1)
+                {
+                    gameName.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
+                }
+                else
+                {
+                    gameName.text = "";
+                }
             }
+            
         }
+        btnClickPlayGame(gameCardInstance, 0);
     }
 
     /**
