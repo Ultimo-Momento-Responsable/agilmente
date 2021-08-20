@@ -103,7 +103,7 @@ public class MainSceneController : MonoBehaviour
                             gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
                         } else
                         {
-                            gameName.text = "";
+                            gameName.text = "Sin límite de partidas";
                         }
                     }
                 }
@@ -231,7 +231,7 @@ public class MainSceneController : MonoBehaviour
                 }
                 else
                 {
-                    gameName.text = "";
+                    gameName.text = "Sin límite de partidas";
                 }
             }
             
