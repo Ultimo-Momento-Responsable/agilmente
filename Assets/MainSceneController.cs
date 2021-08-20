@@ -103,7 +103,7 @@ public class MainSceneController : MonoBehaviour
                             gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
                         } else
                         {
-                            gameName.text = "";
+                            gameName.text = "Sin límite de partidas";
                         }
                     }
                 }
@@ -231,7 +231,7 @@ public class MainSceneController : MonoBehaviour
                 }
                 else
                 {
-                    gameName.text = "";
+                    gameName.text = "Sin límite de partidas";
                 }
             }
             
@@ -249,10 +249,11 @@ public class MainSceneController : MonoBehaviour
             if (planningRequestJson.planningList[index].parameters[0].name=="figureQuantity")
             {
                 SessionHayUnoRepetido.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
-
+                SessionHayUnoRepetido.maxTime = -1;
             } else
             {
                 SessionHayUnoRepetido.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
+                SessionHayUnoRepetido.maxFigures = -1;
             }
             SceneManager.LoadScene("HayUnoRepetidoScene");
         }
