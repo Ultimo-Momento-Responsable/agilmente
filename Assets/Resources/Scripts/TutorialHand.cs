@@ -10,7 +10,10 @@ public class TutorialHand : MonoBehaviour
     
     void Start()
     {
-        sr = GameObject.FindGameObjectWithTag("tutorialhand").GetComponent<SpriteRenderer>();
+        if (GameObject.FindGameObjectWithTag("tutorialhand") != null)
+        {
+            sr = GameObject.FindGameObjectWithTag("tutorialhand").GetComponent<SpriteRenderer>();
+        }
     }
 
     void Update()
