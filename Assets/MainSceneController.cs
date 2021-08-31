@@ -281,13 +281,21 @@ public class MainSceneController : MonoBehaviour
         public string name;
         public string value;
     }
-    
+
     [System.Serializable]
     public class SessionHayUnoRepetido
     {
         static public float maxTime = -1;
         static public int maxFigures = -1;
-        
+
+    }
+
+    [System.Serializable]
+    public class SessionEncuentraAlNuevo
+    {
+        static public float maxTime = -1;
+        static public int maxFigures = -1;
+
     }
 
 
