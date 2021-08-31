@@ -93,7 +93,7 @@ public class HayUnoRepetidoController : MonoBehaviour
             }
             else
             {
-                timer.text = (hayUnoRepetido.successes + 1).ToString();
+                timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
             }
 
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
@@ -195,14 +195,17 @@ public class HayUnoRepetidoController : MonoBehaviour
         tBS = tBS.Remove(tBS.Length - 1);
         tBS += "]";
 
-        json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
-            "', 'canceled': " + canceled +
-            ", 'mistakes': " + hayUnoRepetido.mistakes +
-            ", 'successes': " + hayUnoRepetido.successes +
-            ", 'timeBetweenSuccesses': " + tBS +
-            ", 'totalTime': " + hayUnoRepetido.totalTime.ToString().Replace(",", ".") +
-            ", 'game': 'Encuentra al Repetido'" +
-            ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId + "}";
+        json = 
+            "{" +
+                "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+                "', 'canceled': " + canceled +
+                ", 'mistakes': " + hayUnoRepetido.mistakes +
+                ", 'successes': " + hayUnoRepetido.successes +
+                ", 'timeBetweenSuccesses': " + tBS +
+                ", 'totalTime': " + hayUnoRepetido.totalTime.ToString().Replace(",", ".") +
+                ", 'game': 'Encuentra al Repetido'" +
+                ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId + 
+            "}";
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, DEV_ENDPOINT);
         SceneManager.LoadScene("mainScene");
