@@ -111,8 +111,9 @@ public class EncuentraAlNuevoController : MonoBehaviour
                 {
                     figureQuantity++;
                 }
+
                 encuentraAlNuevo.successes++;
-                if (limitFigure && (figureQuantity >= maxFigures))
+                if ((limitFigure && (figureQuantity >= maxFigures)) || (figureQuantity >= 20))
                 {
                     sendData();
                 }
