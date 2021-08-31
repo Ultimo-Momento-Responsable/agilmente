@@ -20,7 +20,6 @@ public class SendData : MonoBehaviour
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(endpoint, postData, parameters);
         StartCoroutine(Upload(www));
-        SceneManager.LoadScene("mainScene");
     }
 
     /// <summary>

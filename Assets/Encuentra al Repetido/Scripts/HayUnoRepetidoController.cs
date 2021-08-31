@@ -8,8 +8,8 @@ using static MainSceneController;
 public class HayUnoRepetidoController : MonoBehaviour
 {
 
-    private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
-    private const string PROD_ENDPOINT = "3.23.85.46:8080/hay-uno-repetido";
+    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-repetido";
+    private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-repetido";
 
     private List<int> index;
     private string json;
@@ -181,6 +181,8 @@ public class HayUnoRepetidoController : MonoBehaviour
     void sendData()
     {
         figureQuantity = -1;
+        limitTime = false;
+        limitFigure = false;
         string tBS = "[";
         foreach (float v in hayUnoRepetido.timeBetweenSuccesses)
         {
@@ -193,18 +195,16 @@ public class HayUnoRepetidoController : MonoBehaviour
         tBS = tBS.Remove(tBS.Length - 1);
         tBS += "]";
 
-        Dictionary<string, string> parameters = new Dictionary<string, string>();
-        json = "{'name': 'Hay Uno Repetido', 'totalTime': " + hayUnoRepetido.totalTime.ToString().Replace(",", ".") + ", 'mistakes': " + hayUnoRepetido.mistakes +
-            ", 'successes': " + hayUnoRepetido.successes + ", 'timeBetweenSuccesses': " + tBS + ", 'canceled': " + canceled +", 'dateTime': '" +
-            System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") + "'}";
-        json = json.Replace("False", "false");
-        json = json.Replace("True", "true");
-        parameters.Add("Content-Type", "application/json");
-        parameters.Add("Content-Length", json.Length.ToString());
-        json = json.Replace("'", "\"");
-        byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
-        WWW www = new WWW(PROD_ENDPOINT, postData, parameters);
-        StartCoroutine(Upload(www));
+        json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+            "', 'canceled': " + canceled +
+            ", 'mistakes': " + hayUnoRepetido.mistakes +
+            ", 'successes': " + hayUnoRepetido.successes +
+            ", 'timeBetweenSuccesses': " + tBS +
+            ", 'totalTime': " + hayUnoRepetido.totalTime.ToString().Replace(",", ".") +
+            ", 'game': 'Encuentra al Repetido'" +
+            ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId + "}";
+        SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
+        sD.sendData(json, DEV_ENDPOINT);
         SceneManager.LoadScene("mainScene");
     }
 
