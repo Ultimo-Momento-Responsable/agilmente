@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/mainScene.unity
     guid: 8bf753094686f844b899a8c2a69a7efd
   - enabled: 1
-    path: Assets/Hay Uno Repetido/Scenes/HayUnoRepetidoScene.unity
+    path: Assets/Encuentra al Repetido/Scenes/HayUnoRepetidoScene.unity
     guid: 7d79c1377f91cef44bb940665e17ec0f
+  - enabled: 1
+    path: Assets/Encuentra al Nuevo/Scenes/EncuentraAlNuevoScene.unity
+    guid: d4f570d63161acb48bc2b68e9fa20330
   m_configObjects: {}

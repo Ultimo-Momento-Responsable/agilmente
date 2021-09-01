@@ -7,9 +7,8 @@ using static MainSceneController;
 
 public class EncuentraAlNuevoController : MonoBehaviour
 {
-
-    private const string DEV_ENDPOINT = "localhost:8080/hay-uno-repetido";
-    private const string PROD_ENDPOINT = "3.23.85.46:8080/hay-uno-repetido";
+    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-nuevo";
+    private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-nuevo";
 
     private string json;
     private bool canceled = false;
@@ -186,6 +185,8 @@ public class EncuentraAlNuevoController : MonoBehaviour
     void sendData()
     {
         figureQuantity = -1;
+        limitTime = false;
+        limitFigure = false;
         string tBS = "[";
         foreach (float v in encuentraAlNuevo.timeBetweenSuccesses)
         {
@@ -198,18 +199,17 @@ public class EncuentraAlNuevoController : MonoBehaviour
         tBS = tBS.Remove(tBS.Length - 1);
         tBS += "]";
 
-        Dictionary<string, string> parameters = new Dictionary<string, string>();
-        json = "{'name': 'Encuentra al Nuevo', 'totalTime': " + encuentraAlNuevo.totalTime.ToString().Replace(",", ".") + ", 'mistakes': " + encuentraAlNuevo.mistakes +
-            ", 'successes': " + encuentraAlNuevo.successes + ", 'timeBetweenSuccesses': " + tBS + ", 'canceled': " + canceled +", 'dateTime': '" +
-            System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") + "'}";
-        json = json.Replace("False", "false");
-        json = json.Replace("True", "true");
-        parameters.Add("Content-Type", "application/json");
-        parameters.Add("Content-Length", json.Length.ToString());
-        json = json.Replace("'", "\"");
-        byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
-        WWW www = new WWW(PROD_ENDPOINT, postData, parameters);
-        StartCoroutine(Upload(www));
+        json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+            "', 'canceled': " + canceled +
+            ", 'mistakes': " + encuentraAlNuevo.mistakes +
+            ", 'successes': " + encuentraAlNuevo.successes +
+            ", 'timeBetweenSuccesses': " + tBS +
+            ", 'totalTime': " + encuentraAlNuevo.totalTime.ToString().Replace(",", ".") +
+            ", 'game': 'Encuentra al Nuevo'" +
+            ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId + "}";
+         
+        SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
+        sD.sendData(json, DEV_ENDPOINT);
         SceneManager.LoadScene("mainScene");
     }
 

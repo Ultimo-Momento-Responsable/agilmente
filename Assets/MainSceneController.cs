@@ -246,26 +246,43 @@ public class MainSceneController : MonoBehaviour
     {
         if (planningRequestJson.planningList[index].game == "Encuentra al Repetido")
         {
-            if (planningRequestJson.planningList[index].parameters[0].name=="figureQuantity")
+            if (planningRequestJson.planningList[index].parameters[0].name == "figureQuantity")
             {
                 SessionHayUnoRepetido.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
                 SessionHayUnoRepetido.maxTime = -1;
-            } else
+            }
+            else
             {
                 SessionHayUnoRepetido.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
                 SessionHayUnoRepetido.maxFigures = -1;
             }
+            SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
+        }
+        if (planningRequestJson.planningList[index].game == "Encuentra al Nuevo")
+        {
+            if (planningRequestJson.planningList[index].parameters[0].name == "figureQuantity")
+            {
+                SessionEncuentraAlNuevo.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
+                SessionEncuentraAlNuevo.maxTime = -1;
+            }
+            else
+            {
+                SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
+                SessionEncuentraAlNuevo.maxFigures = -1;
+            }
+            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
+            SceneManager.LoadScene("EncuentraAlNuevoScene");
         }
     }
 
     [System.Serializable]
     public class Planning
     {
+        public int gameSessionId;
         public int numberOfSession;
         public string game;
         public Params[] parameters;
-
     }
 
     [System.Serializable]
@@ -287,7 +304,7 @@ public class MainSceneController : MonoBehaviour
     {
         static public float maxTime = -1;
         static public int maxFigures = -1;
-
+        static public int gameSessionId;
     }
 
     [System.Serializable]
@@ -295,7 +312,7 @@ public class MainSceneController : MonoBehaviour
     {
         static public float maxTime = -1;
         static public int maxFigures = -1;
-
+        static public int gameSessionId;
     }
 
 
