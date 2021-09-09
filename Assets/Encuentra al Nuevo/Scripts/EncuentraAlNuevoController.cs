@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static MainSceneController;
 
-public class EncuentraAlNuevoController : MonoBehaviour
+public class EncuentraAlNuevoController : GameController
 {
     private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-nuevo";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-nuevo";
@@ -13,8 +13,7 @@ public class EncuentraAlNuevoController : MonoBehaviour
     private string json;
     private bool canceled = false;
     private int dontTouchTimer = 20;
-    private GameObject[] figures;
-    private GameObject pause;
+    private GameObject[] a_figures;
 
     public bool prevTutorial = true;
     public Camera camera;
@@ -43,7 +42,17 @@ public class EncuentraAlNuevoController : MonoBehaviour
     public bool isMakingMistake = false;
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
-      
+
+    public GameObject[] figures {
+        get {
+            if (!pause.isPaused)
+            {
+                a_figures = GameObject.FindGameObjectsWithTag("figures");
+            }
+            return a_figures;
+        }
+        set => a_figures = value; 
+    }
 
     void Start()
     {
@@ -62,8 +71,6 @@ public class EncuentraAlNuevoController : MonoBehaviour
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
         encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, actualSprites, this, particles);
-        pause = GameObject.FindGameObjectWithTag("pause");
-        pause.SetActive(false);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -142,14 +149,14 @@ public class EncuentraAlNuevoController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            pauseGame();
+            buttonPauseEvent();
         }
 
     }
 
     private void OnApplicationQuit()
     {
-        canceled = true;
+        cancelGame();
         sendData();
     }
 
@@ -182,7 +189,7 @@ public class EncuentraAlNuevoController : MonoBehaviour
     /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
-    void sendData()
+    public override void sendData()
     {
         figureQuantity = -1;
         limitTime = false;
@@ -214,36 +221,14 @@ public class EncuentraAlNuevoController : MonoBehaviour
     }
 
     /// <summary>
-    /// Función que se encarga de pausar/despausar el juego.
+    /// Función que se encarga de pausar el juego.
     /// </summary>
-    public void pauseGame()
+    public override void pauseGame()
     {
-        if (Time.timeScale == 1)
-        {    //si la velocidad es 1
-            Time.timeScale = 0;     //que la velocidad del juego sea 0
-            pause.SetActive(true);
-            figures = GameObject.FindGameObjectsWithTag("figures");
-            foreach (GameObject f in figures)
-            {
-                f.SetActive(false);
-            }
+        foreach (GameObject f in figures)
+        {
+            f.SetActive(false);
         }
-        else if (Time.timeScale == 0)
-        {   // si la velocidad es 0
-            Time.timeScale = 1;     // que la velocidad del juego regrese a 1
-            pause.SetActive(false);
-            foreach (GameObject f in figures)
-            {
-                f.SetActive(true);
-            }
-        }
-    }
-    public void backToMainMenu()
-    {
-        canceled = true;
-        sendData();
-        pauseGame();
-        SceneManager.LoadScene("mainScene");
     }
 
     /// <summary>
@@ -256,5 +241,24 @@ public class EncuentraAlNuevoController : MonoBehaviour
         resetValues();
         startButton.SetActive(false);
         tutorial.text = "Presiona la nueva figura";
+    }
+
+    /// <summary>
+    /// Setea el estado del juego a cancelado.
+    /// </summary>
+    public override void cancelGame()
+    {
+        this.canceled = true;
+    }
+
+    /// <summary>
+    /// Función que se encarga de reanudar el juego.
+    /// </summary>
+    public override void unpauseGame()
+    {
+        foreach (GameObject f in figures)
+        {
+            f.SetActive(true);
+        }
     }
 }
