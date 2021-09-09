@@ -48,4 +48,15 @@ public abstract class GameController: MonoBehaviour
             this.pause.pauseGame();
         }
     }
+
+    public void OnApplicationPause()
+    {
+        this.pause.pauseGame();
+    }
+
+    public void OnApplicationQuit()
+    {
+        cancelGame();
+        sendData();
+    }
 }

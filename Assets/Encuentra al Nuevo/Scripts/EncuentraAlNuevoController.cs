@@ -154,12 +154,6 @@ public class EncuentraAlNuevoController : GameController
 
     }
 
-    private void OnApplicationQuit()
-    {
-        cancelGame();
-        sendData();
-    }
-
     /// <summary>
     /// Recalcula la posición de los sprites y los reubica en la pantalla.
     /// </summary>
