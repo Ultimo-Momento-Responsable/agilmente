@@ -185,20 +185,28 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void sendData()
     {
+        
         figureQuantity = -1;
         limitTime = false;
         limitFigure = false;
-        string tBS = "[";
-        foreach (float v in encuentraAlNuevo.timeBetweenSuccesses)
+        string tBS;
+        if (encuentraAlNuevo.successes > 0)
         {
-            if (v == 0)
+            tBS = "[";
+            foreach (float v in encuentraAlNuevo.timeBetweenSuccesses)
             {
-                break;
+                if (v == 0)
+                {
+                    break;
+                }
+                tBS += v.ToString().Replace(",", ".") + ",";
             }
-            tBS +=  v.ToString().Replace(",", ".") + ",";
+            tBS = tBS.Remove(tBS.Length - 1);
+            tBS += "]";
+        } else
+        {
+            tBS = "null";
         }
-        tBS = tBS.Remove(tBS.Length - 1);
-        tBS += "]";
 
         json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
             "', 'canceled': " + canceled +
@@ -208,7 +216,7 @@ public class EncuentraAlNuevoController : GameController
             ", 'totalTime': " + encuentraAlNuevo.totalTime.ToString().Replace(",", ".") +
             ", 'game': 'Encuentra al Nuevo'" +
             ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId + "}";
-         
+
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, DEV_ENDPOINT);
         SceneManager.LoadScene("mainScene");
