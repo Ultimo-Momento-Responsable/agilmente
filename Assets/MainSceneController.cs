@@ -314,6 +314,4 @@ public class MainSceneController : MonoBehaviour
         static public int maxFigures = -1;
         static public int gameSessionId;
     }
-
-
 }
