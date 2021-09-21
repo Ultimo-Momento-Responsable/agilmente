@@ -34,7 +34,7 @@ public class HayUnoRepetidoController : GameController
     private float maxTime;
     private bool limitTime = true;
     private bool limitFigure = true;
-    public bool changingSize;
+    public bool variableSizes;
     public float auxTime;
     public float initTime;
     public bool isTouching = false;
@@ -61,7 +61,7 @@ public class HayUnoRepetidoController : GameController
         hayUnoRepetido = new HayUnoRepetido(this);
         maxFigures = SessionHayUnoRepetido.maxFigures;
         maxTime = SessionHayUnoRepetido.maxTime;
-        changingSize = true;//SessionHayUnoRepetido.changingSize;
+        variableSizes = SessionHayUnoRepetido.variableSizes;
         if (maxTime == -1)
         {
             limitTime = false;

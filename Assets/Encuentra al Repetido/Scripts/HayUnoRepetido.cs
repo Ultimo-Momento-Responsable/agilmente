@@ -60,6 +60,8 @@ public class HayUnoRepetido : ScriptableObject
         {
             Vector2 figurePosition;
             float size = 0.15f;
+            float minsize = 0.122f;
+            float maxsize = 0.2f;
             if (!onTutorial)
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
@@ -70,9 +72,9 @@ public class HayUnoRepetido : ScriptableObject
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
                     figurePosition = centerFigures(figurePosition);
                 }
-                if (controller.changingSize)
+                if (controller.variableSizes)
                 {
-                    size = Random.Range(0.1f, 0.2f);
+                    size = Random.Range(minsize, maxsize);
                 }
             }
             else
