@@ -256,6 +256,10 @@ public class MainSceneController : MonoBehaviour
                 SessionHayUnoRepetido.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
                 SessionHayUnoRepetido.maxFigures = -1;
             }
+            if (planningRequestJson.planningList[index].parameters[1].name == "changingSize")
+            {
+                SessionHayUnoRepetido.changingSize = true;
+            }
             SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
         }
@@ -305,6 +309,7 @@ public class MainSceneController : MonoBehaviour
         static public float maxTime = -1;
         static public int maxFigures = -1;
         static public int gameSessionId;
+        static public bool changingSize = false;
     }
 
     [System.Serializable]

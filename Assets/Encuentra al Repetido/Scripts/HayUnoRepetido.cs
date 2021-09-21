@@ -59,6 +59,7 @@ public class HayUnoRepetido : ScriptableObject
         for (int i = 0; i < figureQuantity; i++)
         {
             Vector2 figurePosition;
+            float size = 0.15f;
             if (!onTutorial)
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
@@ -68,6 +69,10 @@ public class HayUnoRepetido : ScriptableObject
                 {
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
                     figurePosition = centerFigures(figurePosition);
+                }
+                if (controller.changingSize)
+                {
+                    size = Random.Range(0.1f, 0.2f);
                 }
             }
             else
@@ -81,7 +86,8 @@ public class HayUnoRepetido : ScriptableObject
             
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
-
+            
+            fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
