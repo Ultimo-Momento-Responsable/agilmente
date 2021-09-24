@@ -246,7 +246,7 @@ public class MainSceneController : MonoBehaviour
     {
         if (planningRequestJson.planningList[index].game == "Encuentra al Repetido")
         {
-            if (planningRequestJson.planningList[index].parameters[0].name == "figureQuantity")
+            if (planningRequestJson.planningList[index].parameters[0].name == "maxLevel")
             {
                 SessionHayUnoRepetido.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
                 SessionHayUnoRepetido.maxTime = -1;
@@ -261,7 +261,7 @@ public class MainSceneController : MonoBehaviour
         }
         if (planningRequestJson.planningList[index].game == "Encuentra al Nuevo")
         {
-            if (planningRequestJson.planningList[index].parameters[0].name == "figureQuantity")
+            if (planningRequestJson.planningList[index].parameters[0].name == "maxLevel")
             {
                 SessionEncuentraAlNuevo.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
                 SessionEncuentraAlNuevo.maxTime = -1;

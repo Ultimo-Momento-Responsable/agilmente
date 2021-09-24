@@ -117,7 +117,7 @@ public class HayUnoRepetidoController : GameController
                     figureQuantity++;
                 }
                 hayUnoRepetido.successes++;
-                if (limitFigure && (figureQuantity > maxFigures))
+                if (limitFigure && ((hayUnoRepetido.successes + 1) > maxFigures))
                 {
                     sendData();
                 }
