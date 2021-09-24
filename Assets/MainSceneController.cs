@@ -246,15 +246,22 @@ public class MainSceneController : MonoBehaviour
     {
         if (planningRequestJson.planningList[index].game == "Encuentra al Repetido")
         {
-            if (planningRequestJson.planningList[index].parameters[0].name == "figureQuantity")
+            foreach (Params param in planningRequestJson.planningList[index].parameters)
             {
-                SessionHayUnoRepetido.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
-                SessionHayUnoRepetido.maxTime = -1;
-            }
-            else
-            {
-                SessionHayUnoRepetido.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
-                SessionHayUnoRepetido.maxFigures = -1;
+                if (param.name == "figureQuantity")
+                {
+                    SessionHayUnoRepetido.maxFigures = int.Parse(param.value);
+                    SessionHayUnoRepetido.maxTime = -1;
+                }
+                if (param.name == "maximumTime")
+                {
+                    SessionHayUnoRepetido.maxTime = float.Parse(param.value, CultureInfo.InvariantCulture);
+                    SessionHayUnoRepetido.maxFigures = -1;
+                }
+                if (param.name == "variableSize")
+                {
+                    SessionHayUnoRepetido.variableSizes = bool.Parse(param.value);
+                }
             }
             SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
@@ -305,6 +312,7 @@ public class MainSceneController : MonoBehaviour
         static public float maxTime = -1;
         static public int maxFigures = -1;
         static public int gameSessionId;
+        static public bool variableSizes;
     }
 
     [System.Serializable]
