@@ -926,6 +926,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e67167b32e058bb43be2bd1153f41101, type: 3}
   - {fileID: 21300000, guid: be4909b8fd906654294e8afb4b09aaf0, type: 3}
   - {fileID: 21300000, guid: 156569dc4d3650e4cb3da9a69dd9b86c, type: 3}
+  distractorsSprites:
+  - {fileID: 21300000, guid: 7b60a3d5b86d75f40bcca968e2626a69, type: 3}
+  - {fileID: 21300000, guid: 0b6440fe997061040b37078441f38c45, type: 3}
   audioSource: {fileID: 1216273299}
   sndSuccess: {fileID: 8300000, guid: 42191cf678c9840428b68b388461533a, type: 3}
   hayUnoRepetido: {fileID: 0}
@@ -935,6 +938,8 @@ MonoBehaviour:
   tutorialHand: {fileID: 3986258821511131952, guid: d3b6ed57b81dff54aaa1be0576a7ac5f, type: 3}
   pauseButton: {fileID: 1485317794}
   figureQuantity: 3
+  variableSizes: 0
+  distractors: 0
   auxTime: 0
   initTime: 0
   isTouching: 0

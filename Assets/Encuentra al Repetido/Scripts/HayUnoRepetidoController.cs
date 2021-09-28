@@ -19,6 +19,7 @@ public class HayUnoRepetidoController : GameController
     public Camera camera;
     public GameObject figure;
     public Sprite[] sprites;
+    public Sprite[] distractorsSprites;
     public AudioSource audioSource;
     public AudioClip sndSuccess;
     public HayUnoRepetido hayUnoRepetido;
@@ -35,6 +36,7 @@ public class HayUnoRepetidoController : GameController
     private bool limitTime = true;
     private bool limitFigure = true;
     public bool variableSizes;
+    public bool distractors;
     public float auxTime;
     public float initTime;
     public bool isTouching = false;
@@ -62,6 +64,7 @@ public class HayUnoRepetidoController : GameController
         maxFigures = SessionHayUnoRepetido.maxFigures;
         maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
+        distractors = SessionHayUnoRepetido.distractors;
         if (maxTime == -1)
         {
             limitTime = false;
