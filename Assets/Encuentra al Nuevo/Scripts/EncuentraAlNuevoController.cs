@@ -119,7 +119,7 @@ public class EncuentraAlNuevoController : GameController
                 }
 
                 encuentraAlNuevo.successes++;
-                if ((limitFigure && (figureQuantity >= maxFigures)) || (figureQuantity >= 20))
+                if ((limitFigure && (encuentraAlNuevo.successes >= maxFigures)) || (figureQuantity >= 20))
                 {
                     sendData();
                 }

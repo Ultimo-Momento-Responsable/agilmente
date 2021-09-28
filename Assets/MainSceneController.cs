@@ -76,7 +76,7 @@ public class MainSceneController : MonoBehaviour
 
         /**
          * Por cada juego pendiente, genera una card con la informacion del juego
-         * Define un contenedor scrolleable con tamaño igual a la cantidad de cards generadas
+         * Define un contenedor scrolleable con tamaÃ±o igual a la cantidad de cards generadas
          */
         if (planningRequestJson.planningList.Length != 0)
         {
@@ -88,7 +88,7 @@ public class MainSceneController : MonoBehaviour
                 
                 gameCardInstance.transform.parent = cardContainer.transform;
                 gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
-                gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //Tamaño de cards + offset
+                gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //TamaÃ±o de cards + offset
 
                 foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
                 {
@@ -103,7 +103,7 @@ public class MainSceneController : MonoBehaviour
                             gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
                         } else
                         {
-                            gameName.text = "Sin límite de partidas";
+                            gameName.text = "Sin lÃ­mite de partidas";
                         }
                     }
                 }
@@ -135,11 +135,11 @@ public class MainSceneController : MonoBehaviour
 
         bodyText.SetActive(true);
         settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.dataPath + "/settings.json"));
-        bodyText.GetComponent<Text>().text = "¡Hola de nuevo " + settings.Login.patient.firstName + "!";
+        bodyText.GetComponent<Text>().text = "Â¡Hola de nuevo " + settings.Login.patient.firstName + "!";
         gameText.SetActive(true);
         if (isThereAPlanning())
         {
-            gameText.GetComponent<Text>().text = "¡Juega ahora!";
+            gameText.GetComponent<Text>().text = "Â¡Juega ahora!";
             generateCard();
         }
     }
@@ -170,7 +170,7 @@ public class MainSceneController : MonoBehaviour
     }
 
     /**
-     * Se hace un get a los pacientes para ver si ese código de Logueo existe
+     * Se hace un get a los pacientes para ver si ese cÃ³digo de Logueo existe
      */
     private IEnumerator getPlanningRoutine(string url, Action<string> callback = null)
     {
@@ -190,7 +190,7 @@ public class MainSceneController : MonoBehaviour
         planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
         if (isThereAPlanning())
         {
-            gameText.GetComponent<Text>().text = "¡Juega ahora!";
+            gameText.GetComponent<Text>().text = "Â¡Juega ahora!";
             generateCard();
 
         }
@@ -231,7 +231,7 @@ public class MainSceneController : MonoBehaviour
                 }
                 else
                 {
-                    gameName.text = "Sin límite de partidas";
+                    gameName.text = "Sin lÃ­mite de partidas";
                 }
             }
             
@@ -248,7 +248,7 @@ public class MainSceneController : MonoBehaviour
         {
             foreach (Params param in planningRequestJson.planningList[index].parameters)
             {
-                if (param.name == "figureQuantity")
+                if (param.name == "maxLevel")
                 {
                     SessionHayUnoRepetido.maxFigures = int.Parse(param.value);
                     SessionHayUnoRepetido.maxTime = -1;
@@ -268,7 +268,7 @@ public class MainSceneController : MonoBehaviour
         }
         if (planningRequestJson.planningList[index].game == "Encuentra al Nuevo")
         {
-            if (planningRequestJson.planningList[index].parameters[0].name == "figureQuantity")
+            if (planningRequestJson.planningList[index].parameters[0].name == "maxLevel")
             {
                 SessionEncuentraAlNuevo.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
                 SessionEncuentraAlNuevo.maxTime = -1;
