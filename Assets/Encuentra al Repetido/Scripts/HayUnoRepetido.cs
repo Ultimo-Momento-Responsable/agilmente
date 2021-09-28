@@ -124,7 +124,8 @@ public class HayUnoRepetido : ScriptableObject
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
             distractor.GetComponent<Transform>().localScale = new Vector3(0.2f, 0.2f, 1);
-            distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[UnityEngine.Random.Range(0,2)];
+            int pos = UnityEngine.Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
+            distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
             distractor.GetComponent<FigureBehaviour>().controller = controller;
             distractor.GetComponent<FigureBehaviour>().index = -1;
         }
