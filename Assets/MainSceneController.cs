@@ -262,6 +262,10 @@ public class MainSceneController : MonoBehaviour
                 {
                     SessionHayUnoRepetido.variableSizes = bool.Parse(param.value);
                 }
+                if (param.name == "distractors")
+                {
+                    SessionHayUnoRepetido.distractors = bool.Parse(param.value);
+                }
             }
             SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
@@ -312,7 +316,8 @@ public class MainSceneController : MonoBehaviour
         static public float maxTime = -1;
         static public int maxFigures = -1;
         static public int gameSessionId;
-        static public bool variableSizes;
+        static public bool variableSizes = false;
+        static public bool distractors = false;
     }
 
     [System.Serializable]

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class HayUnoRepetido : ScriptableObject
 {
@@ -55,13 +56,13 @@ public class HayUnoRepetido : ScriptableObject
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
     {
         int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
-
+        Vector2 figurePosition;
         for (int i = 0; i < figureQuantity; i++)
         {
-            Vector2 figurePosition;
             float size = 0.15f;
             float minsize = 0.122f;
             float maxsize = 0.2f;
+            
             if (!onTutorial)
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
@@ -76,6 +77,7 @@ public class HayUnoRepetido : ScriptableObject
                 {
                     size = Random.Range(minsize, maxsize);
                 }
+                
             }
             else
             {
@@ -106,6 +108,25 @@ public class HayUnoRepetido : ScriptableObject
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
+        }
+        if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
+        {
+            figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            figurePosition = centerFigures(figurePosition);
+
+            while (thereIsSomethingIn(figurePosition))
+            {
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = centerFigures(figurePosition);
+            }
+            
+            GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
+
+            distractor.GetComponent<Transform>().localScale = new Vector3(0.2f, 0.2f, 1);
+            int pos = UnityEngine.Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
+            distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
+            distractor.GetComponent<FigureBehaviour>().controller = controller;
+            distractor.GetComponent<FigureBehaviour>().index = -1;
         }
 
     }
