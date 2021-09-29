@@ -65,6 +65,7 @@ public class HayUnoRepetidoController : GameController
         maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
+        sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
         if (maxTime == -1)
         {
             limitTime = false;
