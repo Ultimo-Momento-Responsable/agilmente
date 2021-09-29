@@ -266,6 +266,10 @@ public class MainSceneController : MonoBehaviour
                 {
                     SessionHayUnoRepetido.distractors = bool.Parse(param.value);
                 }
+                if (param.name == "spriteSet")
+                {
+                    SessionHayUnoRepetido.spriteSet = int.Parse(param.value);
+                }
             }
             SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
@@ -318,6 +322,7 @@ public class MainSceneController : MonoBehaviour
         static public int gameSessionId;
         static public bool variableSizes = false;
         static public bool distractors = false;
+        static public int spriteSet = 1;
     }
 
     [System.Serializable]

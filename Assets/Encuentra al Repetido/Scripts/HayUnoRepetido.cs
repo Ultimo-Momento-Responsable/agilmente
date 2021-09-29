@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -62,6 +63,12 @@ public class HayUnoRepetido : ScriptableObject
             float size = 0.15f;
             float minsize = 0.122f;
             float maxsize = 0.2f;
+            if (MainSceneController.SessionHayUnoRepetido.spriteSet == 1)
+            {
+                size = 0.2f;
+                minsize = 0.172f;
+                maxsize = 0.25f;
+            }
             
             if (!onTutorial)
             {
@@ -122,7 +129,21 @@ public class HayUnoRepetido : ScriptableObject
             
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
-            distractor.GetComponent<Transform>().localScale = new Vector3(0.2f, 0.2f, 1);
+            int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
+            int spriteSetDistractor = UnityEngine.Random.Range(0, countSpritesets);
+            while (spriteSetDistractor == MainSceneController.SessionHayUnoRepetido.spriteSet)
+            {
+                spriteSetDistractor = UnityEngine.Random.Range(0, countSpritesets);
+            }
+            if (spriteSetDistractor == 1)
+            {
+                distractor.GetComponent<Transform>().localScale = new Vector3(0.2f, 0.2f, 1);
+            } else
+            {
+                distractor.GetComponent<Transform>().localScale = new Vector3(0.15f, 0.15f, 1);
+            }
+            
+            hayUnoRepetidoController.distractorsSprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + spriteSetDistractor + "/");
             int pos = UnityEngine.Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
             distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
             distractor.GetComponent<FigureBehaviour>().controller = controller;

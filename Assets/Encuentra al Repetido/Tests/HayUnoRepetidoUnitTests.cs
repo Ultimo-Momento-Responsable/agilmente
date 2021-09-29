@@ -16,7 +16,7 @@ namespace Tests
         public void HayUnoRepetidoUnitTestsChooseSprites()
         {
             juego = ScriptableObject.CreateInstance<HayUnoRepetido>();
-            sprites = Resources.LoadAll<Sprite>("Sprites/Figures/");
+            sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet1/");
             List<int> index = juego.chooseSprites(sprites, 6);
             Assert.AreEqual(index.Count,6);
         }
