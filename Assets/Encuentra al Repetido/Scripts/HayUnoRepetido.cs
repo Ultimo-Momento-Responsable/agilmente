@@ -116,6 +116,7 @@ public class HayUnoRepetido : ScriptableObject
             }
 
         }
+        int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
             figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
@@ -129,11 +130,11 @@ public class HayUnoRepetido : ScriptableObject
             
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
-            int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
-            int spriteSetDistractor = UnityEngine.Random.Range(0, countSpritesets);
+            
+            int spriteSetDistractor = UnityEngine.Random.Range(1, countSpritesets + 1);
             while (spriteSetDistractor == MainSceneController.SessionHayUnoRepetido.spriteSet)
             {
-                spriteSetDistractor = UnityEngine.Random.Range(0, countSpritesets);
+                spriteSetDistractor = UnityEngine.Random.Range(1, countSpritesets + 1);
             }
             if (spriteSetDistractor == 1)
             {
