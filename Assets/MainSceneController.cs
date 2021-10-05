@@ -274,18 +274,25 @@ public class MainSceneController : MonoBehaviour
         }
         if (planningRequestJson.planningList[index].game == "Encuentra al Nuevo")
         {
-            if (planningRequestJson.planningList[index].parameters[0].name == "maxLevel")
+            foreach (Params param in planningRequestJson.planningList[index].parameters)
             {
-                SessionEncuentraAlNuevo.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
-                SessionEncuentraAlNuevo.maxTime = -1;
+                if (param.name == "maxLevel")
+                {
+                    SessionEncuentraAlNuevo.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
+                    SessionEncuentraAlNuevo.maxTime = -1;
+                }
+                if (param.name == "maximumTime")
+                {
+                    SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
+                    SessionEncuentraAlNuevo.maxFigures = -1;
+                }
+                if (param.name == "spriteSet")
+                {
+                    SessionHayUnoRepetido.spriteSet = int.Parse(param.value);
+                }
             }
-            else
-            {
-                SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
-                SessionEncuentraAlNuevo.maxFigures = -1;
-            }
-            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
-            SceneManager.LoadScene("EncuentraAlNuevoScene");
+             SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
+             SceneManager.LoadScene("EncuentraAlNuevoScene");
         }
     }
 
