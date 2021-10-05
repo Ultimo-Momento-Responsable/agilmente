@@ -248,13 +248,13 @@ public class MainSceneController : MonoBehaviour
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionHayUnoRepetido.maxFigures = int.Parse(param.value);
+                    SessionHayUnoRepetido.maxLevel = int.Parse(param.value);
                     SessionHayUnoRepetido.maxTime = -1;
                 }
                 if (param.name == "maximumTime")
                 {
                     SessionHayUnoRepetido.maxTime = float.Parse(param.value, CultureInfo.InvariantCulture);
-                    SessionHayUnoRepetido.maxFigures = -1;
+                    SessionHayUnoRepetido.maxLevel = -1;
                 }
                 if (param.name == "variableSize")
                 {
@@ -267,6 +267,10 @@ public class MainSceneController : MonoBehaviour
                 if (param.name == "spriteSet")
                 {
                     SessionHayUnoRepetido.spriteSet = int.Parse(param.value);
+                }
+                if (param.name == "figureQuantity")
+                {
+                    SessionHayUnoRepetido.figureQuantity = int.Parse(param.value);
                 }
             }
             SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
@@ -316,11 +320,12 @@ public class MainSceneController : MonoBehaviour
     public class SessionHayUnoRepetido
     {
         static public float maxTime = -1;
-        static public int maxFigures = -1;
+        static public int maxLevel = -1;
         static public int gameSessionId;
         static public bool variableSizes = false;
         static public bool distractors = false;
         static public int spriteSet = 1;
+        static public int figureQuantity = 20;
     }
 
     [System.Serializable]

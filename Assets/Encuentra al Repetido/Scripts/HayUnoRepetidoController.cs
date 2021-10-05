@@ -31,6 +31,7 @@ public class HayUnoRepetidoController : GameController
 
 
     public int figureQuantity;
+    private int maxLevel;
     private int maxFigures;
     private float maxTime;
     private bool limitTime = true;
@@ -61,19 +62,20 @@ public class HayUnoRepetidoController : GameController
     void Start()
     {
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxFigures = SessionHayUnoRepetido.maxFigures;
+        maxLevel = SessionHayUnoRepetido.maxLevel;
         maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
+        maxFigures = SessionHayUnoRepetido.figureQuantity;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
         if (maxTime == -1)
         {
             limitTime = false;
         }
-        if (maxFigures == -1)
+        if (maxLevel == -1)
         {
             limitFigure = false;
-            maxFigures = 20;
+            maxLevel = 20;
         }
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
@@ -118,12 +120,12 @@ public class HayUnoRepetidoController : GameController
                 auxTime = Time.time;
                 audioSource.PlayOneShot(sndSuccess);
 
-                if (figureQuantity <= maxFigures)
+                if (figureQuantity < maxFigures)
                 {
                     figureQuantity++;
                 }
                 hayUnoRepetido.successes++;
-                if (limitFigure && ((hayUnoRepetido.successes + 1) > maxFigures))
+                if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
                     sendData();
                 }
