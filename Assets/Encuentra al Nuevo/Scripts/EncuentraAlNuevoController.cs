@@ -10,6 +10,8 @@ public class EncuentraAlNuevoController : GameController
     private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-nuevo";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-nuevo";
 
+    private List<int> actualSprites;
+    private List<int> index;
     private string json;
     private bool canceled = false;
     private int dontTouchTimer = 20;
@@ -35,7 +37,6 @@ public class EncuentraAlNuevoController : GameController
     private float maxTime;
     private bool limitTime = true;
     private bool limitFigure = true;
-    private List<int> actualSprites;
     public float auxTime;
     public float initTime;
     public bool isTouching = false;
@@ -59,6 +60,7 @@ public class EncuentraAlNuevoController : GameController
         encuentraAlNuevo = new EncuentraAlNuevo(this);
         maxFigures = SessionEncuentraAlNuevo.maxFigures;
         maxTime = SessionEncuentraAlNuevo.maxTime;
+        sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
         if (maxTime == -1)
         {
             limitTime = false;
@@ -70,7 +72,8 @@ public class EncuentraAlNuevoController : GameController
         }
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, actualSprites, this, particles);
+        index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
+        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -164,8 +167,8 @@ public class EncuentraAlNuevoController : GameController
         {
             Destroy(o.gameObject);
         }
-        actualSprites = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, actualSprites, this, particles);
+        index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
+        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         isTouching = false;
     }
 
