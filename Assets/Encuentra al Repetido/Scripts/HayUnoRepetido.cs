@@ -9,15 +9,29 @@ public class HayUnoRepetido : ScriptableObject
     private int a_successes;
     private float[] a_timeBetweenSuccesses;
     private float a_totalTime;
+    private int a_score;
+    private int a_mgp;
+    private float a_timeFromLastSuccess;
     public bool onTutorial = true;
     public HayUnoRepetidoController hayUnoRepetidoController;
 
+    public int mistakes { get => a_mistakes; set => a_mistakes = value; }
+    public int successes { get => a_successes; set => a_successes = value; }
+    public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
+    public float totalTime { get => a_totalTime; set => a_totalTime = value; }
+    public int score { get => a_score; set => a_score = value; }
+    public int mgp { get => a_mgp; set => a_mgp = value; }
+    private float timeFromLastSuccess { get => a_timeFromLastSuccess; set => a_timeFromLastSuccess = value; }
+
     public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
     {
+        timeFromLastSuccess = Time.time;
         a_mistakes = 0;
         a_successes = 0;
         a_totalTime = 0f;
         a_timeBetweenSuccesses = new float[100];
+        a_score = 0;
+        a_mgp = 0;
         this.hayUnoRepetidoController = hayUnoRepetidoController;
     }
 
@@ -198,8 +212,49 @@ public class HayUnoRepetido : ScriptableObject
         return false;
     }
 
-    public int mistakes { get => a_mistakes; set => a_mistakes = value; }
-    public int successes { get => a_successes; set => a_successes = value; }
-    public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
-    public float totalTime { get => a_totalTime; set => a_totalTime = value; }
+    public void addSuccess()
+    {
+        calculateTimeSinceLastSuccess();
+        addPointsToScore(calculateScoreSuccess());
+        successes++;
+    }
+
+    public void calculateTimeSinceLastSuccess()
+    {
+        timeBetweenSuccesses[successes] = Time.time - timeFromLastSuccess;
+        timeFromLastSuccess = Time.time;
+    }
+
+    public int calculateScoreSuccess()
+    {
+        return 0;
+    }
+
+    public int calculateScoreMistake()
+    {
+        return 0;
+    }
+
+    public void addMistake()
+    {
+        addPointsToScore(calculateScoreMistake());
+        mistakes++;
+    }
+
+    /// <summary>
+    /// Suma una cantidad de puntos al score.
+    /// </summary>
+    /// <param name="points">Puntos a sumar.</param>
+    public void addPointsToScore(int points)
+    {
+        score += points;
+    }
+
+    /// <summary>
+    /// Calcula los MGP a partir del resultado.
+    /// </summary>
+    public void calculateMGP()
+    {
+        throw new System.NotImplementedException();
+    }
 }

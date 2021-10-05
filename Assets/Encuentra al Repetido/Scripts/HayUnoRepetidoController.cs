@@ -61,7 +61,7 @@ public class HayUnoRepetidoController : GameController
     void Start()
     {
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxFigures = SessionHayUnoRepetido.maxFigures;
+        maxFigures = 10; //SessionHayUnoRepetido.maxFigures;
         maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
@@ -114,15 +114,13 @@ public class HayUnoRepetidoController : GameController
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
             {
                 dontTouchAgain = true;
-                hayUnoRepetido.timeBetweenSuccesses[hayUnoRepetido.successes] = Time.time - auxTime;
-                auxTime = Time.time;
+                hayUnoRepetido.addSuccess();
                 audioSource.PlayOneShot(sndSuccess);
 
                 if (figureQuantity <= maxFigures)
                 {
                     figureQuantity++;
                 }
-                hayUnoRepetido.successes++;
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxFigures))
                 {
                     sendData();
@@ -138,6 +136,7 @@ public class HayUnoRepetidoController : GameController
             if (isMakingMistake)
             {
                 isMakingMistake = false;
+                hayUnoRepetido.addMistake();
                 camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
@@ -189,7 +188,13 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void sendData()
     {
-        
+        Debug.Log("Errores: " + hayUnoRepetido.mistakes);
+        Debug.Log("Aciertos: " + hayUnoRepetido.successes);
+        for (int i = 0; i < 10; i ++)
+        {
+            Debug.Log("TBS" + i + ": " + hayUnoRepetido.timeBetweenSuccesses[i]);
+        }
+        Debug.Log("Tiempo total: " + hayUnoRepetido.totalTime);
         figureQuantity = -1;
         limitTime = false;
         limitFigure = false;
