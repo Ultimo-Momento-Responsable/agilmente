@@ -257,4 +257,9 @@ public class HayUnoRepetido : ScriptableObject
     {
         throw new System.NotImplementedException();
     }
+
+    public void setStartTime()
+    {
+        timeFromLastSuccess = Time.time;
+    }
 }

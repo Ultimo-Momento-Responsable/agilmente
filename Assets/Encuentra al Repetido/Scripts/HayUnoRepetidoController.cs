@@ -96,6 +96,7 @@ public class HayUnoRepetidoController : GameController
                 resetValues();
                 initTime = Time.time;
                 auxTime = initTime;
+                hayUnoRepetido.setStartTime();
                 pauseButton.SetActive(true);
             }
         } 
