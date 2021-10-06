@@ -94,23 +94,11 @@ public class MainSceneController : MonoBehaviour
                 {
                     if (p.name == "maxLevel")
                     {
-                        GameObject go = new GameObject("maxLevel");
-                        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
-                        renderer.sprite = maxLevel;
-                        go.transform.parent = gameCardInstance.transform;
-                        go.transform.localScale = new Vector2(15f, 15f);
-                        go.transform.localPosition = gameCardInstance.transform.localPosition;
-                        go.transform.localPosition = new Vector3(go.transform.position.x - 201.5f, go.transform.position.y + 41.5f, 0f);
+                        gameCardInstance.transform.Find("maxTime").gameObject.SetActive(false);
                     }
                     if (p.name == "maximumTime")
                     {
-                        GameObject go = new GameObject("maxTime");
-                        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
-                        renderer.sprite = maxTime;
-                        go.transform.parent = gameCardInstance.transform;
-                        go.transform.localScale = new Vector2(15f, 15f);
-                        go.transform.localPosition = gameCardInstance.transform.localPosition;
-                        go.transform.localPosition = new Vector3(go.transform.position.x - 201.5f, go.transform.position.y + 41.5f, 0f);
+                        gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
                     }
                 }
 
@@ -241,6 +229,17 @@ public class MainSceneController : MonoBehaviour
         gameCardInstance.transform.SetParent(gameCanvas.transform);
         gameCardInstance.transform.localScale = new Vector2(1, 1);
         gameCardInstance.transform.position = new Vector3(0, -0.1f, 0);
+        foreach (Params p in planningRequestJson.planningList[0].parameters)
+        {
+            if (p.name == "maxLevel")
+            {
+                gameCardInstance.transform.Find("maxTime").gameObject.SetActive(false);
+            }
+            if (p.name == "maximumTime")
+            {
+                gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
+            }
+        }
         foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
         {
             if (gameName.gameObject.name == "GameName")
