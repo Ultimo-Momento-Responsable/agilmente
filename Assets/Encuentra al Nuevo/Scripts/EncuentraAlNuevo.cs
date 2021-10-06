@@ -108,6 +108,7 @@ public class EncuentraAlNuevo : ScriptableObject
             
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
+            fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
             fig.GetComponent<FigureBehaviourEAN>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviourEAN>().controller = controller;
             fig.GetComponent<FigureBehaviourEAN>().index = i;
