@@ -24,6 +24,7 @@ public class MainSceneController : MonoBehaviour
     public GameObject gameCanvas;
     public GameObject cardContainer;
     public Sprite maxTime;
+    public Sprite maxLevel;
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion
@@ -93,11 +94,16 @@ public class MainSceneController : MonoBehaviour
                 {
                     if (p.name == "maxLevel")
                     {
-                        print("maxLevel");
+                        GameObject go = new GameObject("maxLevel");
+                        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
+                        renderer.sprite = maxLevel;
+                        go.transform.parent = gameCardInstance.transform;
+                        go.transform.localScale = new Vector2(15f, 15f);
+                        go.transform.localPosition = gameCardInstance.transform.localPosition;
+                        go.transform.localPosition = new Vector3(go.transform.position.x - 201.5f, go.transform.position.y + 41.5f, 0f);
                     }
                     if (p.name == "maximumTime")
                     {
-                        print("maxTime");
                         GameObject go = new GameObject("maxTime");
                         SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
                         renderer.sprite = maxTime;
