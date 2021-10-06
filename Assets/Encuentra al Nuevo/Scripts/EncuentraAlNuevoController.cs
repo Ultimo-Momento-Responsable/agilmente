@@ -60,7 +60,7 @@ public class EncuentraAlNuevoController : GameController
         encuentraAlNuevo = new EncuentraAlNuevo(this);
         maxFigures = SessionEncuentraAlNuevo.maxFigures;
         maxTime = SessionEncuentraAlNuevo.maxTime;
-        sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
+        sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionEncuentraAlNuevo.spriteSet + "/");
         if (maxTime == -1)
         {
             limitTime = false;
