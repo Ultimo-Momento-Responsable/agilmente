@@ -288,7 +288,7 @@ public class MainSceneController : MonoBehaviour
                 }
                 if (param.name == "spriteSet")
                 {
-                    SessionHayUnoRepetido.spriteSet = int.Parse(param.value);
+                    SessionEncuentraAlNuevo.spriteSet = int.Parse(param.value);
                 }
             }
              SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
@@ -336,5 +336,6 @@ public class MainSceneController : MonoBehaviour
         static public float maxTime = -1;
         static public int maxFigures = -1;
         static public int gameSessionId;
+        static public int spriteSet = 1;
     }
 }

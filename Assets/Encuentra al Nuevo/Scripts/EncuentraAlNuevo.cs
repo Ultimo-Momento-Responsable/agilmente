@@ -62,9 +62,20 @@ public class EncuentraAlNuevo : ScriptableObject
     /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, EncuentraAlNuevoController controller, GameObject particles)
     {
-
         for (int i = figureQuantity-1; i >= 0; i--)
         {
+            float size = 0.15f;
+            float minsize = 0.122f;
+            float maxsize = 0.2f;
+
+            // Ajusta el tamaño según el spriteset (flores mas grandes)
+            if (MainSceneController.SessionEncuentraAlNuevo.spriteSet == 1)
+            {
+                size = 0.2f;
+                minsize = 0.172f;
+                maxsize = 0.25f;
+            }
+
             Vector2 figurePosition;
             if (!onTutorial)
             {
@@ -100,7 +111,7 @@ public class EncuentraAlNuevo : ScriptableObject
             fig.GetComponent<FigureBehaviourEAN>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviourEAN>().controller = controller;
             fig.GetComponent<FigureBehaviourEAN>().index = i;
-            
+
             // Si está en tutorial crea la mano en una fruta nueva
             if (i == 0 && !encuentraAlNuevoController.prevTutorial)
             {
