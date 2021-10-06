@@ -23,6 +23,8 @@ public class MainSceneController : MonoBehaviour
     public Button gameCard;
     public GameObject gameCanvas;
     public GameObject cardContainer;
+    public Sprite maxTime;
+    public Sprite maxLevel;
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion
@@ -87,6 +89,30 @@ public class MainSceneController : MonoBehaviour
                 gameCardInstance.transform.parent = cardContainer.transform;
                 gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
                 gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //Tamaño de cards + offset
+
+                foreach (Params p in planningCards.parameters)
+                {
+                    if (p.name == "maxLevel")
+                    {
+                        GameObject go = new GameObject("maxLevel");
+                        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
+                        renderer.sprite = maxLevel;
+                        go.transform.parent = gameCardInstance.transform;
+                        go.transform.localScale = new Vector2(15f, 15f);
+                        go.transform.localPosition = gameCardInstance.transform.localPosition;
+                        go.transform.localPosition = new Vector3(go.transform.position.x - 201.5f, go.transform.position.y + 41.5f, 0f);
+                    }
+                    if (p.name == "maximumTime")
+                    {
+                        GameObject go = new GameObject("maxTime");
+                        SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
+                        renderer.sprite = maxTime;
+                        go.transform.parent = gameCardInstance.transform;
+                        go.transform.localScale = new Vector2(15f, 15f);
+                        go.transform.localPosition = gameCardInstance.transform.localPosition;
+                        go.transform.localPosition = new Vector3(go.transform.position.x - 201.5f, go.transform.position.y + 41.5f, 0f);
+                    }
+                }
 
                 foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
                 {
