@@ -8,7 +8,7 @@ using static MainSceneController;
 public class HayUnoRepetidoController : GameController
 {
 
-    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-repetido";
+    private const string DEV_ENDPOINT = "https://c8a17f3bf731698d2108b5d4ccbf71ab.m.pipedream.net";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-repetido";
 
     private List<int> index;
@@ -62,7 +62,7 @@ public class HayUnoRepetidoController : GameController
     {
         hayUnoRepetido = new HayUnoRepetido(this);
         maxFigures = 10; //SessionHayUnoRepetido.maxFigures;
-        maxTime = SessionHayUnoRepetido.maxTime;
+        maxTime = -1;//SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
@@ -189,13 +189,6 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void sendData()
     {
-        Debug.Log("Errores: " + hayUnoRepetido.mistakes);
-        Debug.Log("Aciertos: " + hayUnoRepetido.successes);
-        for (int i = 0; i < 10; i ++)
-        {
-            Debug.Log("TBS" + i + ": " + hayUnoRepetido.timeBetweenSuccesses[i]);
-        }
-        Debug.Log("Tiempo total: " + hayUnoRepetido.totalTime);
         figureQuantity = -1;
         limitTime = false;
         limitFigure = false;
@@ -220,6 +213,7 @@ public class HayUnoRepetidoController : GameController
 
         json =
             "{" +
+                "'user': 'Guille', " + 
                 "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
                 "', 'canceled': " + canceled +
                 ", 'mistakes': " + hayUnoRepetido.mistakes +

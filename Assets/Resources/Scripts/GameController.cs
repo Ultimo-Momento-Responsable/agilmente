@@ -57,6 +57,6 @@ public abstract class GameController: MonoBehaviour
     public void OnApplicationQuit()
     {
         cancelGame();
-        sendData();
+        //sendData();
     }
 }
