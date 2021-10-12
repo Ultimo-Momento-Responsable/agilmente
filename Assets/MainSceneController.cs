@@ -23,6 +23,8 @@ public class MainSceneController : MonoBehaviour
     public Button gameCard;
     public GameObject gameCanvas;
     public GameObject cardContainer;
+    public Sprite maxTime;
+    public Sprite maxLevel;
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion
@@ -87,6 +89,18 @@ public class MainSceneController : MonoBehaviour
                 gameCardInstance.transform.parent = cardContainer.transform;
                 gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
                 gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //Tamaño de cards + offset
+
+                foreach (Params p in planningCards.parameters)
+                {
+                    if (p.name == "maxLevel")
+                    {
+                        gameCardInstance.transform.Find("maxTime").gameObject.SetActive(false);
+                    }
+                    if (p.name == "maximumTime")
+                    {
+                        gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
+                    }
+                }
 
                 foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
                 {
@@ -215,6 +229,17 @@ public class MainSceneController : MonoBehaviour
         gameCardInstance.transform.SetParent(gameCanvas.transform);
         gameCardInstance.transform.localScale = new Vector2(1, 1);
         gameCardInstance.transform.position = new Vector3(0, -0.1f, 0);
+        foreach (Params p in planningRequestJson.planningList[0].parameters)
+        {
+            if (p.name == "maxLevel")
+            {
+                gameCardInstance.transform.Find("maxTime").gameObject.SetActive(false);
+            }
+            if (p.name == "maximumTime")
+            {
+                gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
+            }
+        }
         foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
         {
             if (gameName.gameObject.name == "GameName")
@@ -248,13 +273,13 @@ public class MainSceneController : MonoBehaviour
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionHayUnoRepetido.maxFigures = int.Parse(param.value);
+                    SessionHayUnoRepetido.maxLevel = int.Parse(param.value);
                     SessionHayUnoRepetido.maxTime = -1;
                 }
                 if (param.name == "maximumTime")
                 {
                     SessionHayUnoRepetido.maxTime = float.Parse(param.value, CultureInfo.InvariantCulture);
-                    SessionHayUnoRepetido.maxFigures = -1;
+                    SessionHayUnoRepetido.maxLevel = -1;
                 }
                 if (param.name == "variableSize")
                 {
@@ -267,6 +292,10 @@ public class MainSceneController : MonoBehaviour
                 if (param.name == "spriteSet")
                 {
                     SessionHayUnoRepetido.spriteSet = int.Parse(param.value);
+                }
+                if (param.name == "figureQuantity")
+                {
+                    SessionHayUnoRepetido.figureQuantity = int.Parse(param.value);
                 }
             }
             SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
@@ -289,6 +318,10 @@ public class MainSceneController : MonoBehaviour
                 if (param.name == "spriteSet")
                 {
                     SessionEncuentraAlNuevo.spriteSet = int.Parse(param.value);
+                }
+                if (param.name == "variableSize")
+                {
+                    SessionEncuentraAlNuevo.variableSizes = bool.Parse(param.value);
                 }
             }
              SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
@@ -323,11 +356,12 @@ public class MainSceneController : MonoBehaviour
     public class SessionHayUnoRepetido
     {
         static public float maxTime = -1;
-        static public int maxFigures = -1;
+        static public int maxLevel = -1;
         static public int gameSessionId;
         static public bool variableSizes = false;
         static public bool distractors = false;
         static public int spriteSet = 1;
+        static public int figureQuantity = 20;
     }
 
     [System.Serializable]
@@ -337,5 +371,6 @@ public class MainSceneController : MonoBehaviour
         static public int maxFigures = -1;
         static public int gameSessionId;
         static public int spriteSet = 1;
+        static public bool variableSizes = false;
     }
 }
