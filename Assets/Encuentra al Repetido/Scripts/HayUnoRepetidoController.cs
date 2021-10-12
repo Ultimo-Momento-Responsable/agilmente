@@ -161,13 +161,14 @@ public class HayUnoRepetidoController : GameController
     /// <summary>
     /// Recalcula la posición de los sprites y los reubica en la pantalla.
     /// </summary>
-    private void resetValues()
+    public void resetValues()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
         {
             Destroy(o.gameObject);
         }
+        
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         isTouching = false;
