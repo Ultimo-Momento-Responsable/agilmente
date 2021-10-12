@@ -319,6 +319,10 @@ public class MainSceneController : MonoBehaviour
                 {
                     SessionEncuentraAlNuevo.spriteSet = int.Parse(param.value);
                 }
+                if (param.name == "variableSize")
+                {
+                    SessionEncuentraAlNuevo.variableSizes = bool.Parse(param.value);
+                }
             }
              SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
              SceneManager.LoadScene("EncuentraAlNuevoScene");
@@ -367,5 +371,6 @@ public class MainSceneController : MonoBehaviour
         static public int maxFigures = -1;
         static public int gameSessionId;
         static public int spriteSet = 1;
+        static public bool variableSizes = false;
     }
 }
