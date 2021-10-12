@@ -43,6 +43,7 @@ public class EncuentraAlNuevoController : GameController
     public bool isMakingMistake = false;
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
+    public bool variableSizes;
 
     public GameObject[] figures {
         get {
@@ -60,6 +61,7 @@ public class EncuentraAlNuevoController : GameController
         encuentraAlNuevo = new EncuentraAlNuevo(this);
         maxFigures = SessionEncuentraAlNuevo.maxFigures;
         maxTime = SessionEncuentraAlNuevo.maxTime;
+        variableSizes = SessionEncuentraAlNuevo.variableSizes;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionEncuentraAlNuevo.spriteSet + "/");
         if (maxTime == -1)
         {

@@ -87,6 +87,11 @@ public class EncuentraAlNuevo : ScriptableObject
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
                     figurePosition = centerFigures(figurePosition);
                 }
+
+                if (controller.variableSizes)
+                {
+                    size = Random.Range(minsize, maxsize);
+                }
             }
             else
             {
