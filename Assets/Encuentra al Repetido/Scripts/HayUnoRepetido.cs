@@ -58,6 +58,7 @@ public class HayUnoRepetido : ScriptableObject
     {
         int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
         Vector2 figurePosition;
+        bool inColission = false;
         for (int i = 0; i < figureQuantity; i++)
         {
             float size = 0.15f;
@@ -65,31 +66,37 @@ public class HayUnoRepetido : ScriptableObject
             float maxsize = 0.2f;
             if (MainSceneController.SessionHayUnoRepetido.spriteSet == 1)
             {
-                size = 0.2f;
-                minsize = 0.172f;
-                maxsize = 0.25f;
+                size = 0.19f;
+                minsize = 0.17f;
+                maxsize = 0.22f;
             }
             
             if (!onTutorial)
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = new Vector2(Random.Range(0,6) * 0.9f - 2.5f + Random.Range(-0.15f,0.15f), Random.Range(0, 9) * 1.2f -4.5f + Random.Range(-0.2f,0));
                 figurePosition = centerFigures(figurePosition);
-
-                while (thereIsSomethingIn(figurePosition))
-                {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-                    figurePosition = centerFigures(figurePosition);
-                }
                 if (controller.variableSizes)
                 {
                     size = Random.Range(minsize, maxsize);
+                }
+                var attempts = 0;
+                while (thereIsSomethingIn(figurePosition,size))
+                {
+                    figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0)); 
+                    figurePosition = centerFigures(figurePosition);
+                    attempts++;
+                    if (attempts > 200)
+                    {
+                        inColission = true;
+                        break;
+                    }
                 }
                 
             }
             else
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
-                while (thereIsSomethingIn(figurePosition))
+                while (thereIsSomethingIn(figurePosition,size))
                 {
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
                 }
@@ -112,19 +119,24 @@ public class HayUnoRepetido : ScriptableObject
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
+                part.transform.SetParent(fig.transform);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
         }
+        if (inColission)
+        {
+            controller.resetValues();
+        }
         int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
-            figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
             figurePosition = centerFigures(figurePosition);
 
-            while (thereIsSomethingIn(figurePosition))
+            while (thereIsSomethingIn(figurePosition,0.2f))
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
                 figurePosition = centerFigures(figurePosition);
             }
             
@@ -150,7 +162,6 @@ public class HayUnoRepetido : ScriptableObject
             distractor.GetComponent<FigureBehaviour>().controller = controller;
             distractor.GetComponent<FigureBehaviour>().index = -1;
         }
-
     }
 
     /// <summary>
@@ -171,7 +182,7 @@ public class HayUnoRepetido : ScriptableObject
         }
         if (randomPositionOnScreen.y < 0)
         {
-            randomPositionOnScreen.y += 1.5f;
+            randomPositionOnScreen.y += 0.8f;
         }
         else
         {
@@ -185,10 +196,10 @@ public class HayUnoRepetido : ScriptableObject
     /// </summary>
     /// <param name="posición">Posición a controlar.</param>
     /// <returns>Verdadero si hay algo.</returns>
-    public bool thereIsSomethingIn(Vector2 posición)
+    public bool thereIsSomethingIn(Vector2 posición,float size)
     {
-        Vector2 p1 = posición - new Vector2(0.5f, 0.5f);
-        Vector2 p2 = posición + new Vector2(0.5f, 0.5f);
+        Vector2 p1 = posición - new Vector2(0.45f, 0.5f + size/2);
+        Vector2 p2 = posición + new Vector2(0.45f, 0.5f + size/2);
         Collider2D collider = Physics2D.OverlapArea(p1, p2);
 
         if (collider != null)
