@@ -307,13 +307,13 @@ public class MainSceneController : MonoBehaviour
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionEncuentraAlNuevo.maxFigures = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
+                    SessionEncuentraAlNuevo.maxLevel = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
                     SessionEncuentraAlNuevo.maxTime = -1;
                 }
                 if (param.name == "maximumTime")
                 {
                     SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson.planningList[index].parameters[0].value, CultureInfo.InvariantCulture);
-                    SessionEncuentraAlNuevo.maxFigures = -1;
+                    SessionEncuentraAlNuevo.maxLevel = -1;
                 }
                 if (param.name == "spriteSet")
                 {
@@ -368,7 +368,7 @@ public class MainSceneController : MonoBehaviour
     public class SessionEncuentraAlNuevo
     {
         static public float maxTime = -1;
-        static public int maxFigures = -1;
+        static public int maxLevel = -1;
         static public int gameSessionId;
         static public int spriteSet = 1;
         static public bool variableSizes = false;

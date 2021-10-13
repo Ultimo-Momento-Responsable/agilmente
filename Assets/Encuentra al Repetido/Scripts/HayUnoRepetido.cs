@@ -58,7 +58,6 @@ public class HayUnoRepetido : ScriptableObject
     {
         int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
         Vector2 figurePosition;
-        bool inColission = false;
         for (int i = 0; i < figureQuantity; i++)
         {
             float size = 0.15f;
@@ -79,17 +78,10 @@ public class HayUnoRepetido : ScriptableObject
                 {
                     size = Random.Range(minsize, maxsize);
                 }
-                var attempts = 0;
                 while (thereIsSomethingIn(figurePosition,size))
                 {
                     figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0)); 
                     figurePosition = centerFigures(figurePosition);
-                    attempts++;
-                    if (attempts > 200)
-                    {
-                        inColission = true;
-                        break;
-                    }
                 }
                 
             }
@@ -119,14 +111,9 @@ public class HayUnoRepetido : ScriptableObject
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
-                part.transform.SetParent(fig.transform);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
 
-        }
-        if (inColission)
-        {
-            controller.resetValues();
         }
         int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
