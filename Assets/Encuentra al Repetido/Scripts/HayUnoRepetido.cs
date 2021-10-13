@@ -10,7 +10,6 @@ public class HayUnoRepetido : ScriptableObject
     private float[] a_timeBetweenSuccesses;
     private float a_totalTime;
     private int a_score;
-    private int a_mgp;
     private float a_timeFromLastSuccess;
     public bool onTutorial = true;
     public HayUnoRepetidoController hayUnoRepetidoController;
@@ -20,7 +19,6 @@ public class HayUnoRepetido : ScriptableObject
     public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
     public float totalTime { get => a_totalTime; set => a_totalTime = value; }
     public int score { get => a_score; set => a_score = value; }
-    public int mgp { get => a_mgp; set => a_mgp = value; }
     private float timeFromLastSuccess { get => a_timeFromLastSuccess; set => a_timeFromLastSuccess = value; }
 
     public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
@@ -31,7 +29,6 @@ public class HayUnoRepetido : ScriptableObject
         a_totalTime = 0f;
         a_timeBetweenSuccesses = new float[100];
         a_score = 0;
-        a_mgp = 0;
         this.hayUnoRepetidoController = hayUnoRepetidoController;
     }
 
@@ -212,33 +209,58 @@ public class HayUnoRepetido : ScriptableObject
         return false;
     }
 
-    public void addSuccess()
+    /// <summary>
+    /// Añade un acierto y calcula el puntaje.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
+    /// hizo el acierto.</param>
+    public void addSuccess(int figureQuantity)
     {
+        addPointsToScore(calculateScoreSuccess(figureQuantity));
         calculateTimeSinceLastSuccess();
-        addPointsToScore(calculateScoreSuccess());
         successes++;
     }
 
+    /// <summary>
+    /// Añade un error y calcula el puntaje.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
+    /// comete el error.</param>
+    public void addMistake(int figureQuantity)
+    {
+        addPointsToScore(calculateScoreMistake(figureQuantity));
+        mistakes++;
+    }
+
+    /// <summary>
+    /// Calcula el tiempo transcurrido desde el último acierto y lo guarda.
+    /// </summary>
     public void calculateTimeSinceLastSuccess()
     {
         timeBetweenSuccesses[successes] = Time.time - timeFromLastSuccess;
         timeFromLastSuccess = Time.time;
     }
 
-    public int calculateScoreSuccess()
+    /// <summary>
+    /// Calcula el puntaje correspondiente al acierto.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en pantalla al momento del
+    /// acierto.</param>
+    /// <returns>El puntaje correspondiente al acierto.</returns>
+    public int calculateScoreSuccess(int figureQuantity)
     {
-        return 0;
+        return Mathf.RoundToInt(100 * figureQuantity / timeFromLastSuccess);
     }
 
-    public int calculateScoreMistake()
+    /// <summary>
+    /// Calcula el puntaje correspondiente al error.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en pantalla al momento de cometer
+    /// el error.</param>
+    /// <returns>El puntaje correspondiente a cometer el error.</returns>
+    public int calculateScoreMistake(int figureQuantity)
     {
-        return 0;
-    }
-
-    public void addMistake()
-    {
-        addPointsToScore(calculateScoreMistake());
-        mistakes++;
+        return -Mathf.RoundToInt(25 * timeFromLastSuccess / figureQuantity);
     }
 
     /// <summary>
@@ -251,13 +273,8 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Calcula los MGP a partir del resultado.
+    /// Setea el tiempo de inicio.
     /// </summary>
-    public void calculateMGP()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void setStartTime()
     {
         timeFromLastSuccess = Time.time;

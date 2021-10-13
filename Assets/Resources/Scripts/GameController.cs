@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 public abstract class GameController: MonoBehaviour
 {
     private PauseMenu a_pause;
@@ -14,6 +17,20 @@ public abstract class GameController: MonoBehaviour
             return a_pause;
         }
         set => a_pause = value;
+    }
+    private GameObject a_endScreen;
+    public GameObject endScreen
+    {
+        get
+        {
+            if (a_endScreen == null)
+            {
+                a_endScreen = GameObject.Find("EndScreen");
+            }
+
+            return a_endScreen;
+        }
+        set => a_endScreen = value;
     }
 
     /// <summary>
@@ -57,6 +74,26 @@ public abstract class GameController: MonoBehaviour
     public void OnApplicationQuit()
     {
         cancelGame();
-        //sendData();
+        sendData();
+    }
+
+    /// <summary>
+    /// Cambia la escena al menú principal.
+    /// </summary>
+    public void goToMainScene()
+    {
+        SceneManager.LoadScene("mainScene");
+    }
+
+    /// <summary>
+    /// Muestra la pantalla de fin del juego con el puntaje.
+    /// </summary>
+    /// <param name="score">Puntaje final.</param>
+    public void showEndScreen(int score)
+    {
+        pause.gameObject.SetActive(false);
+        GameObject.Find("Timer").SetActive(false);
+        endScreen.SetActive(true);
+        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
 }

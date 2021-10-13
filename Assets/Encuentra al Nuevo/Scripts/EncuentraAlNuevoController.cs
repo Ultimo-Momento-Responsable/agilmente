@@ -56,6 +56,7 @@ public class EncuentraAlNuevoController : GameController
 
     void Start()
     {
+        endScreen.SetActive(false);
         encuentraAlNuevo = new EncuentraAlNuevo(this);
         maxFigures = SessionEncuentraAlNuevo.maxFigures;
         maxTime = SessionEncuentraAlNuevo.maxTime;
@@ -219,7 +220,6 @@ public class EncuentraAlNuevoController : GameController
 
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, DEV_ENDPOINT);
-        SceneManager.LoadScene("mainScene");
     }
 
     /// <summary>
