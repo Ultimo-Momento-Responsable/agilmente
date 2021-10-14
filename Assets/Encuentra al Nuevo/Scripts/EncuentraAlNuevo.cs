@@ -17,7 +17,7 @@ public class EncuentraAlNuevo : ScriptableObject
     public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
     public float totalTime { get => a_totalTime; set => a_totalTime = value; }
     public float timeFromLastSuccess { get => a_timeFromLastSuccess; set => a_timeFromLastSuccess = value; }
-    public int score { get => a_score; set => a_score = value; }
+    public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
 
     public EncuentraAlNuevo(EncuentraAlNuevoController encuentraAlNuevoController)
     {
@@ -231,9 +231,9 @@ public class EncuentraAlNuevo : ScriptableObject
     /// Suma una cantidad de puntos al score.
     /// </summary>
     /// <param name="points">Puntos a sumar.</param>
-    public void addPointsToScore(int points)
+    private void addPointsToScore(int points)
     {
-        score += points;
+        a_score += points;
     }
 
     /// <summary>

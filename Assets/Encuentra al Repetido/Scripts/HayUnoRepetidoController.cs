@@ -43,6 +43,7 @@ public class HayUnoRepetidoController : GameController
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
     private GameObject[] a_figures;
+    public GameObject endScreen;
 
     public GameObject[] figures
     {
@@ -61,8 +62,8 @@ public class HayUnoRepetidoController : GameController
     {
         endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxFigures = SessionHayUnoRepetido.maxFigures;
-        maxTime = SessionHayUnoRepetido.maxTime;
+        maxFigures = 5;//SessionHayUnoRepetido.maxFigures;
+        maxTime = -1;// SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
@@ -255,5 +256,17 @@ public class HayUnoRepetidoController : GameController
         {
             f.SetActive(true);
         }
+    }
+
+    /// <summary>
+    /// Muestra la pantalla de fin del juego con el puntaje.
+    /// </summary>
+    /// <param name="score">Puntaje final.</param>
+    public void showEndScreen(int score)
+    {
+        pause.gameObject.SetActive(false);
+        GameObject.Find("Timer").SetActive(false);
+        endScreen.SetActive(true);
+        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
 }

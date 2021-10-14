@@ -18,7 +18,7 @@ public class HayUnoRepetido : ScriptableObject
     public int successes { get => a_successes; set => a_successes = value; }
     public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
     public float totalTime { get => a_totalTime; set => a_totalTime = value; }
-    public int score { get => a_score; set => a_score = value; }
+    public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     private float timeFromLastSuccess { get => a_timeFromLastSuccess; set => a_timeFromLastSuccess = value; }
 
     public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
@@ -83,12 +83,12 @@ public class HayUnoRepetido : ScriptableObject
             
             if (!onTutorial)
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
                 figurePosition = centerFigures(figurePosition);
 
                 while (thereIsSomethingIn(figurePosition))
                 {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
                     figurePosition = centerFigures(figurePosition);
                 }
                 if (controller.variableSizes)
@@ -130,22 +130,22 @@ public class HayUnoRepetido : ScriptableObject
         int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
-            figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
             figurePosition = centerFigures(figurePosition);
 
             while (thereIsSomethingIn(figurePosition))
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
                 figurePosition = centerFigures(figurePosition);
             }
             
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
             
-            int spriteSetDistractor = UnityEngine.Random.Range(1, countSpritesets + 1);
+            int spriteSetDistractor = Random.Range(1, countSpritesets + 1);
             while (spriteSetDistractor == MainSceneController.SessionHayUnoRepetido.spriteSet)
             {
-                spriteSetDistractor = UnityEngine.Random.Range(1, countSpritesets + 1);
+                spriteSetDistractor = Random.Range(1, countSpritesets + 1);
             }
             if (spriteSetDistractor == 1)
             {
@@ -156,7 +156,7 @@ public class HayUnoRepetido : ScriptableObject
             }
             
             hayUnoRepetidoController.distractorsSprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + spriteSetDistractor + "/");
-            int pos = UnityEngine.Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
+            int pos = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
             distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
             distractor.GetComponent<FigureBehaviour>().controller = controller;
             distractor.GetComponent<FigureBehaviour>().index = -1;
@@ -219,6 +219,7 @@ public class HayUnoRepetido : ScriptableObject
         addPointsToScore(calculateScoreSuccess(figureQuantity));
         calculateTimeSinceLastSuccess();
         successes++;
+        Debug.Log(a_score);
     }
 
     /// <summary>
@@ -267,9 +268,9 @@ public class HayUnoRepetido : ScriptableObject
     /// Suma una cantidad de puntos al score.
     /// </summary>
     /// <param name="points">Puntos a sumar.</param>
-    public void addPointsToScore(int points)
+    private void addPointsToScore(int points)
     {
-        score += points;
+        a_score += points;
     }
 
     /// <summary>

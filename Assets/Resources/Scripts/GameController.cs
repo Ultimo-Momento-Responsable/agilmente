@@ -18,20 +18,6 @@ public abstract class GameController: MonoBehaviour
         }
         set => a_pause = value;
     }
-    private GameObject a_endScreen;
-    public GameObject endScreen
-    {
-        get
-        {
-            if (a_endScreen == null)
-            {
-                a_endScreen = GameObject.Find("EndScreen");
-            }
-
-            return a_endScreen;
-        }
-        set => a_endScreen = value;
-    }
 
     /// <summary>
     /// Cancela el juego que se está jugando.
@@ -83,17 +69,5 @@ public abstract class GameController: MonoBehaviour
     public void goToMainScene()
     {
         SceneManager.LoadScene("mainScene");
-    }
-
-    /// <summary>
-    /// Muestra la pantalla de fin del juego con el puntaje.
-    /// </summary>
-    /// <param name="score">Puntaje final.</param>
-    public void showEndScreen(int score)
-    {
-        pause.gameObject.SetActive(false);
-        GameObject.Find("Timer").SetActive(false);
-        endScreen.SetActive(true);
-        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
 }

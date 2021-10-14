@@ -853,6 +853,7 @@ MonoBehaviour:
   isMakingMistake: 0
   dontTouchAgain: 0
   onTutorial: 1
+  endScreen: {fileID: 1254031792}
 --- !u!114 &839179529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1134,6 +1135,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1011558460}
   m_CullTransparentMesh: 1
+--- !u!1 &1254031792 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 255272498666697696, guid: cac839b6a89ebac4cb937c8458fba4ee, type: 3}
+  m_PrefabInstance: {fileID: 1341503237}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1274048787
 GameObject:
   m_ObjectHideFlags: 0

@@ -42,6 +42,7 @@ public class EncuentraAlNuevoController : GameController
     public bool isMakingMistake = false;
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
+    public GameObject endScreen;
 
     public GameObject[] figures {
         get {
@@ -58,6 +59,7 @@ public class EncuentraAlNuevoController : GameController
     {
         endScreen.SetActive(false);
         encuentraAlNuevo = new EncuentraAlNuevo(this);
+        encuentraAlNuevo.onTutorial = true;
         maxFigures = SessionEncuentraAlNuevo.maxFigures;
         maxTime = SessionEncuentraAlNuevo.maxTime;
         if (maxTime == -1)
@@ -93,6 +95,7 @@ public class EncuentraAlNuevoController : GameController
                 initTime = Time.time;
                 auxTime = initTime;
                 pauseButton.SetActive(true);
+                encuentraAlNuevo.setStartTime();
             }
         } 
         else 
@@ -110,16 +113,13 @@ public class EncuentraAlNuevoController : GameController
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
             {
                 dontTouchAgain = true;
-                encuentraAlNuevo.timeBetweenSuccesses[encuentraAlNuevo.successes] = Time.time - auxTime;
-                auxTime = Time.time;
+                encuentraAlNuevo.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
 
                 if (figureQuantity <= maxFigures)
                 {
                     figureQuantity++;
                 }
-
-                encuentraAlNuevo.successes++;
                 if ((limitFigure && (encuentraAlNuevo.successes >= maxFigures)) || (figureQuantity >= 20))
                 {
                     sendData();
@@ -135,6 +135,7 @@ public class EncuentraAlNuevoController : GameController
             if (isMakingMistake)
             {
                 isMakingMistake = false;
+                encuentraAlNuevo.addMistake(figureQuantity);
                 camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
@@ -186,7 +187,7 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void sendData()
     {
-        
+        showEndScreen(this.encuentraAlNuevo.score);
         figureQuantity = -1;
         limitTime = false;
         limitFigure = false;
@@ -262,5 +263,17 @@ public class EncuentraAlNuevoController : GameController
         {
             f.SetActive(true);
         }
+    }
+
+    /// <summary>
+    /// Muestra la pantalla de fin del juego con el puntaje.
+    /// </summary>
+    /// <param name="score">Puntaje final.</param>
+    public void showEndScreen(int score)
+    {
+        pause.gameObject.SetActive(false);
+        GameObject.Find("Timer").SetActive(false);
+        endScreen.SetActive(true);
+        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
 }
