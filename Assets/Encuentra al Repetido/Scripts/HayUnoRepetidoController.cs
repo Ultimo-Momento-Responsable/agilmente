@@ -163,7 +163,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posici�n de los sprites y los reubica en la pantalla.
+    /// Recalcula la posición de los sprites y los reubica en la pantalla.
     /// </summary>
     public void resetValues()
     {
@@ -179,7 +179,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de enviar los datos al backend (agilmente-core).
+    /// Función que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>
@@ -189,7 +189,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public override void sendData()
@@ -233,7 +233,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de pausar/despausar el juego.
+    /// Función que se encarga de pausar/despausar el juego.
     /// </summary>
     public override void pauseGame()
     {
@@ -252,7 +252,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de reanudar el juego.
+    /// Función que se encarga de reanudar el juego.
     /// </summary>
     public override void unpauseGame()
     {

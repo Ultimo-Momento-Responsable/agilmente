@@ -112,7 +112,7 @@ public class HayUnoRepetido : ScriptableObject
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
 
-            // Si est� en tutorial crea la mano en una fruta repetida
+            // Si está en tutorial crea la mano en una fruta repetida
             if (i < 2) 
             {
                 if (i == handPosition && onTutorial) 
