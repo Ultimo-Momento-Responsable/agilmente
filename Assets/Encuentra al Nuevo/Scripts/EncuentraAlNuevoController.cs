@@ -61,7 +61,6 @@ public class EncuentraAlNuevoController : GameController
     {
         endScreen.SetActive(false);
         encuentraAlNuevo = new EncuentraAlNuevo(this);
-        maxFigures = SessionEncuentraAlNuevo.maxFigures;
         maxLevel = SessionEncuentraAlNuevo.maxLevel;
         maxTime = SessionEncuentraAlNuevo.maxTime;
         variableSizes = SessionEncuentraAlNuevo.variableSizes;
@@ -122,7 +121,7 @@ public class EncuentraAlNuevoController : GameController
                 encuentraAlNuevo.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
 
-                if (figureQuantity <= maxFigures)
+                if (figureQuantity <= maxLevel)
                 {
                     figureQuantity++;
                 }
@@ -169,7 +168,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posici�n de los sprites y los reubica en la pantalla.
+    /// Recalcula la posición de los sprites y los reubica en la pantalla.
     /// </summary>
     private void resetValues()
     {
@@ -186,7 +185,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de enviar los datos al backend (agilmente-core).
+    /// Función que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>
@@ -196,7 +195,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public override void sendData()
@@ -238,7 +237,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de pausar el juego.
+    /// Función que se encarga de pausar el juego.
     /// </summary>
     public override void pauseGame()
     {
@@ -249,7 +248,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Bot�n Comenzar, agrega una nueva fruta e inicia la mano del tuto.
+    /// Botón Comenzar, agrega una nueva fruta e inicia la mano del tuto.
     /// </summary>
     public void startBtn()
     {
@@ -269,7 +268,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Funci�n que se encarga de reanudar el juego.
+    /// Función que se encarga de reanudar el juego.
     /// </summary>
     public override void unpauseGame()
     {
