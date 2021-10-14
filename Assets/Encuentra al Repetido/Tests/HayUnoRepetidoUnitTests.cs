@@ -34,7 +34,7 @@ namespace Tests
         public void HayUnoRepetidoUnitTestsThereIsSomethingIn()
         {
             juego = ScriptableObject.CreateInstance<HayUnoRepetido>();
-            Assert.IsFalse(juego.thereIsSomethingIn(new Vector2(0, 0)));
+            Assert.IsFalse(juego.thereIsSomethingIn(new Vector2(0, 0),0.2f));
         }
     }
 }

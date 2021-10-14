@@ -10,6 +10,8 @@ public class EncuentraAlNuevoController : GameController
     private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-nuevo";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-nuevo";
 
+    private List<int> actualSprites;
+    private List<int> index;
     private string json;
     private bool canceled = false;
     private int dontTouchTimer = 20;
@@ -31,11 +33,10 @@ public class EncuentraAlNuevoController : GameController
 
 
     public int figureQuantity;
-    private int maxFigures;
+    private int maxLevel;
     private float maxTime;
     private bool limitTime = true;
-    private bool limitFigure = true;
-    private List<int> actualSprites;
+    private bool limitLevel = true;
     public float auxTime;
     public float initTime;
     public bool isTouching = false;
@@ -43,6 +44,7 @@ public class EncuentraAlNuevoController : GameController
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
     public GameObject endScreen;
+    public bool variableSizes;
 
     public GameObject[] figures {
         get {
@@ -59,21 +61,25 @@ public class EncuentraAlNuevoController : GameController
     {
         endScreen.SetActive(false);
         encuentraAlNuevo = new EncuentraAlNuevo(this);
-        encuentraAlNuevo.onTutorial = true;
         maxFigures = SessionEncuentraAlNuevo.maxFigures;
+        maxLevel = SessionEncuentraAlNuevo.maxLevel;
         maxTime = SessionEncuentraAlNuevo.maxTime;
+        variableSizes = SessionEncuentraAlNuevo.variableSizes;
+        sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionEncuentraAlNuevo.spriteSet + "/");
+
         if (maxTime == -1)
         {
             limitTime = false;
         }
-        if (maxFigures == -1)
+        if (maxLevel == -1)
         {
-            limitFigure = false;
-            maxFigures = 20;
+            limitLevel = false;
+            maxLevel = 17;
         }
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, actualSprites, this, particles);
+        index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
+        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -120,11 +126,17 @@ public class EncuentraAlNuevoController : GameController
                 {
                     figureQuantity++;
                 }
-                if ((limitFigure && (encuentraAlNuevo.successes >= maxFigures)) || (figureQuantity >= 20))
+                
+                if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)) || (figureQuantity > 20))
                 {
                     sendData();
                 }
-                resetValues();
+                else
+                {
+                    figureQuantity++;
+                    resetValues();
+                }
+                
             }
 
             if (limitTime && (encuentraAlNuevo.totalTime >= maxTime))
@@ -157,7 +169,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// Recalcula la posiciï¿½n de los sprites y los reubica en la pantalla.
     /// </summary>
     private void resetValues()
     {
@@ -166,13 +178,15 @@ public class EncuentraAlNuevoController : GameController
         {
             Destroy(o.gameObject);
         }
-        actualSprites = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, actualSprites, this, particles);
+        
+        index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
+
+        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         isTouching = false;
     }
 
     /// <summary>
-    /// Función que se encarga de enviar los datos al backend (agilmente-core).
+    /// Funciï¿½n que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>
@@ -182,7 +196,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// Funciï¿½n que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public override void sendData()
@@ -190,7 +204,7 @@ public class EncuentraAlNuevoController : GameController
         showEndScreen(this.encuentraAlNuevo.score);
         figureQuantity = -1;
         limitTime = false;
-        limitFigure = false;
+        limitLevel = false;
         string tBS;
         if (encuentraAlNuevo.successes > 0)
         {
@@ -224,7 +238,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Función que se encarga de pausar el juego.
+    /// Funciï¿½n que se encarga de pausar el juego.
     /// </summary>
     public override void pauseGame()
     {
@@ -235,7 +249,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Botón Comenzar, agrega una nueva fruta e inicia la mano del tuto.
+    /// Botï¿½n Comenzar, agrega una nueva fruta e inicia la mano del tuto.
     /// </summary>
     public void startBtn()
     {
@@ -255,7 +269,7 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Función que se encarga de reanudar el juego.
+    /// Funciï¿½n que se encarga de reanudar el juego.
     /// </summary>
     public override void unpauseGame()
     {

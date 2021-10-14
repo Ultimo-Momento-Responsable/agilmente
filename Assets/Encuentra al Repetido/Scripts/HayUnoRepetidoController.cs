@@ -30,6 +30,7 @@ public class HayUnoRepetidoController : GameController
 
 
     public int figureQuantity;
+    private int maxLevel;
     private int maxFigures;
     private float maxTime;
     private bool limitTime = true;
@@ -62,19 +63,20 @@ public class HayUnoRepetidoController : GameController
     {
         endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxFigures = 5;//SessionHayUnoRepetido.maxFigures;
-        maxTime = -1;// SessionHayUnoRepetido.maxTime;
+        maxLevel = SessionHayUnoRepetido.maxLevel;
+        maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
+        maxFigures = SessionHayUnoRepetido.figureQuantity;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
         if (maxTime == -1)
         {
             limitTime = false;
         }
-        if (maxFigures == -1)
+        if (maxLevel == -1)
         {
             limitFigure = false;
-            maxFigures = 20;
+            maxLevel = 20;
         }
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
@@ -119,11 +121,12 @@ public class HayUnoRepetidoController : GameController
                 hayUnoRepetido.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
 
-                if (figureQuantity <= maxFigures)
+                if (figureQuantity < maxFigures)
                 {
                     figureQuantity++;
                 }
-                if (limitFigure && ((hayUnoRepetido.successes + 1) > maxFigures))
+                
+                if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
                     sendData();
                 }
@@ -160,22 +163,23 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// Recalcula la posiciï¿½n de los sprites y los reubica en la pantalla.
     /// </summary>
-    private void resetValues()
+    public void resetValues()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
         {
             Destroy(o.gameObject);
         }
+        
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         isTouching = false;
     }
 
     /// <summary>
-    /// Función que se encarga de enviar los datos al backend (agilmente-core).
+    /// Funciï¿½n que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>
@@ -185,7 +189,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// Funciï¿½n que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public override void sendData()
@@ -229,7 +233,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Función que se encarga de pausar/despausar el juego.
+    /// Funciï¿½n que se encarga de pausar/despausar el juego.
     /// </summary>
     public override void pauseGame()
     {
@@ -248,7 +252,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Función que se encarga de reanudar el juego.
+    /// Funciï¿½n que se encarga de reanudar el juego.
     /// </summary>
     public override void unpauseGame()
     {

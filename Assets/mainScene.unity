@@ -1144,6 +1144,8 @@ MonoBehaviour:
   gameCard: {fileID: 4343112129678271998, guid: 86ace72d4008fa44abef229e370a5e2e, type: 3}
   gameCanvas: {fileID: 1473360240}
   cardContainer: {fileID: 2076258243}
+  maxTime: {fileID: 21300000, guid: ec4c34c872a41db44b694072466e064f, type: 3}
+  maxLevel: {fileID: 21300000, guid: 4023d8e00ea94d0408787730a708f3ad, type: 3}
 --- !u!4 &1572026030
 Transform:
   m_ObjectHideFlags: 0
