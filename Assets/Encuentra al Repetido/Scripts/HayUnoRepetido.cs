@@ -33,7 +33,7 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Funci�n que selecciona los sprites de las figuras que se mostrar�n en
+    /// Función que selecciona los sprites de las figuras que se mostrarán en
     /// pantalla por cada nivel.
     /// </summary>
     public List<int> chooseSprites(Sprite[] sprites, int figureQuantity)
@@ -55,19 +55,19 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Funci�n que instancia las figuras que se mostrar�n al inicio y al 
+    /// Función que instancia las figuras que se mostrarán al inicio y al 
     /// aumentar cada nivel.
     /// </summary>
-    /// <param name="figureQuantity">Cantidad m�xima de figuras.</param>
-    /// <param name="camera">C�mara.</param>
+    /// <param name="figureQuantity">Cantidad máxima de figuras.</param>
+    /// <param name="camera">Cámara.</param>
     /// <param name="figure">Figura.</param>
     /// <param name="sprites">Set de sprites a usar.</param>
-    /// <param name="index">�ndice.</param>
+    /// <param name="index">Índice.</param>
     /// <param name="controller">Controlador del juego.</param>
-    /// <param name="particles">Part�culas.</param>
+    /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
     {
-        int handPosition = Random.Range(0, 2); // Posici�n de la mano del tutorial
+        int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
         Vector2 figurePosition;
         for (int i = 0; i < figureQuantity; i++)
         {
@@ -82,24 +82,18 @@ public class HayUnoRepetido : ScriptableObject
             }
             
             if (!onTutorial)
-            {s
-                while (thereIsSomethingIn(figurePosition))
-                {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
-                    figurePosition = centerFigures(figurePosition);
-                }
-                figurePosition = new Vector2(Random.Range(0,6) * 0.9f - 2.5f + Random.Range(-0.15f,0.15f), Random.Range(0, 9) * 1.2f -4.5f + Random.Range(-0.2f,0));
+            {
+                figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
                 figurePosition = centerFigures(figurePosition);
                 if (controller.variableSizes)
                 {
                     size = Random.Range(minsize, maxsize);
                 }
-                while (thereIsSomethingIn(figurePosition,size))
+                while (thereIsSomethingIn(figurePosition, size))
                 {
-                    figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0)); 
+                    figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
                     figurePosition = centerFigures(figurePosition);
                 }
-                
             }
             else
             {
@@ -168,11 +162,11 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Funci�n que centra las figuras, esto se hace para evitar que las mismas 
+    /// Función que centra las figuras, esto se hace para evitar que las mismas 
     /// se generen en los bordes.
     /// </summary>
-    /// <param name="randomPositionOnScreen">Posici�n donde aparecer� la figura.</param>
-    /// <returns>Posici�n corregida.</returns>
+    /// <param name="randomPositionOnScreen">Posición donde aparecerá la figura.</param>
+    /// <returns>Posición corregida.</returns>
     public Vector2 centerFigures(Vector2 randomPositionOnScreen)
     {
         if (randomPositionOnScreen.x < 0)
@@ -195,14 +189,14 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Funci�n que chequea que no haya nada en el lugar donde se crea la figura.
+    /// Función que chequea que no haya nada en el lugar donde se crea la figura.
     /// </summary>
-    /// <param name="posici�n">Posici�n a controlar.</param>
+    /// <param name="position">Posición a controlar.</param>
     /// <returns>Verdadero si hay algo.</returns>
-    public bool thereIsSomethingIn(Vector2 posici�n,float size)
+    public bool thereIsSomethingIn(Vector2 position, float size)
     {
-        Vector2 p1 = posici�n - new Vector2(0.45f, 0.5f + size/2);
-        Vector2 p2 = posici�n + new Vector2(0.45f, 0.5f + size/2);
+        Vector2 p1 = position - new Vector2(0.45f, 0.5f + size/2);
+        Vector2 p2 = position + new Vector2(0.45f, 0.5f + size/2);
         Collider2D collider = Physics2D.OverlapArea(p1, p2);
 
         if (collider != null)
@@ -213,7 +207,7 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// A�ade un acierto y calcula el puntaje.
+    /// Añade un acierto y calcula el puntaje.
     /// </summary>
     /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
     /// hizo el acierto.</param>
@@ -226,7 +220,7 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// A�ade un error y calcula el puntaje.
+    /// Añade un error y calcula el puntaje.
     /// </summary>
     /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
     /// comete el error.</param>
@@ -237,7 +231,7 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Calcula el tiempo transcurrido desde el �ltimo acierto y lo guarda.
+    /// Calcula el tiempo transcurrido desde el último acierto y lo guarda.
     /// </summary>
     public void calculateTimeSinceLastSuccess()
     {
