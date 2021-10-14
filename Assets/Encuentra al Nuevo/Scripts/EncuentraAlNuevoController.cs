@@ -33,10 +33,10 @@ public class EncuentraAlNuevoController : GameController
 
 
     public int figureQuantity;
-    private int maxFigures;
+    private int maxLevel;
     private float maxTime;
     private bool limitTime = true;
-    private bool limitFigure = true;
+    private bool limitLevel = true;
     public float auxTime;
     public float initTime;
     public bool isTouching = false;
@@ -59,18 +59,19 @@ public class EncuentraAlNuevoController : GameController
     void Start()
     {
         encuentraAlNuevo = new EncuentraAlNuevo(this);
-        maxFigures = SessionEncuentraAlNuevo.maxFigures;
+        maxLevel = SessionEncuentraAlNuevo.maxLevel;
         maxTime = SessionEncuentraAlNuevo.maxTime;
         variableSizes = SessionEncuentraAlNuevo.variableSizes;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionEncuentraAlNuevo.spriteSet + "/");
+
         if (maxTime == -1)
         {
             limitTime = false;
         }
-        if (maxFigures == -1)
+        if (maxLevel == -1)
         {
-            limitFigure = false;
-            maxFigures = 20;
+            limitLevel = false;
+            maxLevel = 17;
         }
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
@@ -118,17 +119,17 @@ public class EncuentraAlNuevoController : GameController
                 auxTime = Time.time;
                 audioSource.PlayOneShot(sndSuccess);
 
-                if (figureQuantity <= maxFigures)
-                {
-                    figureQuantity++;
-                }
-
                 encuentraAlNuevo.successes++;
-                if ((limitFigure && (encuentraAlNuevo.successes >= maxFigures)) || (figureQuantity >= 20))
+                if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)) || (figureQuantity > 20))
                 {
                     sendData();
                 }
-                resetValues();
+                else
+                {
+                    figureQuantity++;
+                    resetValues();
+                }
+                
             }
 
             if (limitTime && (encuentraAlNuevo.totalTime >= maxTime))
@@ -169,7 +170,9 @@ public class EncuentraAlNuevoController : GameController
         {
             Destroy(o.gameObject);
         }
+        
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
+
         encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         isTouching = false;
     }
@@ -193,7 +196,7 @@ public class EncuentraAlNuevoController : GameController
         
         figureQuantity = -1;
         limitTime = false;
-        limitFigure = false;
+        limitLevel = false;
         string tBS;
         if (encuentraAlNuevo.successes > 0)
         {

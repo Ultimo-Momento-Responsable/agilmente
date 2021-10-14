@@ -23,8 +23,6 @@ public class EncuentraAlNuevo : ScriptableObject
     {
         List<int> initialSprites = new List<int>();
         int indexSprite = Random.Range(0, sprites.Length);
-        initialSprites.Insert(0, indexSprite);
-        indexSprite = Random.Range(0, sprites.Length);
         while (initialSprites.Contains(indexSprite))
         {
             indexSprite = Random.Range(0, sprites.Length);
@@ -71,20 +69,20 @@ public class EncuentraAlNuevo : ScriptableObject
             // Ajusta el tamaño según el spriteset (flores mas grandes)
             if (MainSceneController.SessionEncuentraAlNuevo.spriteSet == 1)
             {
-                size = 0.2f;
-                minsize = 0.172f;
-                maxsize = 0.25f;
+                size = 0.19f;
+                minsize = 0.17f;
+                maxsize = 0.22f;
             }
 
             Vector2 figurePosition;
             if (!onTutorial)
             {
-                figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
                 figurePosition = centerFigures(figurePosition);
 
                 while (thereIsSomethingIn(figurePosition))
                 {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                    figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
                     figurePosition = centerFigures(figurePosition);
                 }
 
@@ -110,7 +108,6 @@ public class EncuentraAlNuevo : ScriptableObject
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, figureQuantity + 1) * space, 0.4f));
                 }
             }
-            
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
             fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
