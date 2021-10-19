@@ -216,7 +216,6 @@ public class HayUnoRepetido : ScriptableObject
         addPointsToScore(calculateScoreSuccess(figureQuantity));
         calculateTimeSinceLastSuccess();
         successes++;
-        Debug.Log(a_score);
     }
 
     /// <summary>
