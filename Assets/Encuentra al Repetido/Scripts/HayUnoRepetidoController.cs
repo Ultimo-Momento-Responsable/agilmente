@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static MainSceneController;
 
 public class HayUnoRepetidoController : GameController
 {
 
-    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-repetido";
+    private const string DEV_ENDPOINT = "https://localhost:8080/results/encuentra-al-repetido";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-repetido";
 
     private List<int> index;
@@ -45,6 +44,7 @@ public class HayUnoRepetidoController : GameController
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
     private GameObject[] a_figures;
+    public GameObject endScreen;
 
     public GameObject[] figures
     {
@@ -61,9 +61,10 @@ public class HayUnoRepetidoController : GameController
 
     void Start()
     {
+        endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxLevel = SessionHayUnoRepetido.maxLevel;
-        maxTime = SessionHayUnoRepetido.maxTime;
+        maxLevel = 3;// SessionHayUnoRepetido.maxLevel;
+        maxTime = -1;// SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
         maxFigures = SessionHayUnoRepetido.figureQuantity;
@@ -98,6 +99,7 @@ public class HayUnoRepetidoController : GameController
                 resetValues();
                 initTime = Time.time;
                 auxTime = initTime;
+                hayUnoRepetido.setStartTime();
                 pauseButton.SetActive(true);
             }
         } 
@@ -116,18 +118,16 @@ public class HayUnoRepetidoController : GameController
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
             {
                 dontTouchAgain = true;
-                hayUnoRepetido.timeBetweenSuccesses[hayUnoRepetido.successes] = Time.time - auxTime;
-                auxTime = Time.time;
+                hayUnoRepetido.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
-
-                if (figureQuantity < maxFigures)
-                {
-                    figureQuantity++;
-                }
-                hayUnoRepetido.successes++;
+                                
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
                     sendData();
+                }
+                else
+                {
+                    figureQuantity++;
                 }
                 resetValues();
             }
@@ -140,6 +140,7 @@ public class HayUnoRepetidoController : GameController
             if (isMakingMistake)
             {
                 isMakingMistake = false;
+                hayUnoRepetido.addMistake(figureQuantity);
                 camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
@@ -161,7 +162,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posici髇 de los sprites y los reubica en la pantalla.
+    /// Recalcula la posici贸n de los sprites y los reubica en la pantalla.
     /// </summary>
     public void resetValues()
     {
@@ -177,7 +178,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci髇 que se encarga de enviar los datos al backend (agilmente-core).
+    /// Funci贸n que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>
@@ -187,12 +188,12 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci髇 que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// Funci贸n que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public override void sendData()
     {
-        
+        showEndScreen(this.hayUnoRepetido.score);
         figureQuantity = -1;
         limitTime = false;
         limitFigure = false;
@@ -228,11 +229,10 @@ public class HayUnoRepetidoController : GameController
             "}";
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, DEV_ENDPOINT);
-        SceneManager.LoadScene("mainScene");
     }
 
     /// <summary>
-    /// Funci髇 que se encarga de pausar/despausar el juego.
+    /// Funci贸n que se encarga de pausar/despausar el juego.
     /// </summary>
     public override void pauseGame()
     {
@@ -251,7 +251,7 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Funci髇 que se encarga de reanudar el juego.
+    /// Funci贸n que se encarga de reanudar el juego.
     /// </summary>
     public override void unpauseGame()
     {
@@ -259,5 +259,17 @@ public class HayUnoRepetidoController : GameController
         {
             f.SetActive(true);
         }
+    }
+
+    /// <summary>
+    /// Muestra la pantalla de fin del juego con el puntaje.
+    /// </summary>
+    /// <param name="score">Puntaje final.</param>
+    public void showEndScreen(int score)
+    {
+        pause.gameObject.SetActive(false);
+        GameObject.Find("Timer").SetActive(false);
+        endScreen.SetActive(true);
+        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
 }

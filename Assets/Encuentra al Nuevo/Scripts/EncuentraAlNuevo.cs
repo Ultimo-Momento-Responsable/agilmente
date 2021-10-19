@@ -6,16 +6,27 @@ public class EncuentraAlNuevo : ScriptableObject
     private int a_mistakes;
     private int a_successes;
     private float[] a_timeBetweenSuccesses;
+    private float a_timeFromLastSuccess;
     private float a_totalTime;
+    private int a_score;
     public bool onTutorial = true;
     public EncuentraAlNuevoController encuentraAlNuevoController;
 
+    public int mistakes { get => a_mistakes; set => a_mistakes = value; }
+    public int successes { get => a_successes; set => a_successes = value; }
+    public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
+    public float totalTime { get => a_totalTime; set => a_totalTime = value; }
+    public float timeFromLastSuccess { get => a_timeFromLastSuccess; set => a_timeFromLastSuccess = value; }
+    public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
+
     public EncuentraAlNuevo(EncuentraAlNuevoController encuentraAlNuevoController)
     {
+        timeFromLastSuccess = Time.time;
         a_mistakes = 0;
         a_successes = 0;
         a_totalTime = 0f;
         a_timeBetweenSuccesses = new float[100];
+        a_score = 0;
         this.encuentraAlNuevoController = encuentraAlNuevoController;
     }
 
@@ -176,8 +187,74 @@ public class EncuentraAlNuevo : ScriptableObject
         return false;
     }
 
-    public int mistakes { get => a_mistakes; set => a_mistakes = value; }
-    public int successes { get => a_successes; set => a_successes = value; }
-    public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
-    public float totalTime { get => a_totalTime; set => a_totalTime = value; }
+    /// <summary>
+    /// Añade un acierto y calcula el puntaje.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
+    /// hizo el acierto.</param>
+    public void addSuccess(int figureQuantity)
+    {
+        addPointsToScore(calculateScoreSuccess(figureQuantity));
+        calculateTimeSinceLastSuccess();
+        successes++;
+    }
+
+    /// <summary>
+    /// Añade un error y calcula el puntaje.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
+    /// comete el error.</param>
+    public void addMistake(int figureQuantity)
+    {
+        addPointsToScore(calculateScoreMistake(figureQuantity));
+        mistakes++;
+    }
+
+    /// <summary>
+    /// Calcula el tiempo transcurrido desde el último acierto y lo guarda.
+    /// </summary>
+    public void calculateTimeSinceLastSuccess()
+    {
+        timeBetweenSuccesses[successes] = Time.time - timeFromLastSuccess;
+        timeFromLastSuccess = Time.time;
+    }
+
+    /// <summary>
+    /// Calcula el puntaje correspondiente al acierto.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en pantalla al momento del
+    /// acierto.</param>
+    /// <returns>El puntaje correspondiente al acierto.</returns>
+    public int calculateScoreSuccess(int figureQuantity)
+    {
+        return Mathf.RoundToInt(100 * figureQuantity / timeFromLastSuccess);
+    }
+
+    /// <summary>
+    /// Calcula el puntaje correspondiente al error.
+    /// </summary>
+    /// <param name="figureQuantity">Cantidad de figuras en pantalla al momento de cometer
+    /// el error.</param>
+    /// <returns>El puntaje correspondiente a cometer el error.</returns>
+    public int calculateScoreMistake(int figureQuantity)
+    {
+        return -Mathf.RoundToInt(25 * timeFromLastSuccess / figureQuantity);
+    }
+
+    /// <summary>
+    /// Suma una cantidad de puntos al score.
+    /// </summary>
+    /// <param name="points">Puntos a sumar.</param>
+    private void addPointsToScore(int points)
+    {
+        a_score += points;
+    }
+
+    /// <summary>
+    /// Setea el tiempo de inicio.
+    /// </summary>
+    public void setStartTime()
+    {
+        timeFromLastSuccess = Time.time;
+    }
 }

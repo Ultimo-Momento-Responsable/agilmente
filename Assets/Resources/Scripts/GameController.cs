@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 public abstract class GameController: MonoBehaviour
 {
     private PauseMenu a_pause;
@@ -58,5 +61,13 @@ public abstract class GameController: MonoBehaviour
     {
         cancelGame();
         sendData();
+    }
+
+    /// <summary>
+    /// Cambia la escena al menú principal.
+    /// </summary>
+    public void goToMainScene()
+    {
+        SceneManager.LoadScene("mainScene");
     }
 }

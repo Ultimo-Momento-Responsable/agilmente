@@ -40,7 +40,7 @@ public class FigureBehaviourEAN : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica si el usuario tapeó la fruta correcta, y el comportamiento 
+    /// Verifica si el usuario tapeó la figura correcta, y el comportamiento 
     /// correspondiente.
     /// </summary>
     void checkIfUserTappedFigure()
