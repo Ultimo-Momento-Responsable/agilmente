@@ -63,8 +63,8 @@ public class HayUnoRepetidoController : GameController
     {
         endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxLevel = SessionHayUnoRepetido.maxLevel;
-        maxTime = SessionHayUnoRepetido.maxTime;
+        maxLevel = 3;// SessionHayUnoRepetido.maxLevel;
+        maxTime = -1;// SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
         maxFigures = SessionHayUnoRepetido.figureQuantity;
@@ -120,15 +120,14 @@ public class HayUnoRepetidoController : GameController
                 dontTouchAgain = true;
                 hayUnoRepetido.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
-
-                if (figureQuantity < maxFigures)
-                {
-                    figureQuantity++;
-                }
-                
+                                
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
                     sendData();
+                }
+                else
+                {
+                    figureQuantity++;
                 }
                 resetValues();
             }

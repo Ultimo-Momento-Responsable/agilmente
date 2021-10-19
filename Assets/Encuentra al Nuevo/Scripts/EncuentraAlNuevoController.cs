@@ -120,11 +120,6 @@ public class EncuentraAlNuevoController : GameController
                 dontTouchAgain = true;
                 encuentraAlNuevo.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
-
-                if (figureQuantity <= maxLevel)
-                {
-                    figureQuantity++;
-                }
                 
                 if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)) || (figureQuantity > 20))
                 {
@@ -133,9 +128,8 @@ public class EncuentraAlNuevoController : GameController
                 else
                 {
                     figureQuantity++;
-                    resetValues();
                 }
-                
+                resetValues();
             }
 
             if (limitTime && (encuentraAlNuevo.totalTime >= maxTime))
