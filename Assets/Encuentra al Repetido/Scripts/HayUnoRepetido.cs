@@ -215,6 +215,7 @@ public class HayUnoRepetido : ScriptableObject
     {
         addPointsToScore(calculateScoreSuccess(figureQuantity));
         calculateTimeSinceLastSuccess();
+        Debug.Log(a_score);
         successes++;
     }
 
@@ -226,6 +227,7 @@ public class HayUnoRepetido : ScriptableObject
     public void addMistake(int figureQuantity)
     {
         addPointsToScore(calculateScoreMistake(figureQuantity));
+        Debug.Log(a_score);
         mistakes++;
     }
 

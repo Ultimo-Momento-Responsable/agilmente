@@ -53,9 +53,8 @@ public class FigureBehaviourEAN : MonoBehaviour
         }
         else
         {
-            if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0)
+            if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.encuentraAlNuevo.onTutorial)
             {
-                controller.encuentraAlNuevo.mistakes++;
                 controller.isMakingMistake = true;
             }
         }

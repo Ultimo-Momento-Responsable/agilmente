@@ -196,6 +196,7 @@ public class EncuentraAlNuevo : ScriptableObject
     {
         addPointsToScore(calculateScoreSuccess(figureQuantity));
         calculateTimeSinceLastSuccess();
+        Debug.Log(a_score);
         successes++;
     }
 
@@ -207,6 +208,7 @@ public class EncuentraAlNuevo : ScriptableObject
     public void addMistake(int figureQuantity)
     {
         addPointsToScore(calculateScoreMistake(figureQuantity));
+        Debug.Log(a_score);
         mistakes++;
     }
 
@@ -238,7 +240,7 @@ public class EncuentraAlNuevo : ScriptableObject
     /// <returns>El puntaje correspondiente a cometer el error.</returns>
     public int calculateScoreMistake(int figureQuantity)
     {
-        return -Mathf.RoundToInt(25 * timeFromLastSuccess / figureQuantity);
+        return -Mathf.RoundToInt(25 * (timeFromLastSuccess/2) / figureQuantity);
     }
 
     /// <summary>
