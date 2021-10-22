@@ -10,7 +10,8 @@ public class HayUnoRepetido : ScriptableObject
     private float[] a_timeBetweenSuccesses;
     private float a_totalTime;
     private int a_score;
-    private float a_timeFromLastSuccess;
+    private float a_timeMarkFromLastSuccess;
+    private float a_timeElapsedSinceLastSuccess = 1;
     public bool onTutorial = true;
     public HayUnoRepetidoController hayUnoRepetidoController;
 
@@ -19,11 +20,12 @@ public class HayUnoRepetido : ScriptableObject
     public float[] timeBetweenSuccesses { get => a_timeBetweenSuccesses; set => a_timeBetweenSuccesses = value; }
     public float totalTime { get => a_totalTime; set => a_totalTime = value; }
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
-    private float timeFromLastSuccess { get => a_timeFromLastSuccess; set => a_timeFromLastSuccess = value; }
+    private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
+    private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
 
     public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
     {
-        timeFromLastSuccess = Time.time;
+        timeMarkFromLastSuccess = Time.time;
         a_mistakes = 0;
         a_successes = 0;
         a_totalTime = 0f;
@@ -213,8 +215,8 @@ public class HayUnoRepetido : ScriptableObject
     /// hizo el acierto.</param>
     public void addSuccess(int figureQuantity)
     {
-        addPointsToScore(calculateScoreSuccess(figureQuantity));
         calculateTimeSinceLastSuccess();
+        addPointsToScore(calculateScoreSuccess(figureQuantity));
         successes++;
     }
 
@@ -234,8 +236,9 @@ public class HayUnoRepetido : ScriptableObject
     /// </summary>
     public void calculateTimeSinceLastSuccess()
     {
-        timeBetweenSuccesses[successes] = Time.time - timeFromLastSuccess;
-        timeFromLastSuccess = Time.time;
+        timeElapsedSinceLastSuccess = Time.time - timeMarkFromLastSuccess;
+        timeBetweenSuccesses[successes] = timeElapsedSinceLastSuccess;
+        timeMarkFromLastSuccess = Time.time;
     }
 
     /// <summary>
@@ -246,7 +249,7 @@ public class HayUnoRepetido : ScriptableObject
     /// <returns>El puntaje correspondiente al acierto.</returns>
     public int calculateScoreSuccess(int figureQuantity)
     {
-        return Mathf.RoundToInt(100 * figureQuantity / timeFromLastSuccess);
+        return Mathf.RoundToInt(100 * figureQuantity / timeElapsedSinceLastSuccess);
     }
 
     /// <summary>
@@ -257,7 +260,7 @@ public class HayUnoRepetido : ScriptableObject
     /// <returns>El puntaje correspondiente a cometer el error.</returns>
     public int calculateScoreMistake(int figureQuantity)
     {
-        return -Mathf.RoundToInt(25 * timeFromLastSuccess / figureQuantity);
+        return -Mathf.RoundToInt(25 * timeElapsedSinceLastSuccess / figureQuantity);
     }
 
     /// <summary>
@@ -274,6 +277,6 @@ public class HayUnoRepetido : ScriptableObject
     /// </summary>
     public void setStartTime()
     {
-        timeFromLastSuccess = Time.time;
+        timeMarkFromLastSuccess = Time.time;
     }
 }

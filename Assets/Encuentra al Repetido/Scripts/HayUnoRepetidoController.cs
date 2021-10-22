@@ -63,8 +63,8 @@ public class HayUnoRepetidoController : GameController
     {
         endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxLevel = 3;// SessionHayUnoRepetido.maxLevel;
-        maxTime = -1;// SessionHayUnoRepetido.maxTime;
+        maxLevel = SessionHayUnoRepetido.maxLevel;
+        maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
         distractors = SessionHayUnoRepetido.distractors;
         maxFigures = SessionHayUnoRepetido.figureQuantity;
@@ -127,13 +127,17 @@ public class HayUnoRepetidoController : GameController
                 }
                 else
                 {
-                    figureQuantity++;
+                    if (figureQuantity < maxFigures)
+                    {
+                        figureQuantity++;
+                    }
                 }
                 resetValues();
             }
 
             if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
             {
+                removeFigues();
                 sendData();
             }
 
@@ -162,15 +166,23 @@ public class HayUnoRepetidoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// Elimina las figuras que hay en la pantalla
     /// </summary>
-    public void resetValues()
+    private void removeFigues()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
         {
             Destroy(o.gameObject);
         }
+    }
+
+    /// <summary>
+    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// </summary>
+    public void resetValues()
+    {
+        removeFigues();
         
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);

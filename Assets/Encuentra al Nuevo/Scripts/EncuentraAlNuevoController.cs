@@ -41,7 +41,6 @@ public class EncuentraAlNuevoController : GameController
     public bool isTouching = false;
     public bool isMakingMistake = false;
     public bool dontTouchAgain = false;
-    public bool onTutorial = true;
     public GameObject endScreen;
     public bool variableSizes;
 
@@ -133,6 +132,7 @@ public class EncuentraAlNuevoController : GameController
 
             if (limitTime && (encuentraAlNuevo.totalTime >= maxTime))
             {
+                removeFigues();
                 sendData();
             }
 
@@ -161,15 +161,23 @@ public class EncuentraAlNuevoController : GameController
     }
 
     /// <summary>
-    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// Elimina las figuras que hay en la pantalla
     /// </summary>
-    private void resetValues()
+    private void removeFigues()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
         {
             Destroy(o.gameObject);
         }
+    }
+
+    /// <summary>
+    /// Recalcula la posición de los sprites y los reubica en la pantalla.
+    /// </summary>
+    private void resetValues()
+    {
+        removeFigues();
         
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
 
