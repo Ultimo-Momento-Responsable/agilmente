@@ -7,7 +7,7 @@ using static MainSceneController;
 public class HayUnoRepetidoController : GameController
 {
 
-    private const string DEV_ENDPOINT = "https://localhost:8080/results/encuentra-al-repetido";
+    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-repetido";
     private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-repetido";
 
     private List<int> index;

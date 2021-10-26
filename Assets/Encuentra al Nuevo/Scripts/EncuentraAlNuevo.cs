@@ -251,9 +251,6 @@ public class EncuentraAlNuevo : ScriptableObject
     private void addPointsToScore(int points)
     {
         a_score += points;
-        Debug.Log("Time from last success: " + timeElapsedSinceLastSuccess);
-        Debug.Log("Partial score: " + points);
-        Debug.Log("Total score: " + a_score);
     }
 
     /// <summary>
