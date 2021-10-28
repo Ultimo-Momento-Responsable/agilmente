@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SendData : MonoBehaviour
 {
+    public static string IP_PROD = "http://24.232.158.21:8080/";
+    public static string IP_DEV = "http://localhost:8080/";
+    public static string IP = IP_DEV;
+
     /// <summary>
     /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
@@ -18,7 +21,7 @@ public class SendData : MonoBehaviour
         parameters.Add("Content-Length", json.Length.ToString());
         json = json.Replace("'", "\"");
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
-        WWW www = new WWW(endpoint, postData, parameters);
+        WWW www = new WWW(IP + endpoint, postData, parameters);
         StartCoroutine(Upload(www));
     }
 

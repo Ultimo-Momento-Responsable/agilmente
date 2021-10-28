@@ -7,8 +7,7 @@ using static MainSceneController;
 public class HayUnoRepetidoController : GameController
 {
 
-    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-repetido";
-    private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-repetido";
+    private const string ENDPOINT = "results/encuentra-al-repetido";
 
     private List<int> index;
     private string json;
@@ -240,7 +239,7 @@ public class HayUnoRepetidoController : GameController
                 ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
             "}";
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
-        sD.sendData(json, DEV_ENDPOINT);
+        sD.sendData(json, ENDPOINT);
     }
 
     /// <summary>

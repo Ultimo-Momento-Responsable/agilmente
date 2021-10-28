@@ -25,6 +25,7 @@ public class MainSceneController : MonoBehaviour
     public GameObject cardContainer;
     public Sprite maxTime;
     public Sprite maxLevel;
+    private static string endpoint = "/planning/mobile_patient_";
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion
@@ -146,7 +147,7 @@ public class MainSceneController : MonoBehaviour
 
 
         bodyText.SetActive(true);
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.dataPath + "/settings.json"));
+        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
         bodyText.GetComponent<Text>().text = "¡Hola de nuevo " + settings.Login.patient.firstName + "!";
         gameText.SetActive(true);
         if (isThereAPlanning())
@@ -177,8 +178,8 @@ public class MainSceneController : MonoBehaviour
      */
     public void getPlanning()
     {
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.dataPath + "/settings.json"));
-        this.StartCoroutine(this.getPlanningRoutine("localhost:8080/planning/mobile_patient_" + settings.Login.patient.id, this.getPlanningResponseCallback));
+        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
+        this.StartCoroutine(this.getPlanningRoutine(SendData.IP + endpoint + settings.Login.patient.id, this.getPlanningResponseCallback));
     }
 
     /**
