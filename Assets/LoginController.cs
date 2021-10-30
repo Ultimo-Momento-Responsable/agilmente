@@ -13,14 +13,22 @@ public class LoginController : MonoBehaviour
     public GameObject loginError;
     public Button loginButton;
     private PatientJson patientJson;
+    private static string endpoint = "patient/";
 
     void Start()
     {
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.dataPath + "/settings.json"));
+        bool fileExists = System.IO.File.Exists(Application.persistentDataPath + "/settings.json");
+
+        if (!fileExists)
+        {
+            createSettingsFile();
+        }
+
+        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
         bool isLogged = settings.Login.isLogged;
         if (isLogged)
         {
-            this.StartCoroutine(this.getPatientRoutine("localhost:8080/patient/" + settings.Login.patient.id, this.getPatientResponseCallback));
+            this.StartCoroutine(this.getPatientRoutine(SendData.IP + endpoint + settings.Login.patient.id, this.getPatientResponseCallback));
         }
     }
 
@@ -35,12 +43,22 @@ public class LoginController : MonoBehaviour
             loginButton.interactable = true;
         }
     }
+    
+    public void createSettingsFile()
+    {
+        Settings settings = new Settings();
+        settings.Login = new Login();
+        settings.Login.isLogged = false;
+        settings.Login.patient = new Patient();
+        File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+    }
+
     /**
      * cuando se clickea el botón de ingresar, busca el paciente en la base de datos.
      */
     public void getPatient()
     {
-        this.StartCoroutine(this.getPatientRoutine("localhost:8080/patient/lc" + loginCode.text, this.getPatientResponseCallback));
+        this.StartCoroutine(this.getPatientRoutine(SendData.IP + endpoint + "/lc" + loginCode.text, this.getPatientResponseCallback));
     }
     /**
      * Se hace un get a los pacientes para ver si ese código de Logueo existe
@@ -80,7 +98,7 @@ public class LoginController : MonoBehaviour
                 settings.Login.patient.id = patientJson.id;
                 settings.Login.patient.firstName = patientJson.firstName;
                 settings.Login.patient.lastName = patientJson.lastName;
-                File.WriteAllText(Application.dataPath + "/settings.json", JsonUtility.ToJson(settings));
+                File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
             }
             else if (patientJson.loginCode == "" && patientJson.logged == true)
             {
@@ -98,8 +116,8 @@ public class LoginController : MonoBehaviour
                 settings.Login.patient.lastName = patientJson.lastName;
                 patientJson.logged = true;
                 patientJson.loginCode = null;
-                File.WriteAllText(Application.dataPath + "/settings.json", JsonUtility.ToJson(settings));
-                this.StartCoroutine(this.putPatientRoutine("localhost:8080/patient/" + patientJson.id));
+                File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+                this.StartCoroutine(this.putPatientRoutine(SendData.IP + endpoint + patientJson.id));
             }
         }
         else

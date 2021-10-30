@@ -6,8 +6,7 @@ using static MainSceneController;
 
 public class EncuentraAlNuevoController : GameController
 {
-    private const string DEV_ENDPOINT = "localhost:8080/results/encuentra-al-nuevo";
-    private const string PROD_ENDPOINT = "3.23.85.46:8080/results/encuentra-al-nuevo";
+    private const string ENDPOINT = "results/encuentra-al-nuevo";
 
     private List<int> actualSprites;
     private List<int> index;
@@ -234,7 +233,7 @@ public class EncuentraAlNuevoController : GameController
             ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId + "}";
 
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
-        sD.sendData(json, DEV_ENDPOINT);
+        sD.sendData(json, ENDPOINT);
     }
 
     /// <summary>
