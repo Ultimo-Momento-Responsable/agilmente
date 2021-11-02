@@ -140,7 +140,7 @@ public class HayUnoRepetido : ScriptableObject
             }
         }
 
-        int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
+        int countSpritesets = 2;
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
             figurePosition = locateFigures(0.2f, 0.2f, 0.2f, controller);
