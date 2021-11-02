@@ -57,6 +57,30 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
+    /// Posiciona las figuras en el lugar correcto
+    /// </summary>
+    /// <param name="size">Tamaño estándar</param>
+    /// <param name="minSize">Tamaño mínimo</param>
+    /// <param name="maxSize">Tamaño máximo</param>
+    /// <param name="controller">Controlador del juego.</param>
+    /// <returns></returns>
+    Vector2 locateFigures(float size, float minSize, float maxSize, HayUnoRepetidoController controller)
+    {
+        Vector2 figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
+        figurePosition = centerFigures(figurePosition);
+        if (controller.variableSizes)
+        {
+            size = Random.Range(minSize, maxSize);
+        }
+        while (thereIsSomethingIn(figurePosition, size))
+        {
+            figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
+            figurePosition = centerFigures(figurePosition);
+        }
+        return figurePosition;
+    }
+
+    /// <summary>
     /// Función que instancia las figuras que se mostrarán al inicio y al 
     /// aumentar cada nivel.
     /// </summary>
@@ -74,28 +98,18 @@ public class HayUnoRepetido : ScriptableObject
         for (int i = 0; i < figureQuantity; i++)
         {
             float size = 0.15f;
-            float minsize = 0.122f;
-            float maxsize = 0.2f;
+            float minSize = 0.122f;
+            float maxSize = 0.2f;
             if (MainSceneController.SessionHayUnoRepetido.spriteSet == 1)
             {
                 size = 0.19f;
-                minsize = 0.17f;
-                maxsize = 0.22f;
+                minSize = 0.17f;
+                maxSize = 0.22f;
             }
             
             if (!onTutorial)
             {
-                figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-                figurePosition = centerFigures(figurePosition);
-                if (controller.variableSizes)
-                {
-                    size = Random.Range(minsize, maxsize);
-                }
-                while (thereIsSomethingIn(figurePosition, size))
-                {
-                    figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-                    figurePosition = centerFigures(figurePosition);
-                }
+                figurePosition = locateFigures(size, minSize, maxSize, controller);
             }
             else
             {
@@ -105,7 +119,6 @@ public class HayUnoRepetido : ScriptableObject
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
                 }
             }
-            
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
             
@@ -125,23 +138,15 @@ public class HayUnoRepetido : ScriptableObject
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
-
         }
+
         int countSpritesets = Directory.GetDirectories(Application.dataPath + "/Resources/Sprites/Figures/").Length;
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
-            figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-            figurePosition = centerFigures(figurePosition);
-
-            while (thereIsSomethingIn(figurePosition,0.2f))
-            {
-                figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-                figurePosition = centerFigures(figurePosition);
-            }
+            figurePosition = locateFigures(0.2f, 0.2f, 0.2f, controller);
             
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
-            
             int spriteSetDistractor = Random.Range(1, countSpritesets + 1);
             while (spriteSetDistractor == MainSceneController.SessionHayUnoRepetido.spriteSet)
             {
