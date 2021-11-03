@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public abstract class GameController: MonoBehaviour
@@ -52,10 +51,7 @@ public abstract class GameController: MonoBehaviour
         }
     }
 
-    public void OnApplicationPause()
-    {
-        this.pause.pauseGame();
-    }
+    public abstract void OnApplicationPause();
 
     public void OnApplicationQuit()
     {
