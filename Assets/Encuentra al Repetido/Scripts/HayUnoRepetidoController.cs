@@ -159,7 +159,14 @@ public class HayUnoRepetidoController : GameController
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            pauseGame();
+            if (!hayUnoRepetido.onTutorial)
+            {
+                buttonPauseEvent();
+            }
+            else
+            {
+                goToMainScene();
+            }
         }
 
     }

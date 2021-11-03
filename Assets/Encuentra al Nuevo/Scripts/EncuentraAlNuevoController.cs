@@ -154,7 +154,14 @@ public class EncuentraAlNuevoController : GameController
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            buttonPauseEvent();
+            if (!encuentraAlNuevo.onTutorial)
+            {
+                buttonPauseEvent();
+            }
+            else
+            {
+                goToMainScene();
+            }
         }
 
     }
