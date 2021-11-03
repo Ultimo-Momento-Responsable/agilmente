@@ -290,4 +290,19 @@ public class HayUnoRepetidoController : GameController
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
+
+    /// <summary>
+    /// Pausa o vuelve al main menu, cuando la app pierde el focus.
+    /// </summary>
+    public override void OnApplicationPause()
+    {
+        if (hayUnoRepetido.onTutorial)
+        {
+            goToMainScene();
+        }
+        else
+        {
+            this.pause.pauseGame();
+        }
+    }
 }
