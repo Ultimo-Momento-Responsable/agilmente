@@ -1,0 +1,63 @@
+{
+	"body": true,
+	"scope": true,
+	"emoji": true,
+	"delimiter": ": ",
+    "types": [
+		{
+			"emoji": ":sparkles:",
+			"type": "Feat:",
+			"description": "New feature."
+		},
+		{
+			"emoji": ":bug:",
+			"type": "Fix:",
+			"description": "Fix for an error or bug."
+		},
+		{
+			"emoji": ":wrench:",
+			"type": "Chore:",
+			"description": "Changes in external dependencies or file movement."
+		},
+		{
+			"emoji": ":national_park:",
+			"type": "Assets:",
+			"description": "Add or modify resources of the project."
+		},
+		{
+			"emoji": ":gear:",
+			"type": "CI:",
+			"description": "Changes in configuration or build files."
+		},
+		{
+			"emoji": ":book:",
+			"type": "Docs:",
+			"description": "Documentation changes."
+		},
+		{
+			"emoji": ":timer_clock:",
+			"type": "Perf:",
+			"description": "Changes that enhances the code performance."
+		},
+		{
+			"emoji": ":memo:",
+			"type": "Refactor:",
+			"description": "Code refactorization."
+		},
+		{
+			"emoji": ":art:",
+			"type": "Style:",
+			"description": "Changes that don't affect the meaning of the code."
+		},
+		{
+			"emoji": ":white_check_mark:",
+			"type": "Test:",
+			"description": "Add, remove or modify unit tests."
+		},
+		{
+			"emoji": ":computer:",
+			"type": "UI:",
+			"description": "Changes that affect mainly the style and UI of the project."
+		}
+	]
+}
