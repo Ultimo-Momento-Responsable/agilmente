@@ -13,6 +13,7 @@ public class HayUnoRepetido : ScriptableObject
     private float a_timeElapsedSinceLastSuccess = 1;
     public bool onTutorial = true;
     public HayUnoRepetidoController hayUnoRepetidoController;
+    private float size;
 
     public int mistakes { get => a_mistakes; set => a_mistakes = value; }
     public int successes { get => a_successes; set => a_successes = value; }
@@ -63,7 +64,7 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="maxSize">Tamaño máximo</param>
     /// <param name="controller">Controlador del juego.</param>
     /// <returns></returns>
-    Vector2 locateFigures(float size, float minSize, float maxSize, HayUnoRepetidoController controller)
+    Vector2 locateFigures(float minSize, float maxSize, HayUnoRepetidoController controller)
     {
         Vector2 figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
         figurePosition = centerFigures(figurePosition);
@@ -96,7 +97,7 @@ public class HayUnoRepetido : ScriptableObject
         Vector2 figurePosition;
         for (int i = 0; i < figureQuantity; i++)
         {
-            float size = 0.15f;
+            size = 0.15f;
             float minSize = 0.122f;
             float maxSize = 0.2f;
             if (MainSceneController.SessionHayUnoRepetido.spriteSet == 1)
@@ -108,7 +109,7 @@ public class HayUnoRepetido : ScriptableObject
             
             if (!onTutorial)
             {
-                figurePosition = locateFigures(size, minSize, maxSize, controller);
+                figurePosition = locateFigures(minSize, maxSize, controller);
             }
             else
             {
@@ -140,9 +141,9 @@ public class HayUnoRepetido : ScriptableObject
         }
 
         int countSpritesets = 2;
-        if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
+        if (hayUnoRepetidoController.distractors && Random.value <= 1f && !onTutorial)
         {
-            figurePosition = locateFigures(0.2f, 0.2f, 0.2f, controller);
+            figurePosition = locateFigures(0.2f, 0.2f, controller);
             
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
