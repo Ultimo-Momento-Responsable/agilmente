@@ -288,6 +288,7 @@ public class HayUnoRepetidoController : GameController
     {
         pause.gameObject.SetActive(false);
         GameObject.Find("Timer").SetActive(false);
+        pauseButton.SetActive(false);
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
