@@ -141,7 +141,7 @@ public class HayUnoRepetido : ScriptableObject
         }
 
         int countSpritesets = 2;
-        if (hayUnoRepetidoController.distractors && Random.value <= 1f && !onTutorial)
+        if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
             figurePosition = locateFigures(0.2f, 0.2f, controller);
             
