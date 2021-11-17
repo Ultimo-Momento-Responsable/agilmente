@@ -122,6 +122,7 @@ public class HayUnoRepetidoController : GameController
                                 
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
+                    removeFigures();
                     sendData();
                 }
                 else
@@ -130,13 +131,13 @@ public class HayUnoRepetidoController : GameController
                     {
                         figureQuantity++;
                     }
+                    resetValues();
                 }
-                resetValues();
             }
 
             if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
             {
-                removeFigues();
+                removeFigures();
                 sendData();
             }
 
@@ -174,7 +175,7 @@ public class HayUnoRepetidoController : GameController
     /// <summary>
     /// Elimina las figuras que hay en la pantalla
     /// </summary>
-    private void removeFigues()
+    private void removeFigures()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
@@ -188,7 +189,7 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public void resetValues()
     {
-        removeFigues();
+        removeFigures();
         
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
