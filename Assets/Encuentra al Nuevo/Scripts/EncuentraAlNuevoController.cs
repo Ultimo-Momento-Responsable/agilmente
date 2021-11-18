@@ -209,8 +209,6 @@ public class EncuentraAlNuevoController : GameController
     {
         showEndScreen(this.encuentraAlNuevo.score);
         figureQuantity = -1;
-        limitTime = false;
-        limitLevel = false;
         string tBS;
         if (encuentraAlNuevo.successes > 0)
         {
@@ -229,13 +227,20 @@ public class EncuentraAlNuevoController : GameController
         {
             tBS = "null";
         }
+        string totalTime = encuentraAlNuevo.totalTime.ToString().Replace(",", ".");
+        if (limitTime)
+        {
+            totalTime = maxTime.ToString();
+        }
+        limitTime = false;
+        limitLevel = false;
 
         json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
             "', 'canceled': " + canceled +
             ", 'mistakes': " + encuentraAlNuevo.mistakes +
             ", 'successes': " + encuentraAlNuevo.successes +
             ", 'timeBetweenSuccesses': " + tBS +
-            ", 'totalTime': " + encuentraAlNuevo.totalTime.ToString().Replace(",", ".") +
+            ", 'totalTime': " + totalTime +
             ", 'game': 'Encuentra al Nuevo'" +
             ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId + "}";
 
