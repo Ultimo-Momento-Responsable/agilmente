@@ -118,7 +118,6 @@ public class LoginController : MonoBehaviour
                     patientJson.logged = true;
                     patientJson.loginCode = null;
                     var joinDate = DateTime.Now;
-                    Debug.Log(joinDate.ToString("dd-MM-yyyy HH:mm:ss"));
                     patientJson.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
                     settings.Login.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
                     File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
