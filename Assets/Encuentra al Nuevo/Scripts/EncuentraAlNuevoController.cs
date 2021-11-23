@@ -125,11 +125,14 @@ public class EncuentraAlNuevoController : GameController
                 else
                 {
                     figureQuantity++;
-                    resetValues();
+                    if (figureQuantity < 21)
+                    {
+                        resetValues();
+                    }
                 }
             }
 
-            if (limitTime && (encuentraAlNuevo.totalTime >= maxTime))
+            if ((limitTime && (encuentraAlNuevo.totalTime >= maxTime)) || figureQuantity > 20)
             {
                 removeFigures();
                 sendData();
