@@ -117,21 +117,24 @@ public class EncuentraAlNuevoController : GameController
                 dontTouchAgain = true;
                 encuentraAlNuevo.addSuccess(figureQuantity);
                 audioSource.PlayOneShot(sndSuccess);
-                
-                if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)) || (figureQuantity > 20))
+                if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)))
                 {
+                    removeFigures();
                     sendData();
                 }
                 else
                 {
                     figureQuantity++;
+                    if (figureQuantity < 21)
+                    {
+                        resetValues();
+                    }
                 }
-                resetValues();
             }
 
-            if (limitTime && (encuentraAlNuevo.totalTime >= maxTime))
+            if ((limitTime && (encuentraAlNuevo.totalTime >= maxTime)) || figureQuantity > 20)
             {
-                removeFigues();
+                removeFigures();
                 sendData();
             }
 
@@ -169,7 +172,7 @@ public class EncuentraAlNuevoController : GameController
     /// <summary>
     /// Elimina las figuras que hay en la pantalla
     /// </summary>
-    private void removeFigues()
+    private void removeFigures()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
@@ -183,7 +186,7 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     private void resetValues()
     {
-        removeFigues();
+        removeFigures();
         
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
 
@@ -209,8 +212,6 @@ public class EncuentraAlNuevoController : GameController
     {
         showEndScreen(this.encuentraAlNuevo.score);
         figureQuantity = -1;
-        limitTime = false;
-        limitLevel = false;
         string tBS;
         if (encuentraAlNuevo.successes > 0)
         {
@@ -229,13 +230,20 @@ public class EncuentraAlNuevoController : GameController
         {
             tBS = "null";
         }
+        string totalTime = encuentraAlNuevo.totalTime.ToString().Replace(",", ".");
+        if (limitTime)
+        {
+            totalTime = maxTime.ToString();
+        }
+        limitTime = false;
+        limitLevel = false;
 
         json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
             "', 'canceled': " + canceled +
             ", 'mistakes': " + encuentraAlNuevo.mistakes +
             ", 'successes': " + encuentraAlNuevo.successes +
             ", 'timeBetweenSuccesses': " + tBS +
-            ", 'totalTime': " + encuentraAlNuevo.totalTime.ToString().Replace(",", ".") +
+            ", 'totalTime': " + totalTime +
             ", 'game': 'Encuentra al Nuevo'" +
             ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId + "}";
 
@@ -293,6 +301,7 @@ public class EncuentraAlNuevoController : GameController
     {
         pause.gameObject.SetActive(false);
         GameObject.Find("Timer").SetActive(false);
+        pauseButton.SetActive(false);
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }

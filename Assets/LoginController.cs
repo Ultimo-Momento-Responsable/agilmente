@@ -100,24 +100,29 @@ public class LoginController : MonoBehaviour
                 settings.Login.patient.lastName = patientJson.lastName;
                 File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
             }
-            else if (patientJson.loginCode == "" && patientJson.logged == true)
+            else if (patientJson.loginCode == "" && patientJson.logged == true && patientJson.joinDate == settings.Login.joinDate)
             {
                 SceneManager.LoadScene("mainScene");
             } 
-            else
-            {
-                settings = new Settings();
-                settings.Login = new Login();
-                settings.Login.isLogged = true;
-                settings.Login.loginCode = patientJson.loginCode;
-                settings.Login.patient = new Patient();
-                settings.Login.patient.id = patientJson.id;
-                settings.Login.patient.firstName = patientJson.firstName;
-                settings.Login.patient.lastName = patientJson.lastName;
-                patientJson.logged = true;
-                patientJson.loginCode = null;
-                File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
-                this.StartCoroutine(this.putPatientRoutine(SendData.IP + endpoint + patientJson.id));
+            else {
+                if (loginCode.text.Length == 6)
+                {
+                    settings = new Settings();
+                    settings.Login = new Login();
+                    settings.Login.isLogged = true;
+                    settings.Login.loginCode = patientJson.loginCode;
+                    settings.Login.patient = new Patient();
+                    settings.Login.patient.id = patientJson.id;
+                    settings.Login.patient.firstName = patientJson.firstName;
+                    settings.Login.patient.lastName = patientJson.lastName;
+                    patientJson.logged = true;
+                    patientJson.loginCode = null;
+                    var joinDate = DateTime.Now;
+                    patientJson.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
+                    settings.Login.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
+                    File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+                    this.StartCoroutine(this.putPatientRoutine(SendData.IP + endpoint + patientJson.id));
+                }
             }
         }
         else
@@ -158,6 +163,7 @@ public class Login
 {
     public bool isLogged;
     public string loginCode;
+    public string joinDate;
     public Patient patient;
 }
 [System.Serializable]
@@ -178,4 +184,5 @@ public class PatientJson
     public string city;
     public string loginCode;
     public bool logged;
+    public string joinDate;
 }

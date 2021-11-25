@@ -122,6 +122,7 @@ public class HayUnoRepetidoController : GameController
                                 
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
+                    removeFigures();
                     sendData();
                 }
                 else
@@ -130,13 +131,13 @@ public class HayUnoRepetidoController : GameController
                     {
                         figureQuantity++;
                     }
+                    resetValues();
                 }
-                resetValues();
             }
 
             if (limitTime && (hayUnoRepetido.totalTime >= maxTime))
             {
-                removeFigues();
+                removeFigures();
                 sendData();
             }
 
@@ -174,7 +175,7 @@ public class HayUnoRepetidoController : GameController
     /// <summary>
     /// Elimina las figuras que hay en la pantalla
     /// </summary>
-    private void removeFigues()
+    private void removeFigures()
     {
         var objects = GameObject.FindGameObjectsWithTag("figures");
         foreach (GameObject o in objects)
@@ -188,7 +189,7 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public void resetValues()
     {
-        removeFigues();
+        removeFigures();
         
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
@@ -213,8 +214,7 @@ public class HayUnoRepetidoController : GameController
     {
         showEndScreen(this.hayUnoRepetido.score);
         figureQuantity = -1;
-        limitTime = false;
-        limitFigure = false;
+
         string tBS;
         if (hayUnoRepetido.successes > 0)
         {
@@ -233,7 +233,13 @@ public class HayUnoRepetidoController : GameController
         {
             tBS = "null";
         }
-
+        string totalTime = hayUnoRepetido.totalTime.ToString().Replace(",", ".");
+        if (limitTime)
+        {
+            totalTime = maxTime.ToString();
+        }
+        limitTime = false;
+        limitFigure = false;
         json =
             "{" +
                 "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
@@ -241,7 +247,7 @@ public class HayUnoRepetidoController : GameController
                 ", 'mistakes': " + hayUnoRepetido.mistakes +
                 ", 'successes': " + hayUnoRepetido.successes +
                 ", 'timeBetweenSuccesses': " + tBS +
-                ", 'totalTime': " + hayUnoRepetido.totalTime.ToString().Replace(",", ".") +
+                ", 'totalTime': " + totalTime +
                 ", 'game': 'Encuentra al Repetido'" +
                 ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
             "}";
@@ -287,6 +293,7 @@ public class HayUnoRepetidoController : GameController
     {
         pause.gameObject.SetActive(false);
         GameObject.Find("Timer").SetActive(false);
+        pauseButton.SetActive(false);
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
