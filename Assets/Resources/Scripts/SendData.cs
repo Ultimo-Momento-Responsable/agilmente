@@ -6,7 +6,7 @@ public class SendData : MonoBehaviour
 {
     public static string IP_PROD = "http://24.232.158.21:8080/";
     public static string IP_DEV = "http://localhost:8080/";
-    public static string IP = IP_DEV;
+    public static string IP = IP_PROD;
 
     /// <summary>
     /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
