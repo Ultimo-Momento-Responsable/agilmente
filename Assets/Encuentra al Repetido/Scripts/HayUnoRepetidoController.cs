@@ -250,7 +250,7 @@ public class HayUnoRepetidoController : GameController
                 ", 'totalTime': " + totalTime +
                 ", 'game': 'Encuentra al Repetido'" +
                 ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
-            "}";
+                ", 'score': " + hayUnoRepetido.score + "}";
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, ENDPOINT);
     }
