@@ -333,6 +333,9 @@ public class MainSceneController : MonoBehaviour
         }
     }
 
+    /**
+     * Muestra la pantalla del historial de partidas
+     */
     public void viewHistory()
     {
         SceneManager.LoadScene("viewGamesPlayedScene");
