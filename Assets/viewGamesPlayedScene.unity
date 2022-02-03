@@ -175,7 +175,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &43002412
 RectTransform:
   m_ObjectHideFlags: 0
@@ -192,7 +192,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 220}
+  m_AnchoredPosition: {x: 0, y: 220}
   m_SizeDelta: {x: 663.07, y: 234.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &43002413
@@ -976,6 +976,7 @@ MonoBehaviour:
   gameCanvas: {fileID: 1141689676}
   cardContainer: {fileID: 1971540}
   dateText: {fileID: 7757236815561775083, guid: 18a7fab9669b4cc42a1e4a9394a412a5, type: 3}
+  noGames: {fileID: 43002413}
 --- !u!4 &1283577387
 Transform:
   m_ObjectHideFlags: 0
