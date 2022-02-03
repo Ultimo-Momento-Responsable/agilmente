@@ -13,6 +13,7 @@ public class viewGamesPlayedController : MonoBehaviour
     public GameObject gameCanvas;
     public GameObject cardContainer;
     public Text dateText;
+    public Text noGames;
     private static string endpoint = "/results/by-patient-ordered/";
     void Start()
     {
@@ -49,41 +50,47 @@ public class viewGamesPlayedController : MonoBehaviour
     private void getResultsResponseCallback(string data)
     {
         ResultsJson resultsRequestJson = JsonUtility.FromJson<ResultsJson>("{\"results\":" + data + "}");
-        int i = 0;
-        cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, (resultsRequestJson.results.Length * 1.55f));
-        float fixPerDateText = 0f;
-        string date = "";
-        foreach (Result r in resultsRequestJson.results)
+        if (resultsRequestJson.results.Length == 0)
         {
-            DateTime dateTime = Convert.ToDateTime(r.completeDatetime);
-            if (date != dateTime.Date.ToString())
-            {
-                date = dateTime.Date.ToString();
-                Text dateTextInstance = Instantiate(dateText);
-                dateTextInstance.transform.parent = cardContainer.transform;
-                dateTextInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);
-                dateTextInstance.transform.localPosition = new Vector3(0, (i * -1.5f) - fixPerDateText - 0.5f, 0);
-                dateTextInstance.text = date;
-                fixPerDateText += 0.5f;
-            }
-            string hour = "";
-            if (dateTime.Hour < 10)
-            {
-                hour += "0";
-            }
-            hour += dateTime.Hour;
-            string minute = "";
-            if (dateTime.Minute < 10)
-            {
-                minute += "0";
-            }
-            minute += dateTime.Minute;
-            string time = hour + ":" + minute;
-
-            generateCard(i,r.game,time,r.score, fixPerDateText);
-            i++;
+            noGames.gameObject.SetActive(true);
         }
-        
+        else
+        {
+            int i = 0;
+            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, (resultsRequestJson.results.Length * 1.55f));
+            float fixPerDateText = 0f;
+            string date = "";
+            foreach (Result r in resultsRequestJson.results)
+            {
+                DateTime dateTime = Convert.ToDateTime(r.completeDatetime);
+                if (date != dateTime.ToString("dd/MM/yyyy"))
+                {
+                    date = dateTime.ToString("dd/MM/yyyy");
+                    Text dateTextInstance = Instantiate(dateText);
+                    dateTextInstance.transform.parent = cardContainer.transform;
+                    dateTextInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);
+                    dateTextInstance.transform.localPosition = new Vector3(-2f, (i * -1.5f) - fixPerDateText - 0.6f, 0);
+                    dateTextInstance.text = date;
+                    fixPerDateText += 0.5f;
+                }
+                string hour = "";
+                if (dateTime.Hour < 10)
+                {
+                    hour += "0";
+                }
+                hour += dateTime.Hour;
+                string minute = "";
+                if (dateTime.Minute < 10)
+                {
+                    minute += "0";
+                }
+                minute += dateTime.Minute;
+                string time = hour + ":" + minute;
+
+                generateCard(i, r.game, time, r.score, fixPerDateText);
+                i++;
+            }
+        }
     }
 
     /**
