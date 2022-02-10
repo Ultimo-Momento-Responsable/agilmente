@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SendData : MonoBehaviour
 {
-    public static string IP_PROD = "http://186.127.62.28:8080/";
+    public static string IP_PROD = "http://24.232.148.37:8080/";
     public static string IP_DEV = "http://localhost:8080/";
     public static string IP = IP_PROD;
 
     /// <summary>
-    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// FunciÃ³n que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public void sendData(string json, string endpoint)
@@ -26,7 +26,7 @@ public class SendData : MonoBehaviour
     }
 
     /// <summary>
-    /// Función que se encarga de enviar los datos al backend (agilmente-core).
+    /// FunciÃ³n que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>

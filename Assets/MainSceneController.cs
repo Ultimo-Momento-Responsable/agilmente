@@ -14,6 +14,7 @@ public class MainSceneController : MonoBehaviour
     public Button gameButton;
     public Button profileButton;
     public Button homeButton;
+    public Button viewGamesButton;
     public Sprite[] homeSprite;
     public Sprite[] profileSprite;
     public Sprite[] gameSprite;
@@ -60,6 +61,7 @@ public class MainSceneController : MonoBehaviour
 
         clearCards();
 
+        viewGamesButton.gameObject.SetActive(false);
         highlightButton(gameButton.GetComponent<Image>(), gameSprite[0]);
         highlightButton(profileButton.GetComponent<Image>(), profileSprite[1]);
         highlightButton(homeButton.GetComponent<Image>(), homeSprite[1]);
@@ -145,7 +147,7 @@ public class MainSceneController : MonoBehaviour
         highlightButton(profileButton.GetComponent<Image>(), profileSprite[1]);
         highlightButton(homeButton.GetComponent<Image>(), homeSprite[0]);
 
-
+        viewGamesButton.gameObject.SetActive(false);
         bodyText.SetActive(true);
         settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
         bodyText.GetComponent<Text>().text = "¡Hola de nuevo " + settings.Login.patient.firstName + "!";
@@ -162,13 +164,14 @@ public class MainSceneController : MonoBehaviour
      */
     public void btnProfile()
     {
+        viewGamesButton.gameObject.SetActive(true);
         gameText.SetActive(false);
         clearCards();
         title.text = "Perfil";
         highlightButton(gameButton.GetComponent<Image>(), gameSprite[1]);
         highlightButton(profileButton.GetComponent<Image>(), profileSprite[0]);
         highlightButton(homeButton.GetComponent<Image>(), homeSprite[1]);
-
+        viewGamesButton.enabled = true;
 
         bodyText.SetActive(false);
     }
@@ -328,6 +331,14 @@ public class MainSceneController : MonoBehaviour
              SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
              SceneManager.LoadScene("EncuentraAlNuevoScene");
         }
+    }
+
+    /**
+     * Muestra la pantalla del historial de partidas
+     */
+    public void viewHistory()
+    {
+        SceneManager.LoadScene("viewGamesPlayedScene");
     }
 
     [System.Serializable]

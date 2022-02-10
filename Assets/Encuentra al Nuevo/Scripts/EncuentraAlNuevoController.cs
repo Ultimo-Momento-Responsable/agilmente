@@ -245,7 +245,8 @@ public class EncuentraAlNuevoController : GameController
             ", 'timeBetweenSuccesses': " + tBS +
             ", 'totalTime': " + totalTime +
             ", 'game': 'Encuentra al Nuevo'" +
-            ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId + "}";
+            ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId +
+            ", 'score': " + encuentraAlNuevo.score + "}";
 
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, ENDPOINT);
