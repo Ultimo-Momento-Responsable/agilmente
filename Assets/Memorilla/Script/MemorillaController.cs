@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,43 @@ using UnityEngine;
 public class MemorillaController : GameController
 {
     [SerializeField]
-    private int height;
+    private int height = 4;
     [SerializeField]
-    private int width;
-    private List<List<GameObject>> grid;
-    // Start is called before the first frame update
+    private int width = 4;
+    [SerializeField]
+    private Vector3 offset;
+    [SerializeField]
+    private float cellSize;
+    [SerializeField]
+    private int numberOfStimuli = 7;
+    [SerializeField]
+    private int numberOfLevels = 5;
+    [SerializeField]
+    private float cellSpaceBetweenColumns = 0.1f;
+    [SerializeField]
+    private float cellSpaceBetweenRows = 0.1f;
+    private List<List<Cell>> grid;
+
+    public int Height { get => height; }
+    public int Width { get => width; }
+    public List<List<Cell>> Grid { get => grid; set => grid = value; }
+    public Vector3 Offset { get => offset; }
+    public float CellSize { get => cellSize; }
+    public int NumberOfStimuli { get => numberOfStimuli; }
+    public int NumberOfLevels { get => numberOfLevels; }
+
+    public GameObject CellPrefab;
+    public GameObject GridGameObject;
+
     void Start()
     {
-
+        cellSize = CellPrefab.gameObject.transform.localScale.x;
+        float originY = - (Height * CellSize + (Height - 1) * cellSpaceBetweenRows) / 2;
+        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
+        CreateGrid();
+        // CreateStimuli();
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -45,173 +72,41 @@ public class MemorillaController : GameController
     {
         throw new System.NotImplementedException();
     }
-}
-
-
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
-public class GameController : MonoBehaviour
-{
-    public GameObject gridCellPrefab;
-    public GameObject gridGameObject;
-    public float cellSize;
-    public float gridRows;
-    public float gridColumns;
-    public Vector3 offset;
-    private List<List<Cell>> board;
-    private bool isPlaying;
-    private bool inTurn;
-    public List<List<Cell>> Board { get => board; set => board = value; }
-
-    // Start is called before the first frame update
-    void Start()
+    private void CreateStimuli()
     {
-        isPlaying = false;
-        inTurn = false;
-        CreateGrid();
+        throw new NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (isPlaying && !inTurn)
-        {
-            StartCoroutine(HandleTurns());
-        }
-    }
-
-    private IEnumerator HandleTurns()
-    {
-        inTurn = true;
-
-        PlayOneTurn();
-        UpdateAllButtons();
-        yield return new WaitForSeconds(0.1f);
-
-        inTurn = false;
-    }
-
+    /// <summary>
+    /// Crea una grilla del tamaño especificado.
+    /// </summary>
     private void CreateGrid()
     {
-        Board = new List<List<Cell>>();
+        Grid = new List<List<Cell>>();
 
-        for (int i = 0; i < gridRows; i++)
+        for (int i = 0; i < Height; i++)
         {
             List<Cell> row = new List<Cell>();
-            for (int j = 0; j < gridColumns; j++)
+            for (int j = 0; j < Width; j++)
             {
-                GameObject instance = Instantiate(gridCellPrefab, gridGameObject.transform);
-                Cell instanceScript = instance.GetComponent<Cell>();
-                instanceScript.Y = i;
-                instanceScript.X = j;
-                row.Add(instanceScript);
-                instance.transform.localPosition = new Vector3(j * cellSize, i * cellSize, 0) + offset;
+                Cell cell = CreateCell(i, j);
+                row.Add(cell);
             }
-            Board.Add(row);
+            Grid.Add(row);
         }
     }
 
-    public void OnStartButtonPressed()
+    /// <summary>
+    /// Crea una celda en una posición particular.
+    /// </summary>
+    /// <param name="row">Fila de la celda.</param>
+    /// <param name="column">Columna de la celda.</param>
+    /// <returns></returns>
+    private Cell CreateCell(int row, int column)
     {
-        DisableAllButtons();
-        isPlaying = true;
-    }
-
-    private void DisableAllButtons()
-    {
-        Button[] buttons = GameObject.FindObjectsOfType<Button>();
-
-        foreach (Button button in buttons)
-        {
-            button.interactable = false;
-        }
-    }
-
-    private void UpdateAllButtons()
-    {
-        foreach (List<Cell> row in Board)
-        {
-            foreach (Cell cell in row)
-            {
-                cell.IsAlive = cell.WillBeAlive;
-                cell.UpdateColor();
-            }
-        }
-    }
-
-    private void PlayOneTurn()
-    {
-
-        for (int i = 0; i < gridRows; i++)
-        {
-            for (int j = 0; j < gridColumns; j++)
-            {
-                CalculateNumberOfAliveNeighbours(Board[i][j]);
-                if (Board[i][j].WillDie)
-                {
-                    Board[i][j].WillBeAlive = false;
-                }
-
-                if (Board[i][j].WillBeBorn)
-                {
-                    Board[i][j].WillBeAlive = true;
-                }
-            }
-        }
-    }
-
-    public Cell GetCellInPosition(int x, int y)
-    {
-        return Board[y][x];
-    }
-
-    public void CalculateNumberOfAliveNeighbours(Cell cell)
-    {
-        int aliveNeighbours = 0;
-
-        if (cell.Y > 0 && Board[cell.Y - 1][cell.X].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.Y < gridRows - 1 && Board[cell.Y + 1][cell.X].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.X > 0 && Board[cell.Y][cell.X - 1].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.X < gridColumns - 1 && Board[cell.Y][cell.X + 1].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.Y > 0 && cell.X > 0 && Board[cell.Y - 1][cell.X - 1].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.Y > 0 && cell.X < gridColumns - 1 && Board[cell.Y - 1][cell.X + 1].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.Y < gridRows - 1 && cell.X > 0 && Board[cell.Y + 1][cell.X - 1].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        if (cell.Y < gridRows - 1 && cell.X < gridColumns - 1 && Board[cell.Y + 1][cell.X + 1].IsAlive)
-        {
-            aliveNeighbours++;
-        }
-
-        cell.NumberOfNeighbours = aliveNeighbours;
+        GameObject cellGameObject = Instantiate(CellPrefab, GridGameObject.transform);
+        Cell cell = new Cell(row, column, cellGameObject);
+        cellGameObject.transform.localPosition = new Vector3(column * (CellSize + cellSpaceBetweenColumns), row * (CellSize + cellSpaceBetweenRows), 0);
+        return cell;
     }
 }
