@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +21,7 @@ public class MemorillaController : GameController
     [SerializeField]
     private float cellSpaceBetweenRows = 0.1f;
     private List<List<Cell>> grid;
+    private bool controlsEnabled;
 
     public int Height { get => height; }
     public int Width { get => width; }
@@ -30,18 +30,22 @@ public class MemorillaController : GameController
     public float CellSize { get => cellSize; }
     public int NumberOfStimuli { get => numberOfStimuli; }
     public int NumberOfLevels { get => numberOfLevels; }
+    public bool ControlsEnabled { get => controlsEnabled; set => controlsEnabled = value; }
 
     public GameObject CellPrefab;
     public GameObject GridGameObject;
 
     void Start()
     {
+        takeControlFromPlayer();
         cellSize = CellPrefab.gameObject.transform.localScale.x;
-        float originY = - (Height * CellSize + (Height - 1) * cellSpaceBetweenRows) / 2;
+        float originY = -(Height * CellSize + (Height - 1) * cellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         CreateGrid();
-        // CreateStimuli();
+        StartLevel();
     }
+
+
 
     void Update()
     {
@@ -72,9 +76,75 @@ public class MemorillaController : GameController
     {
         throw new System.NotImplementedException();
     }
-    private void CreateStimuli()
+
+    private void StartLevel()
     {
-        throw new NotImplementedException();
+        CleanGrid();
+        CreateStimuli();
+        StartCoroutine(StartCountdown());
+        ReturnControlToPlayer();
+    }
+
+    private void CleanGrid()
+    {
+        foreach (List<Cell> row in Grid)
+        {
+            foreach (Cell cell in row)
+            {
+                cell.Clear();
+            }
+        }
+    }
+    private void CreateStimuli()
+
+    {
+        for (int i = 0; i < NumberOfStimuli; i++)
+        {
+            while (true) {
+                int randomX = Random.Range(0, Width);
+                int randomY = Random.Range(0, Height);
+                Cell selectedCell = Grid[randomX][randomY];
+
+                if (!selectedCell.IsActive)
+                {
+                    selectedCell.IsActive = true;
+                    selectedCell.State = STATES.SELECTED;
+                    Debug.Log("El espacio " + randomX + " " + randomY + " fue asignado como activo");
+
+                    break;
+                }
+                Debug.Log("El espacio ya se encuentra ocupado, rerolleando");
+            }
+            // Elegir un (randomX, RandomY) asignarle el cuadro, si esta usado, rerollear
+            Debug.Log("asignacion de espacio numero: " + i);
+        }
+    }
+    private IEnumerator StartCountdown()
+    {
+        Debug.Log("Esperando 5 segundos antes de comenzar");
+        yield return new WaitForSeconds(5);
+        Debug.Log("Comienzo de juego");
+        HideStimuli();
+        ReturnControlToPlayer();
+    }
+    private void HideStimuli()
+    {
+        foreach (List<Cell> row in Grid)
+        {
+            foreach (Cell cell in row)
+            {
+                cell.State = STATES.UNSELECTED;
+            }
+        }
+    }
+    private void ReturnControlToPlayer()
+    {
+        controlsEnabled = true;
+    }
+
+    private void takeControlFromPlayer()
+    {
+        controlsEnabled = false;
     }
 
     /// <summary>
@@ -106,6 +176,7 @@ public class MemorillaController : GameController
     {
         GameObject cellGameObject = Instantiate(CellPrefab, GridGameObject.transform);
         Cell cell = new Cell(row, column, cellGameObject);
+        //cellGameObject.transform.localPosition = new Vector3(column * (CellSize + cellSpaceBetweenColumns), row * (CellSize + cellSpaceBetweenRows), 0);
         cellGameObject.transform.localPosition = new Vector3(column * (CellSize + cellSpaceBetweenColumns), row * (CellSize + cellSpaceBetweenRows), 0);
         return cell;
     }
