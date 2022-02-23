@@ -1,12 +1,45 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+/// <summary>
+/// Una lista de estados en los que puede estar la celda.
+/// </summary>
+/// <list>
+///     <item>
+///         <term><c>UNSELECTED</c></term>
+///         <description>
+///         Celda deseleccionada (color blanco). Estado por defecto.
+///         </description>
+///     </item>
+///     <item>
+///         <term><c>SELECTED</c></term>
+///         <description>
+///         Celda seleccionada (color azul). Ocurre cuando el paciente hace click 
+///         sobre la celda, o bien cuando se muestra la solución al comenzar el nivel.
+///         </description>
+///     </item>
+///     <item>
+///         <term><c>MISS</c></term>
+///         <description>
+///         Error (color rojo). Ocurre cuando se muestra la solución al final del 
+///         nivel, cuando la celda es parte de la solución pero no fue seleccionada.
+///         </description>
+///     </item>
+///     <item>
+///         <term><c>CORRECT</c></term>
+///         <description>
+///         Acierto (color verde). Ocurre cuando se muestra la solución al final del 
+///         nivel, cuando la celda es parte de la solución y el paciente la 
+///         seleccionó.
+///         </description>
+///     </item>
+/// </list>
 public enum STATES
 {
-    UNSELECTED,     // Esta celda no fue seleccionada para ser activa, color default
-    SELECTED,       // Esta celda fue seleccionada para ser activa, color ROJO?
-    MISS,           // Esta celda no fue seleccionada pero es activa, color so boludo
-    CORRECT,        // Esta celda fue seleccionada y es activa, color verde
+    UNSELECTED,
+    SELECTED,
+    MISS,
+    CORRECT,
 }
 public class Cell: MonoBehaviour
 {
@@ -63,6 +96,11 @@ public class Cell: MonoBehaviour
     /// Evento que gestiona lo que ocurre cuando 
     /// se clickea la celda.
     /// </summary>
+    /// <remarks>
+    /// Cambia el estado de la celda a <c>SELECTED</c>,
+    /// si estaba <c>UNSELECTED</c>, y delega el resto 
+    /// al controlador.
+    /// </remarks>
     public void OnCellClick()
     {
         if (!controller.ControlsEnabled)

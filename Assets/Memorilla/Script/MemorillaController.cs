@@ -146,7 +146,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Esconde los estímulos (la solución).
-    /// Cambia el estado de todas las seldas a UNSELECTED.
+    /// Cambia el estado de todas las celdas a UNSELECTED.
     /// </summary>
     private void HideStimuli()
     {
@@ -203,7 +203,7 @@ public class MemorillaController : GameController
     /// </summary>
     /// <param name="row">Fila de la celda.</param>
     /// <param name="column">Columna de la celda.</param>
-    /// <returns></returns>
+    /// <returns>La celda creada.</returns>
     private Cell CreateCell(int row, int column)
     {
         GameObject cellGameObject = Instantiate(CellPrefab, GridGameObject.transform);
@@ -229,6 +229,9 @@ public class MemorillaController : GameController
         }
     }
 
+    /// <summary>
+    /// Inicia la corrutina para empezar el siguiente nivel.
+    /// </summary>
     private void StartNextLevel()
     {
         StartCoroutine(WaitBeforeNextLevel(3));
