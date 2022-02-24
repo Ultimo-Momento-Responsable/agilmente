@@ -264,6 +264,7 @@ public class HayUnoRepetidoController : GameController
         {
             f.SetActive(false);
         }
+
     }
 
     /// <summary>
@@ -283,6 +284,7 @@ public class HayUnoRepetidoController : GameController
         {
             f.SetActive(true);
         }
+
     }
 
     /// <summary>
