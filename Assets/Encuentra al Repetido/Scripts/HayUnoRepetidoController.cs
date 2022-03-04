@@ -44,6 +44,7 @@ public class HayUnoRepetidoController : GameController
     public bool onTutorial = true;
     private GameObject[] a_figures;
     public GameObject endScreen;
+    public GameObject background;
 
     public GameObject[] figures
     {
