@@ -18,7 +18,6 @@ public class MainSceneController : MonoBehaviour
     public Sprite[] homeSprite;
     public Sprite[] profileSprite;
     public Sprite[] gameSprite;
-    public Sprite[] gameLogo;
     public GameObject gameText;
     private PlanningList planningRequestJson;
     public Camera camera;
@@ -105,19 +104,7 @@ public class MainSceneController : MonoBehaviour
                         gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
                     }
                 }
-                foreach (Sprite logo in gameLogo)
-                {
-                    if (planningCards.game == logo.name)
-                    {
-                        foreach (Image gameCardImage in gameCardInstance.GetComponentsInChildren<Image>())
-                        {
-                            if (gameCardImage.gameObject.name=="Logo")
-                            {
-                                gameCardImage.sprite = logo;
-                            }
-                        }
-                    }
-                }
+
                 foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
                 {
                     if (gameName.gameObject.name == "GameName")
@@ -257,19 +244,6 @@ public class MainSceneController : MonoBehaviour
                 gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
             }
         }
-        foreach (Sprite logo in gameLogo)
-        {
-            if (planningRequestJson.planningList[0].game == logo.name)
-            {
-                foreach (Image gameCardImage in gameCardInstance.GetComponentsInChildren<Image>())
-                {
-                    if (gameCardImage.gameObject.name == "Logo")
-                    {
-                        gameCardImage.sprite = logo;
-                    }
-                }
-            }
-        }
         foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
         {
             if (gameName.gameObject.name == "GameName")
@@ -287,7 +261,6 @@ public class MainSceneController : MonoBehaviour
                     gameName.text = "Sin límite de partidas";
                 }
             }
-            
         }
         btnClickPlayGame(gameCardInstance, 0);
     }
