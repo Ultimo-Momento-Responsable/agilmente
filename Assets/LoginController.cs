@@ -14,6 +14,7 @@ public class LoginController : MonoBehaviour
     public Button loginButton;
     private PatientJson patientJson;
     private static string endpoint = "patient/";
+    private bool networkError = false;
 
     void Start()
     {
@@ -69,9 +70,11 @@ public class LoginController : MonoBehaviour
 
         yield return request.SendWebRequest();
         var data = request.downloadHandler.text;
-
+        networkError = request.result == UnityWebRequest.Result.ConnectionError;
         if (callback != null)
+        {
             callback(data);
+        } 
     }
 
     /**
@@ -128,6 +131,14 @@ public class LoginController : MonoBehaviour
         else
         {
             loginError.SetActive(true);
+            if (networkError)
+            {
+                loginError.GetComponent<Text>().text = "Ha ocurrido un error, inténtelo de nuevo más tarde";
+            }
+            else
+            {
+                loginError.GetComponent<Text>().text = "El código ingresado no es válido";
+            }
         }
     }
 
