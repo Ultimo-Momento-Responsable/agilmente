@@ -1273,6 +1273,10 @@ MonoBehaviour:
   gameSprite:
   - {fileID: 21300000, guid: 303570ca53eb7d242a8ceb508b5ffc97, type: 3}
   - {fileID: 21300000, guid: aa33745bbd0b5f546a7a451f1f479ab3, type: 3}
+  gameLogo:
+  - {fileID: 21300000, guid: 94d99b3169fb27c4c9b2843f15d61a37, type: 3}
+  - {fileID: 21300000, guid: e2712731f205b84478893151f57fc0c5, type: 3}
+  - {fileID: 21300000, guid: 62120de20e704764787d6e92cf7d1272, type: 3}
   gameText: {fileID: 857048726}
   camera: {fileID: 506470673}
   gameCard: {fileID: 4343112129678271998, guid: 86ace72d4008fa44abef229e370a5e2e, type: 3}
