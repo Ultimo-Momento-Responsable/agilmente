@@ -100,12 +100,6 @@ public class HayUnoRepetido : ScriptableObject
             size = 0.15f;
             float minSize = 0.122f;
             float maxSize = 0.2f;
-            if (MainSceneController.SessionHayUnoRepetido.spriteSet == 1)
-            {
-                size = 0.19f;
-                minSize = 0.17f;
-                maxSize = 0.22f;
-            }
             
             if (!onTutorial)
             {
