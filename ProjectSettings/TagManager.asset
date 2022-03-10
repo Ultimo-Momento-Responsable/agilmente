@@ -13,6 +13,7 @@ TagManager:
   - tutorialhand
   - hayUnoRepeController
   - gameCard
+  - boxes
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Background
   - 
   - 
   - 
@@ -49,6 +50,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: background
+    uniqueID: 1053051255
+    locked: 0
+  - name: bgparticles
+    uniqueID: 1718650529
     locked: 0
   - name: figures
     uniqueID: 1711888993
