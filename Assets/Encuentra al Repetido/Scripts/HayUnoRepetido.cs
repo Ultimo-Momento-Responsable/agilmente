@@ -5,10 +5,13 @@ using Random = UnityEngine.Random;
 public class HayUnoRepetido : ScriptableObject
 {
     private int a_mistakes;
+    private int a_uniqueMistakes;
+    private bool isFirstMistake = true;
     private int a_successes;
     private float[] a_timeBetweenSuccesses;
     private float a_totalTime;
     private int a_score;
+    private int a_productivity;
     private float a_timeMarkFromLastSuccess;
     private float a_timeElapsedSinceLastSuccess = 1;
     public bool onTutorial = true;
@@ -22,6 +25,8 @@ public class HayUnoRepetido : ScriptableObject
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
     private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
+    public int uniqueMistakes { get => a_uniqueMistakes; set => a_uniqueMistakes = value; }
+    public int productivity { get => a_productivity; set => a_productivity = value; }
 
     public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
     {
@@ -217,6 +222,7 @@ public class HayUnoRepetido : ScriptableObject
         calculateTimeSinceLastSuccess();
         addPointsToScore(calculateScoreSuccess(figureQuantity));
         successes++;
+        isFirstMistake = true;
     }
 
     /// <summary>
@@ -228,6 +234,11 @@ public class HayUnoRepetido : ScriptableObject
     {
         addPointsToScore(calculateScoreMistake(figureQuantity));
         mistakes++;
+        if (isFirstMistake)
+        {
+            a_uniqueMistakes++;
+            isFirstMistake = false;
+        }
     }
 
     /// <summary>
@@ -277,5 +288,13 @@ public class HayUnoRepetido : ScriptableObject
     public void setStartTime()
     {
         timeMarkFromLastSuccess = Time.time;
+    }
+
+    /// <summary>
+    /// Calcula la productividad total al final de la partida.
+    /// </summary>
+    public void calculateProductivity()
+    {
+        a_productivity = a_successes - a_uniqueMistakes;
     }
 }
