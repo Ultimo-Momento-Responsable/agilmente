@@ -357,8 +357,33 @@ public class MainSceneController : MonoBehaviour
                     SessionEncuentraAlNuevo.variableSizes = bool.Parse(param.value);
                 }
             }
-             SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
-             SceneManager.LoadScene("EncuentraAlNuevoScene");
+            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
+            SceneManager.LoadScene("EncuentraAlNuevoScene");
+        }
+
+        if (planningRequestJson.planningList[index].game == "Memorilla")
+        {
+            foreach (Params param in planningRequestJson.planningList[index].parameters)
+            {
+                if (param.name == "maxLevel")
+                {
+                    SessionMemorilla.maxLevel = int.Parse(planningRequestJson.planningList[index].parameters[0].value);
+                }
+                if (param.name == "figureQuantity")
+                {
+                    SessionMemorilla.figureQuantity = int.Parse(param.value);
+                }
+                if (param.name == "numberOfRows")
+                {
+                    SessionMemorilla.numberOfRows = int.Parse(param.value);
+                }
+                if (param.name == "numberOfColumns")
+                {
+                    SessionMemorilla.numberOfColumns = int.Parse(param.value);
+                }
+            }
+            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
+            SceneManager.LoadScene("MemorillaScene");
         }
     }
 
@@ -413,5 +438,15 @@ public class MainSceneController : MonoBehaviour
         static public int gameSessionId;
         static public int spriteSet = 1;
         static public bool variableSizes = false;
+    }
+
+    [System.Serializable]
+    public class SessionMemorilla
+    {
+        static public int maxLevel = -1;
+        static public int gameSessionId;
+        static public int figureQuantity = 15;
+        static public int numberOfRows = 6;
+        static public int numberOfColumns = 8;
     }
 }
