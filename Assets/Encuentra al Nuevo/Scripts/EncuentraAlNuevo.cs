@@ -79,14 +79,6 @@ public class EncuentraAlNuevo : ScriptableObject
             float minsize = 0.122f;
             float maxsize = 0.2f;
 
-            // Ajusta el tamaño según el spriteset (flores mas grandes)
-            if (MainSceneController.SessionEncuentraAlNuevo.spriteSet == 1)
-            {
-                size = 0.19f;
-                minsize = 0.17f;
-                maxsize = 0.22f;
-            }
-
             Vector2 figurePosition;
             if (!onTutorial)
             {

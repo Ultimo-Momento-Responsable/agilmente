@@ -44,6 +44,7 @@ public class HayUnoRepetidoController : GameController
     public bool onTutorial = true;
     private GameObject[] a_figures;
     public GameObject endScreen;
+    public GameObject background;
 
     public GameObject[] figures
     {
@@ -212,6 +213,7 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void sendData()
     {
+        hayUnoRepetido.calculateProductivity();
         showEndScreen(this.hayUnoRepetido.score);
         figureQuantity = -1;
 
@@ -246,6 +248,7 @@ public class HayUnoRepetidoController : GameController
                 "', 'canceled': " + canceled +
                 ", 'mistakes': " + hayUnoRepetido.mistakes +
                 ", 'successes': " + hayUnoRepetido.successes +
+                ", 'productivity': " + hayUnoRepetido.productivity +
                 ", 'timeBetweenSuccesses': " + tBS +
                 ", 'totalTime': " + totalTime +
                 ", 'game': 'Encuentra al Repetido'" +
