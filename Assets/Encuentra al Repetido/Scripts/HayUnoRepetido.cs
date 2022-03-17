@@ -259,7 +259,11 @@ public class HayUnoRepetido : ScriptableObject
     /// <returns>El puntaje correspondiente al acierto.</returns>
     public int calculateScoreSuccess(int figureQuantity)
     {
-        return Mathf.RoundToInt(100 * figureQuantity / timeElapsedSinceLastSuccess);
+        if (timeElapsedSinceLastSuccess > 50)
+        {
+            return 0;
+        }
+        return 100 - Mathf.RoundToInt(2 * timeElapsedSinceLastSuccess);
     }
 
     /// <summary>
@@ -270,7 +274,7 @@ public class HayUnoRepetido : ScriptableObject
     /// <returns>El puntaje correspondiente a cometer el error.</returns>
     public int calculateScoreMistake(int figureQuantity)
     {
-        return -Mathf.RoundToInt(25 * timeElapsedSinceLastSuccess / figureQuantity);
+        return -5;
     }
 
     /// <summary>
