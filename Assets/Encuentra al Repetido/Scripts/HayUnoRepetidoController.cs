@@ -63,11 +63,16 @@ public class HayUnoRepetidoController : GameController
     {
         endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxLevel = SessionHayUnoRepetido.maxLevel;
-        maxTime = SessionHayUnoRepetido.maxTime;
-        variableSizes = SessionHayUnoRepetido.variableSizes;
-        distractors = SessionHayUnoRepetido.distractors;
-        maxFigures = SessionHayUnoRepetido.figureQuantity;
+        maxLevel = 20;
+        maxTime = -1;
+        variableSizes = false;
+        distractors = false;
+        maxFigures = 20;
+        //maxLevel = SessionHayUnoRepetido.maxLevel;
+        //maxTime = SessionHayUnoRepetido.maxTime;
+        //variableSizes = SessionHayUnoRepetido.variableSizes;
+        //distractors = SessionHayUnoRepetido.distractors;
+        //maxFigures = SessionHayUnoRepetido.figureQuantity;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
         if (maxTime == -1)
         {
@@ -214,6 +219,7 @@ public class HayUnoRepetidoController : GameController
     public override void sendData()
     {
         hayUnoRepetido.calculateProductivity();
+
         showEndScreen(this.hayUnoRepetido.score);
         figureQuantity = -1;
 
