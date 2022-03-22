@@ -217,6 +217,7 @@ public class HayUnoRepetidoController : GameController
     public override void sendData()
     {
         hayUnoRepetido.calculateProductivity();
+
         showEndScreen(this.hayUnoRepetido.score);
         figureQuantity = -1;
 
