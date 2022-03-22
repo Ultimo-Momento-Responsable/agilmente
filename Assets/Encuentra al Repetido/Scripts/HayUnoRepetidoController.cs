@@ -11,6 +11,7 @@ public class HayUnoRepetidoController : GameController
 
     private List<int> index;
     private string json;
+    private string pipedreamJson;
     private bool canceled = false;
     private int dontTouchTimer = 20;
 
@@ -21,6 +22,7 @@ public class HayUnoRepetidoController : GameController
     public AudioSource audioSource;
     public AudioClip sndSuccess;
     public HayUnoRepetido hayUnoRepetido;
+    public Settings settings;
     public GameObject particles;
     public Text timer;
     public Text tutorial;
@@ -63,16 +65,12 @@ public class HayUnoRepetidoController : GameController
     {
         endScreen.SetActive(false);
         hayUnoRepetido = new HayUnoRepetido(this);
-        maxLevel = 20;
-        maxTime = -1;
-        variableSizes = false;
-        distractors = false;
-        maxFigures = 20;
-        //maxLevel = SessionHayUnoRepetido.maxLevel;
-        //maxTime = SessionHayUnoRepetido.maxTime;
-        //variableSizes = SessionHayUnoRepetido.variableSizes;
-        //distractors = SessionHayUnoRepetido.distractors;
-        //maxFigures = SessionHayUnoRepetido.figureQuantity;
+        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
+        maxLevel = SessionHayUnoRepetido.maxLevel;
+        maxTime = SessionHayUnoRepetido.maxTime;
+        variableSizes = SessionHayUnoRepetido.variableSizes;
+        distractors = SessionHayUnoRepetido.distractors;
+        maxFigures = SessionHayUnoRepetido.figureQuantity;
         sprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + SessionHayUnoRepetido.spriteSet + "/");
         if (maxTime == -1)
         {
@@ -87,7 +85,6 @@ public class HayUnoRepetidoController : GameController
         hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
-
     void Update()
     {
         if (hayUnoRepetido.onTutorial)
@@ -215,6 +212,7 @@ public class HayUnoRepetidoController : GameController
     /// <summary>
     /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
+    /// Adicionalmente envia una copia al endpoint de Pipedream (TEST ONLY!)
     /// </summary>
     public override void sendData()
     {
@@ -260,8 +258,25 @@ public class HayUnoRepetidoController : GameController
                 ", 'game': 'Encuentra al Repetido'" +
                 ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
                 ", 'score': " + hayUnoRepetido.score + "}";
+
+        pipedreamJson =
+            "{" +
+                "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+                "', 'canceled': " + canceled +
+                ", 'mistakes': " + hayUnoRepetido.mistakes +
+                ", 'successes': " + hayUnoRepetido.successes +
+                ", 'productivity': " + hayUnoRepetido.productivity +
+                ", 'timeBetweenSuccesses': " + tBS +
+                ", 'totalTime': " + totalTime +
+                ", 'game': 'Encuentra al Repetido'" +
+                ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
+                ", 'score': " + hayUnoRepetido.score +
+                ", 'patient':'" + settings.Login.patient.lastName + ", " + settings.Login.patient.firstName + "'" +
+                "}";
+
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, ENDPOINT);
+        sD.sendDataPipedream(pipedreamJson);
     }
 
     /// <summary>
