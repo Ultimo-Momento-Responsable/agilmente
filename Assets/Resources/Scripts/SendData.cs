@@ -5,7 +5,7 @@ using UnityEngine;
 public class SendData : MonoBehaviour
 {
     public static string IP_PROD = "http://www.agilmente.tk:8009/";
-    public static string IP_DEV = "http://localhost:8080/";
+    public static string IP_DEV = "http://localhost:8009/";
     public static string IP = IP_PROD;
     public static string IP_PIPEDREAM = "https://c8a17f3bf731698d2108b5d4ccbf71ab.m.pipedream.net";
 
