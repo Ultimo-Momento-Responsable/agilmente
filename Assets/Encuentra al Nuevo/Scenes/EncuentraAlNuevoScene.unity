@@ -220,7 +220,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &65769610
 RectTransform:
   m_ObjectHideFlags: 0
@@ -850,8 +850,9 @@ MonoBehaviour:
   encuentraAlNuevo: {fileID: 0}
   particles: {fileID: 737375528}
   timer: {fileID: 1274048788}
-  tutorial: {fileID: 21196335}
-  tutorialHand: {fileID: 3986258821511131952, guid: d3b6ed57b81dff54aaa1be0576a7ac5f, type: 3}
+  tutorial: {fileID: 21196334}
+  handPref: {fileID: 3986258821511131952, guid: d3b6ed57b81dff54aaa1be0576a7ac5f, type: 3}
+  title: {fileID: 1774146258}
   pauseButton: {fileID: 65769609}
   startButton: {fileID: 1011558460}
   figureQuantity: 0

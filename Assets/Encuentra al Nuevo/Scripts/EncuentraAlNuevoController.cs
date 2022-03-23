@@ -24,8 +24,10 @@ public class EncuentraAlNuevoController : GameController
     public EncuentraAlNuevo encuentraAlNuevo;
     public GameObject particles;
     public Text timer;
-    public Text tutorial;
-    public GameObject tutorialHand;
+    public GameObject tutorial;
+    private GameObject tutorialHand;
+    public GameObject handPref;
+    public GameObject title;
     public GameObject pauseButton;
     public GameObject startButton;
 
@@ -88,15 +90,14 @@ public class EncuentraAlNuevoController : GameController
                 dontTouchAgain = true;
                 audioSource.PlayOneShot(sndSuccess);
                 encuentraAlNuevo.onTutorial = false;
-                GameObject.FindGameObjectWithTag("tutorial").SetActive(false);
+                tutorial.SetActive(false);
                 GameObject.FindGameObjectWithTag("tutorialhand").SetActive(false);
-                GameObject.FindGameObjectWithTag("title").SetActive(false);
-                tutorial.text = "";
+                title.SetActive(false);
+                tutorial.GetComponent<Text>().text = "";
                 figureQuantity++;
                 resetValues();
                 initTime = Time.time;
                 auxTime = initTime;
-                pauseButton.SetActive(true);
                 encuentraAlNuevo.setStartTime();
             }
         } 
@@ -157,14 +158,7 @@ public class EncuentraAlNuevoController : GameController
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!encuentraAlNuevo.onTutorial)
-            {
-                buttonPauseEvent();
-            }
-            else
-            {
-                goToMainScene();
-            }
+            goToMainScene();
         }
 
     }
@@ -257,6 +251,26 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void pauseGame()
     {
+        if (encuentraAlNuevo.onTutorial)
+        {
+            if (tutorial)
+            {
+                tutorial.SetActive(false);
+            }
+            tutorialHand = GameObject.FindGameObjectWithTag("tutorialhand");
+            if (tutorialHand)
+            {
+                tutorialHand.SetActive(false);
+            }
+            if (title)
+            {
+                title.SetActive(false);
+            }
+            if (prevTutorial)
+            {
+                startButton.SetActive(false);
+            }
+        }
         foreach (GameObject f in figures)
         {
             f.SetActive(false);
@@ -272,7 +286,7 @@ public class EncuentraAlNuevoController : GameController
         prevTutorial = false;
         resetValues();
         startButton.SetActive(false);
-        tutorial.text = "Presiona la nueva figura";
+        tutorial.GetComponent<Text>().text = "Presiona la nueva figura";
     }
 
     /// <summary>
@@ -288,6 +302,25 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void unpauseGame()
     {
+        if (encuentraAlNuevo.onTutorial)
+        {
+            if (tutorial)
+            {
+                tutorial.SetActive(true);
+            }
+            if (tutorialHand)
+            {
+                tutorialHand.SetActive(true);
+            }
+            if (title)
+            {
+                title.SetActive(true);
+            }
+            if (prevTutorial)
+            {
+                startButton.SetActive(true);
+            }
+        }
         foreach (GameObject f in figures)
         {
             f.SetActive(true);
@@ -312,12 +345,6 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void OnApplicationPause()
     {
-        if (encuentraAlNuevo.onTutorial)
-        {
-            goToMainScene();
-        } else
-        {
-            this.pause.pauseGame();
-        }
+        this.pause.pauseGame();
     }
 }

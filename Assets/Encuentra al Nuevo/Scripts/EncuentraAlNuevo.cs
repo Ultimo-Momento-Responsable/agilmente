@@ -125,7 +125,8 @@ public class EncuentraAlNuevo : ScriptableObject
             {
                 if (onTutorial)
                 {
-                    GameObject tHand = Instantiate(encuentraAlNuevoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                    GameObject tHand = Instantiate(encuentraAlNuevoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                    tHand.SetActive(true);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
