@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MainSceneController;
 
 public class MemorillaController : GameController
 {
@@ -23,6 +24,7 @@ public class MemorillaController : GameController
     private List<List<Cell>> grid;
     private bool controlsEnabled;
     private int numberOfGuesses;
+    private int levelsPlayed = 0;
 
     public int Height { get => height; }
     public int Width { get => width; }
@@ -45,13 +47,12 @@ public class MemorillaController : GameController
         cellSize = CellPrefab.gameObject.transform.localScale.x;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
+        height = SessionMemorilla.numberOfRows;
+        width = SessionMemorilla.numberOfColumns;
+        numberOfLevels = SessionMemorilla.maxLevel;
+        numberOfStimuli = SessionMemorilla.figureQuantity;
         CreateGrid();
         StartLevel();
-    }
-
-    void Update()
-    {
-
     }
 
     public override void cancelGame()
@@ -84,6 +85,10 @@ public class MemorillaController : GameController
     /// </summary>
     private void StartLevel()
     {
+        if (levelsPlayed >= numberOfLevels)
+        {
+            goToMainScene();
+        }
         NumberOfGuesses = NumberOfStimuli;
         CleanGrid();
         CreateStimuli();
@@ -223,6 +228,7 @@ public class MemorillaController : GameController
 
         if (NumberOfGuesses == 0)
         {
+            levelsPlayed++;
             TakeControlFromPlayer();
             ShowSolution();
             StartNextLevel();
