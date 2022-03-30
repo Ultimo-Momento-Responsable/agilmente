@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static MainSceneController;
 
 public class MemorillaController : GameController
 {
+
+    private const string ENDPOINT = "results/memorilla";
+
     [SerializeField]
     private int height = 7;
     [SerializeField]
@@ -25,6 +29,15 @@ public class MemorillaController : GameController
     private bool controlsEnabled;
     private int numberOfGuesses;
     private int levelsPlayed = 0;
+    private List<int> successesPerLevel;
+    private List<int> mistakesPerLevel;
+    private int streak = 0;
+    private List<float> timePerLevel;
+    private string totalTime;
+    private float initTime;
+    private float timePreLevel = 5f;
+    private float timePostLevel = 3f;
+
 
     public int Height { get => height; }
     public int Width { get => width; }
@@ -51,8 +64,12 @@ public class MemorillaController : GameController
         width = SessionMemorilla.numberOfColumns;
         numberOfLevels = SessionMemorilla.maxLevel;
         numberOfStimuli = SessionMemorilla.figureQuantity;
+        successesPerLevel = new List<int>();
+        mistakesPerLevel = new List<int>();
+        timePerLevel = new List<float>();
         CreateGrid();
         StartLevel();
+        initTime = Time.time;
     }
 
     public override void cancelGame()
@@ -72,7 +89,90 @@ public class MemorillaController : GameController
 
     public override void sendData()
     {
-        throw new System.NotImplementedException();
+        calculateStreak();
+        string successesPerLevelString = arrayToString(successesPerLevel);
+        string mistakesPerLevelString = arrayToString(mistakesPerLevel);
+        string timePerLevelString = arrayToString(timePerLevel);
+        totalTime = timePerLevel.Sum().ToString().Replace(",", ".");
+        string json =
+            "{" +
+                "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+                "', 'canceled': " + false +
+                ", 'mistakesPerLevel': " + mistakesPerLevelString +
+                ", 'successesPerLevel': " + successesPerLevelString +
+                ", 'streak': " + streak +
+                ", 'timePerLevel': " + timePerLevelString +
+                ", 'totalTime': " + totalTime +
+                ", 'game': 'Memorilla'" +
+                ", 'memorillaSessionId': " + SessionMemorilla.gameSessionId +
+                ", 'score': " + 0 + "}";
+        SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
+        sD.sendData(json, ENDPOINT);
+        goToMainScene();
+    }
+
+    /// <summary>
+    /// Recibe un array de enteros y lo convierte en texto para poder enviarlo al back.
+    /// </summary>
+    /// <param name="listInt"> array de enteros </param>
+    /// <returns></returns>
+    private string arrayToString(List<int> listInt)
+    {
+        string stringArray;
+        stringArray = "[";
+        foreach (int v in listInt)
+        {
+            stringArray += v.ToString().Replace(",", ".") + ",";
+        }
+        stringArray = stringArray.Remove(stringArray.Length - 1);
+        stringArray += "]";
+        return stringArray;
+    }
+
+    /// <summary>
+    ///  Recibe un array de floats y lo convierte en texto para poder enviarlo al back.
+    /// </summary>
+    /// <param name="listFloat"> array de floats </param>
+    /// <returns></returns>
+    private string arrayToString(List<float> listFloat)
+    {
+        string stringArray;
+        stringArray = "[";
+        foreach (float v in listFloat)
+        {
+            stringArray += v.ToString().Replace(",", ".") + ",";
+        }
+        stringArray = stringArray.Remove(stringArray.Length - 1);
+        stringArray += "]";
+        return stringArray;
+    }
+
+
+    /// <summary>
+    /// Calcula la racha de niveles jugados sin cometer errores.
+    /// </summary>
+    private void calculateStreak()
+    {
+        int auxStreak = 0;
+        foreach (int mistakes in mistakesPerLevel)
+        {
+            if (mistakes == 0)
+            {
+                auxStreak++;
+            }
+            else
+            {
+                if (auxStreak > streak)
+                {
+                    streak = auxStreak;
+                }
+                auxStreak = 0;
+            }
+        }
+        if (auxStreak > streak)
+        {
+            streak = auxStreak;
+        }
     }
 
     public override void unpauseGame()
@@ -87,12 +187,12 @@ public class MemorillaController : GameController
     {
         if (levelsPlayed >= numberOfLevels)
         {
-            goToMainScene();
+            sendData();
         }
         NumberOfGuesses = NumberOfStimuli;
         CleanGrid();
         CreateStimuli();
-        StartCoroutine(WaitWhileShowingSolution(5));
+        StartCoroutine(WaitWhileShowingSolution(timePreLevel));
     }
 
     /// <summary>
@@ -228,9 +328,9 @@ public class MemorillaController : GameController
 
         if (NumberOfGuesses == 0)
         {
-            levelsPlayed++;
             TakeControlFromPlayer();
-            ShowSolution();
+            ShowResult();
+            levelsPlayed++;
             StartNextLevel();
         }
     }
@@ -240,12 +340,12 @@ public class MemorillaController : GameController
     /// </summary>
     private void StartNextLevel()
     {
-        StartCoroutine(WaitBeforeNextLevel(3));
+        StartCoroutine(WaitBeforeNextLevel(timePostLevel));
     }
 
     /// <summary>
     /// Inicia una corrutina para esperar seconds segundos
-    /// antes de pasar al siguiente nivel.
+    /// antes de pasar al siguiente nivel mientras muestra el resultado.
     /// </summary>
     /// <param name="seconds">Cantidad de segundos a esperar.</param>
     /// <returns>Una corrutina.</returns>
@@ -256,16 +356,36 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Muestra la solucion correcta y los errores cometidos.
+    /// Muestra el resultado del ejercicio, además contabiliza los resultados del nivel.
     /// </summary>
-    private void ShowSolution()
+    private void ShowResult()
     {
+        int contMistakes = 0;
+        int contSuccesses = 0;
         foreach (List<Cell> row in Grid)
         {
             foreach (Cell cell in row)
             {
                 cell.CheckSolution();
+                if (cell.State == STATES.CORRECT)
+                {
+                    contSuccesses++;
+                }
+                if (cell.State == STATES.MISS)
+                {
+                    contMistakes++;
+                }
             }
+        }
+        mistakesPerLevel.Add(contMistakes);
+        successesPerLevel.Add(contSuccesses);
+        if (levelsPlayed == 0)
+        {
+            timePerLevel.Add(Time.time - initTime - timePreLevel);
+        }
+        else
+        {
+            timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed-1] - ((timePreLevel + timePostLevel)*(levelsPlayed)) - timePreLevel);
         }
     }
 }
