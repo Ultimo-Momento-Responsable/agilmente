@@ -382,7 +382,7 @@ public class MainSceneController : MonoBehaviour
                     SessionMemorilla.numberOfColumns = int.Parse(param.value);
                 }
             }
-            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
+            SessionMemorilla.gameSessionId = planningRequestJson.planningList[index].gameSessionId;
             SceneManager.LoadScene("MemorillaScene");
         }
     }
