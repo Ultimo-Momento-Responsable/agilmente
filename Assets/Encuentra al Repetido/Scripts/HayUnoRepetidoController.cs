@@ -208,47 +208,49 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void sendData()
     {
-        showEndScreen(this.hayUnoRepetido.score);
-        figureQuantity = -1;
+        if(hayUnoRepetido.successes > 0 | hayUnoRepetido.mistakes > 0) { 
+            showEndScreen(this.hayUnoRepetido.score);
+            figureQuantity = -1;
 
-        string tBS;
-        if (hayUnoRepetido.successes > 0)
-        {
-            tBS = "[";
-            foreach (float v in hayUnoRepetido.timeBetweenSuccesses)
+            string tBS;
+            if (hayUnoRepetido.successes > 0)
             {
-                if (v == 0)
+                tBS = "[";
+                foreach (float v in hayUnoRepetido.timeBetweenSuccesses)
                 {
-                    break;
+                    if (v == 0)
+                    {
+                        break;
+                    }
+                    tBS += v.ToString().Replace(",", ".") + ",";
                 }
-                tBS += v.ToString().Replace(",", ".") + ",";
+                tBS = tBS.Remove(tBS.Length - 1);
+                tBS += "]";
+            } else
+            {
+                tBS = "null";
             }
-            tBS = tBS.Remove(tBS.Length - 1);
-            tBS += "]";
-        } else
-        {
-            tBS = "null";
+            string totalTime = hayUnoRepetido.totalTime.ToString().Replace(",", ".");
+            if (limitTime)
+            {
+                totalTime = maxTime.ToString();
+            }
+            limitTime = false;
+            limitFigure = false;
+            json =
+                "{" +
+                    "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+                    "', 'canceled': " + canceled +
+                    ", 'mistakes': " + hayUnoRepetido.mistakes +
+                    ", 'successes': " + hayUnoRepetido.successes +
+                    ", 'timeBetweenSuccesses': " + tBS +
+                    ", 'totalTime': " + totalTime +
+                    ", 'game': 'Encuentra al Repetido'" +
+                    ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
+                    ", 'score': " + hayUnoRepetido.score + "}";
+            SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
+            sD.sendData(json, ENDPOINT);
         }
-        string totalTime = hayUnoRepetido.totalTime.ToString().Replace(",", ".");
-        if (limitTime)
-        {
-            totalTime = maxTime.ToString();
-        }
-        limitTime = false;
-        limitFigure = false;
-        json =
-            "{" +
-                "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
-                "', 'canceled': " + canceled +
-                ", 'mistakes': " + hayUnoRepetido.mistakes +
-                ", 'successes': " + hayUnoRepetido.successes +
-                ", 'timeBetweenSuccesses': " + tBS +
-                ", 'totalTime': " + totalTime +
-                ", 'game': 'Encuentra al Repetido'" +
-                ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
-                ", 'score': " + hayUnoRepetido.score + "}";
-        SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
-        sD.sendData(json, ENDPOINT);
     }
 
     /// <summary>

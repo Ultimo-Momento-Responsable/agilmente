@@ -204,46 +204,49 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void sendData()
     {
-        showEndScreen(this.encuentraAlNuevo.score);
-        figureQuantity = -1;
-        string tBS;
-        if (encuentraAlNuevo.successes > 0)
-        {
-            tBS = "[";
-            foreach (float v in encuentraAlNuevo.timeBetweenSuccesses)
+        if (encuentraAlNuevo.successes > 0 | encuentraAlNuevo.mistakes > 0) { 
+            showEndScreen(this.encuentraAlNuevo.score);
+            figureQuantity = -1;
+            string tBS;
+            if (encuentraAlNuevo.successes > 0)
             {
-                if (v == 0)
+                tBS = "[";
+                foreach (float v in encuentraAlNuevo.timeBetweenSuccesses)
                 {
-                    break;
+                    if (v == 0)
+                    {
+                        break;
+                    }
+                    tBS += v.ToString().Replace(",", ".") + ",";
                 }
-                tBS += v.ToString().Replace(",", ".") + ",";
+                tBS = tBS.Remove(tBS.Length - 1);
+                tBS += "]";
             }
-            tBS = tBS.Remove(tBS.Length - 1);
-            tBS += "]";
-        } else
-        {
-            tBS = "null";
-        }
-        string totalTime = encuentraAlNuevo.totalTime.ToString().Replace(",", ".");
-        if (limitTime)
-        {
-            totalTime = maxTime.ToString();
-        }
-        limitTime = false;
-        limitLevel = false;
+            else
+            {
+                tBS = "null";
+            }
+            string totalTime = encuentraAlNuevo.totalTime.ToString().Replace(",", ".");
+            if (limitTime)
+            {
+                totalTime = maxTime.ToString();
+            }
+            limitTime = false;
+            limitLevel = false;
 
-        json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
-            "', 'canceled': " + canceled +
-            ", 'mistakes': " + encuentraAlNuevo.mistakes +
-            ", 'successes': " + encuentraAlNuevo.successes +
-            ", 'timeBetweenSuccesses': " + tBS +
-            ", 'totalTime': " + totalTime +
-            ", 'game': 'Encuentra al Nuevo'" +
-            ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId +
-            ", 'score': " + encuentraAlNuevo.score + "}";
+            json = "{'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+                "', 'canceled': " + canceled +
+                ", 'mistakes': " + encuentraAlNuevo.mistakes +
+                ", 'successes': " + encuentraAlNuevo.successes +
+                ", 'timeBetweenSuccesses': " + tBS +
+                ", 'totalTime': " + totalTime +
+                ", 'game': 'Encuentra al Nuevo'" +
+                ", 'encuentraAlNuevoSessionId': " + SessionEncuentraAlNuevo.gameSessionId +
+                ", 'score': " + encuentraAlNuevo.score + "}";
 
-        SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
-        sD.sendData(json, ENDPOINT);
+            SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
+            sD.sendData(json, ENDPOINT);
+        }
     }
 
     /// <summary>
