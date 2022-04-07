@@ -126,7 +126,7 @@ public class HayUnoRepetido : ScriptableObject
             {
                 if (i == handPosition && onTutorial) 
                 {
-                    GameObject tHand = Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                    GameObject tHand = Instantiate(hayUnoRepetidoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);

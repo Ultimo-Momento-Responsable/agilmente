@@ -1106,8 +1106,9 @@ MonoBehaviour:
   hayUnoRepetido: {fileID: 0}
   particles: {fileID: 1116839700}
   timer: {fileID: 159968976}
-  tutorial: {fileID: 1096036734}
-  tutorialHand: {fileID: 3986258821511131952, guid: d3b6ed57b81dff54aaa1be0576a7ac5f, type: 3}
+  tutorial: {fileID: 1096036732}
+  title: {fileID: 1526718928}
+  handPref: {fileID: 3986258821511131952, guid: d3b6ed57b81dff54aaa1be0576a7ac5f, type: 3}
   pauseButton: {fileID: 1485317794}
   figureQuantity: 3
   variableSizes: 0
@@ -1286,7 +1287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1485317795
 RectTransform:
   m_ObjectHideFlags: 0

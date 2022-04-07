@@ -23,8 +23,10 @@ public class HayUnoRepetidoController : GameController
     public HayUnoRepetido hayUnoRepetido;
     public GameObject particles;
     public Text timer;
-    public Text tutorial;
-    public GameObject tutorialHand;
+    public GameObject tutorial;
+    private GameObject tutorialHand;
+    public GameObject title;
+    public GameObject handPref;
     public GameObject pauseButton;
 
 
@@ -92,10 +94,10 @@ public class HayUnoRepetidoController : GameController
                 dontTouchAgain = true;
                 audioSource.PlayOneShot(sndSuccess);
                 hayUnoRepetido.onTutorial = false;
-                GameObject.FindGameObjectWithTag("tutorial").SetActive(false);
+                tutorial.SetActive(false);
                 GameObject.FindGameObjectWithTag("tutorialhand").SetActive(false);
-                GameObject.FindGameObjectWithTag("title").SetActive(false);
-                tutorial.text = "";
+                title.SetActive(false);
+                tutorial.GetComponent<Text>().text = "";
                 resetValues();
                 initTime = Time.time;
                 auxTime = initTime;
@@ -161,14 +163,7 @@ public class HayUnoRepetidoController : GameController
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!hayUnoRepetido.onTutorial)
-            {
-                buttonPauseEvent();
-            }
-            else
-            {
-                goToMainScene();
-            }
+            buttonPauseEvent();
         }
 
     }
@@ -213,47 +208,49 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void sendData()
     {
-        showEndScreen(this.hayUnoRepetido.score);
-        figureQuantity = -1;
+        if(hayUnoRepetido.successes > 0 | hayUnoRepetido.mistakes > 0) { 
+            showEndScreen(this.hayUnoRepetido.score);
+            figureQuantity = -1;
 
-        string tBS;
-        if (hayUnoRepetido.successes > 0)
-        {
-            tBS = "[";
-            foreach (float v in hayUnoRepetido.timeBetweenSuccesses)
+            string tBS;
+            if (hayUnoRepetido.successes > 0)
             {
-                if (v == 0)
+                tBS = "[";
+                foreach (float v in hayUnoRepetido.timeBetweenSuccesses)
                 {
-                    break;
+                    if (v == 0)
+                    {
+                        break;
+                    }
+                    tBS += v.ToString().Replace(",", ".") + ",";
                 }
-                tBS += v.ToString().Replace(",", ".") + ",";
+                tBS = tBS.Remove(tBS.Length - 1);
+                tBS += "]";
+            } else
+            {
+                tBS = "null";
             }
-            tBS = tBS.Remove(tBS.Length - 1);
-            tBS += "]";
-        } else
-        {
-            tBS = "null";
+            string totalTime = hayUnoRepetido.totalTime.ToString().Replace(",", ".");
+            if (limitTime)
+            {
+                totalTime = maxTime.ToString();
+            }
+            limitTime = false;
+            limitFigure = false;
+            json =
+                "{" +
+                    "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
+                    "', 'canceled': " + canceled +
+                    ", 'mistakes': " + hayUnoRepetido.mistakes +
+                    ", 'successes': " + hayUnoRepetido.successes +
+                    ", 'timeBetweenSuccesses': " + tBS +
+                    ", 'totalTime': " + totalTime +
+                    ", 'game': 'Encuentra al Repetido'" +
+                    ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
+                    ", 'score': " + hayUnoRepetido.score + "}";
+            SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
+            sD.sendData(json, ENDPOINT);
         }
-        string totalTime = hayUnoRepetido.totalTime.ToString().Replace(",", ".");
-        if (limitTime)
-        {
-            totalTime = maxTime.ToString();
-        }
-        limitTime = false;
-        limitFigure = false;
-        json =
-            "{" +
-                "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
-                "', 'canceled': " + canceled +
-                ", 'mistakes': " + hayUnoRepetido.mistakes +
-                ", 'successes': " + hayUnoRepetido.successes +
-                ", 'timeBetweenSuccesses': " + tBS +
-                ", 'totalTime': " + totalTime +
-                ", 'game': 'Encuentra al Repetido'" +
-                ", 'hayUnoRepetidoSessionId': " + SessionHayUnoRepetido.gameSessionId +
-                ", 'score': " + hayUnoRepetido.score + "}";
-        SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
-        sD.sendData(json, ENDPOINT);
     }
 
     /// <summary>
@@ -261,6 +258,22 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void pauseGame()
     {
+        if (hayUnoRepetido.onTutorial)
+        {
+            if (tutorial)
+            {
+                tutorial.SetActive(false);
+            }
+            tutorialHand = GameObject.FindGameObjectWithTag("tutorialhand");
+            if (tutorialHand)
+            {
+                tutorialHand.SetActive(false);
+            }
+            if (title)
+            {
+                title.SetActive(false);
+            }
+        }
         foreach (GameObject f in figures)
         {
             f.SetActive(false);
@@ -281,6 +294,21 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void unpauseGame()
     {
+        if (hayUnoRepetido.onTutorial)
+        {
+            if (tutorial)
+            {
+                tutorial.SetActive(true);
+            }
+            if (tutorialHand)
+            {
+                tutorialHand.SetActive(true);
+            }
+            if (title)
+            {
+                title.SetActive(true);
+            }
+        }
         foreach (GameObject f in figures)
         {
             f.SetActive(true);
