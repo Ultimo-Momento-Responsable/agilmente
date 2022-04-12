@@ -26,7 +26,7 @@ public class SendData : MonoBehaviour
         StartCoroutine(Upload(www));
     }
 
-    public void sendDataPipedream(string json) 
+    public void sendDataPipedream(string json)
     {
         Dictionary<string, string> parameters = new Dictionary<string, string>();
         json = json.Replace("False", "false");
