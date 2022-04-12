@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 /// <summary>
 /// Una lista de estados en los que puede estar la celda.
 /// </summary>
@@ -49,8 +47,8 @@ public class Cell: MonoBehaviour
     private bool isActive;
     private MemorillaController controller;
 
-    public float PosX { get => column * (controller.CellSize + controller.CellSpaceBetweenColumns); }
-    public float PosY { get => row * (controller.CellSize + controller.CellSpaceBetweenRows); }
+    public float PosX { get => column * (controller.CellSize + controller.CellSpaceBetweenColumns) - 310; }
+    public float PosY { get => row * (controller.CellSize + controller.CellSpaceBetweenRows) - (controller.CellSize * controller.Height / 2); }
     public int Row { get => row; set => row = value; }
     public int Column { get => column; set => column = value; }
     public STATES State
