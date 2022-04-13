@@ -71,7 +71,10 @@ public class PauseMenu: MonoBehaviour
     /// </summary>
     public void pauseGame()
     {
-        this.gameController.pauseGame();
+        if (this.gameController)
+        {
+            this.gameController.pauseGame();
+        }
         this.pauseMenu.SetActive(true);
         Time.timeScale = 0;
         this.isPaused = true;
