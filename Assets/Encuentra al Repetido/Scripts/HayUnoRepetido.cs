@@ -24,10 +24,9 @@ public class HayUnoRepetido : ScriptableObject
     public float totalTime { get => a_totalTime; set => a_totalTime = value; }
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
-    private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
+    public float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
     public int uniqueMistakes { get => a_uniqueMistakes; set => a_uniqueMistakes = value; }
     public int productivity { get => a_productivity; set => a_productivity = value; }
-
     public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
     {
         timeMarkFromLastSuccess = Time.time;
@@ -105,7 +104,7 @@ public class HayUnoRepetido : ScriptableObject
             size = 0.15f;
             float minSize = 0.122f;
             float maxSize = 0.2f;
-            
+
             if (!onTutorial)
             {
                 figurePosition = locateFigures(minSize, maxSize, controller);
@@ -113,23 +112,23 @@ public class HayUnoRepetido : ScriptableObject
             else
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
-                while (thereIsSomethingIn(figurePosition,size))
+                while (thereIsSomethingIn(figurePosition, size))
                 {
                     figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
                 }
             }
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
-            
+
             fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
 
             // Si está en tutorial crea la mano en una fruta repetida
-            if (i < 2) 
+            if (i < 2)
             {
-                if (i == handPosition && onTutorial) 
+                if (i == handPosition && onTutorial)
                 {
                     GameObject tHand = Instantiate(hayUnoRepetidoController.tutorialHand, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
@@ -143,7 +142,7 @@ public class HayUnoRepetido : ScriptableObject
         if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
         {
             figurePosition = locateFigures(0.2f, 0.2f, controller);
-            
+
             GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
 
             int spriteSetDistractor = Random.Range(1, countSpritesets + 1);
@@ -158,7 +157,7 @@ public class HayUnoRepetido : ScriptableObject
             {
                 distractor.GetComponent<Transform>().localScale = new Vector3(0.15f, 0.15f, 1);
             }
-            
+
             hayUnoRepetidoController.distractorsSprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + spriteSetDistractor + "/");
             int pos = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
             distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
@@ -201,8 +200,8 @@ public class HayUnoRepetido : ScriptableObject
     /// <returns>Verdadero si hay algo.</returns>
     public bool thereIsSomethingIn(Vector2 position, float size)
     {
-        Vector2 p1 = position - new Vector2(0.45f, 0.5f + size/2);
-        Vector2 p2 = position + new Vector2(0.45f, 0.5f + size/2);
+        Vector2 p1 = position - new Vector2(0.45f, 0.5f + size / 2);
+        Vector2 p2 = position + new Vector2(0.45f, 0.5f + size / 2);
         Collider2D collider = Physics2D.OverlapArea(p1, p2);
 
         if (collider != null)
@@ -213,13 +212,16 @@ public class HayUnoRepetido : ScriptableObject
     }
 
     /// <summary>
-    /// Añade un acierto y calcula el puntaje.
+    /// Añade un acierto y calcula el puntaje. 
+    /// Adicionalmente controla si ha sucedido un timeout antes del acierto.
     /// </summary>
     /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
     /// hizo el acierto.</param>
     public void addSuccess(int figureQuantity)
     {
+
         calculateTimeSinceLastSuccess();
+        calculateTimeout(figureQuantity);
         addPointsToScore(calculateScoreSuccess(figureQuantity));
         successes++;
         isFirstMistake = true;
@@ -231,13 +233,36 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="figureQuantity">Cantidad de figuras en la pantalla cuando se 
     /// comete el error.</param>
     public void addMistake(int figureQuantity)
-    {
-        addPointsToScore(calculateScoreMistake(figureQuantity));
-        mistakes++;
+    {  
         if (isFirstMistake)
         {
             a_uniqueMistakes++;
             isFirstMistake = false;
+        }
+        addPointsToScore(calculateScoreMistake(figureQuantity));
+        mistakes++;
+    }
+
+    /// <summary>
+    /// Revisa si se cometio un timeout entre cada acierto, para restar a la productividad.
+    /// </summary>
+    /// <param name="figureQuantity"></param>
+    public void calculateTimeout(int figureQuantity)
+    {
+        if ((timeElapsedSinceLastSuccess >= figureQuantity) || (timeElapsedSinceLastSuccess >= 12))
+        {
+            addTimeoutMistake();
+        }
+    }
+
+    /// <summary>
+    /// Agrega un timeout al calculo de productividad, independientemente si luego se comete un acierto o error.
+    /// </summary>
+    public void addTimeoutMistake()
+    {
+        if (isFirstMistake) 
+        { 
+            a_uniqueMistakes++;
         }
     }
 
