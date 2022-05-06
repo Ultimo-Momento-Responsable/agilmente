@@ -56,6 +56,7 @@ public class MemorillaController : GameController
     public GameObject GridGameObject;
     public GameObject pauseButton;
     public GameObject endScreen;
+    public Text level;
     private bool canceled = false;
 
     void Start()
@@ -71,10 +72,10 @@ public class MemorillaController : GameController
         cellSize = 600/Width;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
-        
         CreateGrid();
         StartLevel();
         initTime = Time.time;
+        level.text = "Nivel " + (levelsPlayed + 1).ToString();
     }
 
     private void Update()
@@ -235,12 +236,17 @@ public class MemorillaController : GameController
     {
         if (levelsPlayed >= numberOfLevels)
         {
+            level.text = "";
             sendData();
+
         }
-        NumberOfGuesses = NumberOfStimuli;
-        CleanGrid();
-        CreateStimuli();
-        StartCoroutine(WaitWhileShowingSolution(timePreLevel));
+        else
+        {
+            NumberOfGuesses = NumberOfStimuli;
+            CleanGrid();
+            CreateStimuli();
+            StartCoroutine(WaitWhileShowingSolution(timePreLevel));
+        }
     }
 
     /// <summary>
@@ -264,8 +270,8 @@ public class MemorillaController : GameController
     /// las cuales conformarán la solución del mismo.
     /// </summary>
     private void CreateStimuli()
-
     {
+        level.text = "Nivel " + (levelsPlayed + 1).ToString();
         for (int i = 0; i < NumberOfStimuli; i++)
         {
             while (true) {
