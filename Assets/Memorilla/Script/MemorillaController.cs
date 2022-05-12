@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using static MainSceneController;
 
 public class MemorillaController : GameController
@@ -53,13 +54,14 @@ public class MemorillaController : GameController
 
     public GameObject CellPrefab;
     public GameObject GridGameObject;
+    public GameObject pauseButton;
+    public GameObject endScreen;
+    public Text level;
+    private bool canceled = false;
 
     void Start()
     {
         TakeControlFromPlayer();
-        cellSize = CellPrefab.gameObject.transform.localScale.x;
-        float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
-        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         height = SessionMemorilla.numberOfRows;
         width = SessionMemorilla.numberOfColumns;
         numberOfLevels = SessionMemorilla.maxLevel;
@@ -67,29 +69,82 @@ public class MemorillaController : GameController
         successesPerLevel = new List<int>();
         mistakesPerLevel = new List<int>();
         timePerLevel = new List<float>();
+        cellSize = 600/Width;
+        float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
+        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         CreateGrid();
         StartLevel();
         initTime = Time.time;
+        level.text = "Nivel " + (levelsPlayed + 1).ToString();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            buttonPauseEvent();
+        }
     }
 
     public override void cancelGame()
     {
-        throw new System.NotImplementedException();
+        this.canceled = true;
     }
 
     public override void OnApplicationPause()
     {
-        throw new System.NotImplementedException();
+        this.pause.pauseGame();
     }
 
     public override void pauseGame()
     {
-        throw new System.NotImplementedException();
+        deactivateOrActivateCells(false);
+    }
+
+    public override void unpauseGame()
+    {
+        if (Grid != null)
+        {
+            deactivateOrActivateCells(true);
+        }
+    }
+
+    /// <summary>
+    /// Desactiva o activa las celdas según necesidad
+    /// </summary>
+    /// <param name="state"></param>
+    void deactivateOrActivateCells(bool state)
+    {
+        foreach (List<Cell> row in Grid)
+        {
+            foreach (Cell cell in row)
+            {
+                cell.gameObject.SetActive(state);
+                if (state)
+                {
+                    cell.gameObject.GetComponentInChildren<Animator>().SetInteger("State", (int)cell.State);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Muestra la pantalla de fin del juego con el puntaje.
+    /// </summary>
+    /// <param name="score">Puntaje final.</param>
+    public void showEndScreen(int score)
+    {
+        deactivateOrActivateCells(false);
+        pause.gameObject.SetActive(false);
+        pauseButton.SetActive(false);
+        endScreen.SetActive(true);
+        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
 
     public override void sendData()
     {
         calculateStreak();
+        showEndScreen(0);
         string successesPerLevelString = arrayToString(successesPerLevel);
         string mistakesPerLevelString = arrayToString(mistakesPerLevel);
         string timePerLevelString = arrayToString(timePerLevel);
@@ -97,7 +152,7 @@ public class MemorillaController : GameController
         string json =
             "{" +
                 "'completeDatetime': '" + System.DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss") +
-                "', 'canceled': " + false +
+                "', 'canceled': " + this.canceled +
                 ", 'mistakesPerLevel': " + mistakesPerLevelString +
                 ", 'successesPerLevel': " + successesPerLevelString +
                 ", 'streak': " + streak +
@@ -108,7 +163,6 @@ public class MemorillaController : GameController
                 ", 'score': " + 0 + "}";
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, ENDPOINT);
-        goToMainScene();
     }
 
     /// <summary>
@@ -175,11 +229,6 @@ public class MemorillaController : GameController
         }
     }
 
-    public override void unpauseGame()
-    {
-        throw new System.NotImplementedException();
-    }
-
     /// <summary>
     /// Inicializa el nivel actual.
     /// </summary>
@@ -187,12 +236,17 @@ public class MemorillaController : GameController
     {
         if (levelsPlayed >= numberOfLevels)
         {
+            level.text = "";
             sendData();
+
         }
-        NumberOfGuesses = NumberOfStimuli;
-        CleanGrid();
-        CreateStimuli();
-        StartCoroutine(WaitWhileShowingSolution(timePreLevel));
+        else
+        {
+            NumberOfGuesses = NumberOfStimuli;
+            CleanGrid();
+            CreateStimuli();
+            StartCoroutine(WaitWhileShowingSolution(timePreLevel));
+        }
     }
 
     /// <summary>
@@ -216,8 +270,8 @@ public class MemorillaController : GameController
     /// las cuales conformarán la solución del mismo.
     /// </summary>
     private void CreateStimuli()
-
     {
+        level.text = "Nivel " + (levelsPlayed + 1).ToString();
         for (int i = 0; i < NumberOfStimuli; i++)
         {
             while (true) {
@@ -312,6 +366,7 @@ public class MemorillaController : GameController
     private Cell CreateCell(int row, int column)
     {
         GameObject cellGameObject = Instantiate(CellPrefab, GridGameObject.transform);
+        cellGameObject.GetComponent<Transform>().localScale = new Vector3(CellSize, CellSize, 1);
         Cell cell = cellGameObject.GetComponent<Cell>();
         cell.Create(row, column, this);
         cellGameObject.transform.localPosition = new Vector3(cell.PosX, cell.PosY, 0);
