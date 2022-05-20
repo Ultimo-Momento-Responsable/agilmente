@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,13 +12,10 @@ public class MainSceneController : MonoBehaviour
     public Text title;
     public GameObject bodyText;
     private Settings settings;
-    public Button gameButton;
     public Button profileButton;
-    public Button homeButton;
+    public Button backButton;
     public Button viewGamesButton;
-    public Sprite[] homeSprite;
-    public Sprite[] profileSprite;
-    public Sprite[] gameSprite;
+    public Button notificationButton;
     public Sprite[] gameLogo;
     public GameObject gameText;
     private PlanningList planningRequestJson;
@@ -48,100 +46,6 @@ public class MainSceneController : MonoBehaviour
         }
     }
 
-    public void highlightButton(Image buttonImage, Sprite highlightedButton)
-    {
-        buttonImage.sprite = highlightedButton;
-    }
-
-    /**
-     * Muestra todos los elementos de la seccion "juegos" de la aplicacion
-     */
-    public void btnGames()
-    {
-        title.text = "Jugar";
-
-        clearCards();
-
-        viewGamesButton.gameObject.SetActive(false);
-        highlightButton(gameButton.GetComponent<Image>(), gameSprite[0]);
-        highlightButton(profileButton.GetComponent<Image>(), profileSprite[1]);
-        highlightButton(homeButton.GetComponent<Image>(), homeSprite[1]);
-        bodyText.SetActive(true);
-        bodyText.GetComponent<Text>().text = "Juegos pendientes";
-
-        if (isThereAPlanning())
-        {
-            gameText.SetActive(false);
-        }
-        else
-        {
-            gameText.SetActive(true);
-        }
-
-        /**
-         * Por cada juego pendiente, genera una card con la informacion del juego
-         * Define un contenedor scrolleable con tamaño igual a la cantidad de cards generadas
-         */
-        if (planningRequestJson.planningList.Length != 0)
-        {
-            int i = 0;
-            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, (planningRequestJson.planningList.Length * 1.55f));
-            foreach (Planning planningCards in planningRequestJson.planningList)
-            {
-                Button gameCardInstance = Instantiate(gameCard);
-                
-                gameCardInstance.transform.parent = cardContainer.transform;
-                gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
-                gameCardInstance.transform.localPosition = new Vector3(0, -1 + (i * -1.5f), 0); //Tamaño de cards + offset
-
-                foreach (Params p in planningCards.parameters)
-                {
-                    if (p.name == "maxLevel")
-                    {
-                        gameCardInstance.transform.Find("maxTime").gameObject.SetActive(false);
-                    }
-                    if (p.name == "maximumTime")
-                    {
-                        gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
-                    }
-                }
-
-                foreach (Sprite logo in gameLogo)
-                {
-                    if (planningCards.game == logo.name)
-                    {
-                        foreach (Image gameCardImage in gameCardInstance.GetComponentsInChildren<Image>())
-                        {
-                            if (gameCardImage.gameObject.name == "Logo")
-                            {
-                                gameCardImage.sprite = logo;
-                            }
-                        }
-                    }
-                }
-
-                foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
-                {
-                    if (gameName.gameObject.name == "GameName")
-                    {
-                        gameName.text = planningCards.game;
-                    }
-                    if (gameName.gameObject.name == "NumberOfSessions")
-                    {
-                        if (planningCards.numberOfSession != -1)
-                        {
-                            gameName.text = "Quedan " + planningCards.numberOfSession + " sesiones restantes";
-                        } else
-                        {
-                            gameName.text = "Sin límite de partidas";
-                        }
-                    }
-                }
-                btnClickPlayGame(gameCardInstance, i);
-                i++;
-            }
-        }
-    }
 
     /**
      * Llama al inicio del juego cuando se clickea en alguna de las cards
@@ -154,41 +58,134 @@ public class MainSceneController : MonoBehaviour
     /**
      * Muestra todos los elementos de la seccion "Inicio" de la aplicacion
      */
-    public void btnHome()
+    public void ShowGameCards()
     {
         clearCards();
-        title.text = "Inicio";
-        highlightButton(gameButton.GetComponent<Image>(), gameSprite[1]);
-        highlightButton(profileButton.GetComponent<Image>(), profileSprite[1]);
-        highlightButton(homeButton.GetComponent<Image>(), homeSprite[0]);
-
         viewGamesButton.gameObject.SetActive(false);
         bodyText.SetActive(true);
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
-        bodyText.GetComponent<Text>().text = "¡Hola de nuevo " + settings.Login.patient.firstName + "!";
-        gameText.SetActive(true);
+
         if (isThereAPlanning())
         {
-            gameText.GetComponent<Text>().text = "¡Juega ahora!";
-            generateCard();
+            gameText.GetComponent<Text>().text = "Juegos pendientes";
+        }
+        else
+        {
+            gameText.GetComponent<Text>().text = "No tiene ningún juego pendiente";
+        }
+
+        /**
+         * Por cada juego pendiente, genera una card con la informacion del juego
+         * Define un contenedor scrolleable con tamaño igual a la cantidad de cards generadas
+         */
+        if (planningRequestJson.planningList.Length != 0)
+        {
+            int i = 0;
+            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, (planningRequestJson.planningList.Length * 1.65f));
+            bodyText.transform.localPosition = new Vector2(0, -0.6f);
+            gameText.transform.localPosition = new Vector2(0, -1.6f);
+            foreach (Planning planningCards in planningRequestJson.planningList)
+            {
+                Button gameCardInstance = Instantiate(gameCard);
+
+                gameCardInstance.transform.parent = cardContainer.transform;
+                gameCardInstance.transform.localScale = new Vector2(0.0078f, 0.0078f);          //Escala actual del canvas
+                gameCardInstance.transform.localPosition = new Vector3(0, -2.3f + (i * -1.3f), 0); //Tamaño de cards + offset
+
+                foreach (Sprite logo in gameLogo)
+                {
+                    if (planningCards.game == logo.name)
+                    {
+                        foreach (Image gameCardImage in gameCardInstance.GetComponentsInChildren<Image>())
+                        {
+                            if (gameCardImage.gameObject.name == "Logo")
+                            {
+                                gameCardImage.sprite = logo;
+                            }
+                            if (gameCardImage.gameObject.name == "MedalComplete")
+                            {
+                                if (planningCards.numberOfSession == 0)
+                                {
+                                    gameCardImage.gameObject.SetActive(true);
+                                } else
+                                {
+                                    gameCardImage.gameObject.SetActive(false);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
+                {
+                    if (gameName.gameObject.name == "GameName")
+                    {
+                        gameName.text = planningCards.game;
+                    }
+                    if (planningCards.numberOfSession > 0)
+                    {
+                        if (gameName.gameObject.name == "NumberOfSessions")
+                        {
+                            gameName.text = "Quedan " + planningCards.numberOfSession + " partidas por jugar";
+                        }
+                    }
+                    else if (planningCards.numberOfSession == 0)
+                    {
+                        if (gameName.gameObject.name == "NumberOfSessions")
+                        {
+                            gameName.text = "No quedan partidas restantes";
+                        }
+                    } else
+                    {
+                        if (gameName.gameObject.name == "NumberOfSessions")
+                        {
+                            gameName.text = "¡Juega libremente!";
+                        }
+                        gameName.color = gameCardInstance.GetComponent<Image>().color;
+                    }
+                }
+                if (planningCards.numberOfSession == -1)
+                {
+                    gameCardInstance.GetComponent<Image>().color = Color.white;
+                }
+                if (planningCards.numberOfSession != 0)
+                {
+                    btnClickPlayGame(gameCardInstance, i);
+                }
+                i++;
+            }
         }
     }
     
     /**
-     * Muestra todos los elementos de la seccion "Perfil" de la aplicacion
+     * Muestra todos los elementos de la sección "Perfil" de la aplicación
      */
-    public void btnProfile()
+    public void GoToProfile()
     {
         viewGamesButton.gameObject.SetActive(true);
+        backButton.gameObject.SetActive(true);
+        profileButton.gameObject.SetActive(false);
+        notificationButton.gameObject.SetActive(false);
         gameText.SetActive(false);
         clearCards();
-        title.text = "Perfil";
-        highlightButton(gameButton.GetComponent<Image>(), gameSprite[1]);
-        highlightButton(profileButton.GetComponent<Image>(), profileSprite[0]);
-        highlightButton(homeButton.GetComponent<Image>(), homeSprite[1]);
         viewGamesButton.enabled = true;
-
+        title.text = "Perfil";
         bodyText.SetActive(false);
+    }
+
+    /**
+     * Vuelve a la pantalla de Home
+     */
+    public void BackToHome()
+    {
+        viewGamesButton.gameObject.SetActive(false);
+        backButton.gameObject.SetActive(false);
+        profileButton.gameObject.SetActive(true);
+        notificationButton.gameObject.SetActive(true);
+        gameText.SetActive(true);
+        bodyText.SetActive(true);
+        title.text = "AgilMente";
+        clearCards();
+        ShowGameCards();
     }
 
     /**
@@ -219,12 +216,47 @@ public class MainSceneController : MonoBehaviour
      */
     private void getPlanningResponseCallback(string data) { 
         planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
-        if (isThereAPlanning())
-        {
-            gameText.GetComponent<Text>().text = "¡Juega ahora!";
-            generateCard();
+        planningRequestJson.planningList = SortPlannings(planningRequestJson.planningList);
+        ShowGameCards();
+    }
 
+    /**
+     * Ordena los juegos de las plannings para que queden los que tienen sesiones arriba, en el medio los libres, y abajo los completados.
+     */
+    private Planning[] SortPlannings(Planning[] plannings)
+    {
+        List<Planning> planningList = new List<Planning>();
+        foreach (Planning p in plannings)
+        {
+            if (p.numberOfSession > 0)
+            {
+                if (!planningList.Contains(p))
+                {
+                    planningList.Add(p);
+                }
+            }
         }
+        foreach (Planning p in plannings)
+        {
+            if (p.numberOfSession == -1)
+            {
+                if (!planningList.Contains(p))
+                {
+                    planningList.Add(p);
+                }
+            }
+        }
+        foreach (Planning p in plannings)
+        {
+            if (p.numberOfSession == 0)
+            {
+                if (!planningList.Contains(p))
+                {
+                    planningList.Add(p);
+                }
+            }
+        }
+        return planningList.ToArray();
     }
 
     /**
@@ -232,68 +264,9 @@ public class MainSceneController : MonoBehaviour
      */
     private bool isThereAPlanning()
     {
-        if (planningRequestJson.planningList.Length != 0)
-        {
-            return true;
-        }
-        return false;
+        return planningRequestJson.planningList.Length > 0;
     }
 
-    /**
-     * Crea la card del inicio
-     */
-    private void generateCard()
-    {
-        Button gameCardInstance = Instantiate(gameCard);
-        gameCardInstance.transform.SetParent(gameCanvas.transform);
-        gameCardInstance.transform.localScale = new Vector2(1, 1);
-        gameCardInstance.transform.position = new Vector3(0, -0.1f, 0);
-        foreach (Params p in planningRequestJson.planningList[0].parameters)
-        {
-            if (p.name == "maxLevel")
-            {
-                gameCardInstance.transform.Find("maxTime").gameObject.SetActive(false);
-            }
-            if (p.name == "maximumTime")
-            {
-                gameCardInstance.transform.Find("maxLevel").gameObject.SetActive(false);
-            }
-        }
-
-        foreach (Sprite logo in gameLogo)
-        {
-            if (planningRequestJson.planningList[0].game == logo.name)
-            {
-                foreach (Image gameCardImage in gameCardInstance.GetComponentsInChildren<Image>())
-                {
-                    if (gameCardImage.gameObject.name == "Logo")
-                    {
-                        gameCardImage.sprite = logo;
-                    }
-                }
-            }
-        }
-
-        foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
-        {
-            if (gameName.gameObject.name == "GameName")
-            {
-                gameName.text = planningRequestJson.planningList[0].game;
-            }
-            if (gameName.gameObject.name == "NumberOfSessions")
-            {
-                if (planningRequestJson.planningList[0].numberOfSession != -1)
-                {
-                    gameName.text = "Quedan " + planningRequestJson.planningList[0].numberOfSession + " sesiones restantes";
-                }
-                else
-                {
-                    gameName.text = "Sin límite de partidas";
-                }
-            }
-        }
-        btnClickPlayGame(gameCardInstance, 0);
-    }
 
     /**
      * Ejecuta una instancia de juego segun los parametros definidos en la planificacion
