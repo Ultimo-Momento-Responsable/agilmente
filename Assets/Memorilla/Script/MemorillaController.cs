@@ -38,6 +38,8 @@ public class MemorillaController : GameController
     private float initTime;
     private float timePreLevel = 5f;
     private float timePostLevel = 3f;
+    private int a_score;
+    private bool isOnStreak;
 
 
     public int Height { get => height; }
@@ -51,6 +53,8 @@ public class MemorillaController : GameController
     public float CellSpaceBetweenColumns { get => cellSpaceBetweenColumns; set => cellSpaceBetweenColumns = value; }
     public float CellSpaceBetweenRows { get => cellSpaceBetweenRows; set => cellSpaceBetweenRows = value; }
     public int NumberOfGuesses { get => numberOfGuesses; set => numberOfGuesses = value; }
+    public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
+    public bool IsOnStreak { get => isOnStreak; set => isOnStreak = value; }
 
     public GameObject CellPrefab;
     public GameObject GridGameObject;
@@ -69,7 +73,7 @@ public class MemorillaController : GameController
         successesPerLevel = new List<int>();
         mistakesPerLevel = new List<int>();
         timePerLevel = new List<float>();
-        cellSize = 600/Width;
+        cellSize = 600 / Width;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         CreateGrid();
@@ -144,7 +148,7 @@ public class MemorillaController : GameController
     public override void sendData()
     {
         calculateStreak();
-        showEndScreen(0);
+        showEndScreen(a_score);
         string successesPerLevelString = arrayToString(successesPerLevel);
         string mistakesPerLevelString = arrayToString(mistakesPerLevel);
         string timePerLevelString = arrayToString(timePerLevel);
@@ -160,7 +164,7 @@ public class MemorillaController : GameController
                 ", 'totalTime': " + totalTime +
                 ", 'game': 'Memorilla'" +
                 ", 'memorillaSessionId': " + SessionMemorilla.gameSessionId +
-                ", 'score': " + 0 + "}";
+                ", 'score': " + a_score + "}";
         SendData sD = (new GameObject("SendData")).AddComponent<SendData>();
         sD.sendData(json, ENDPOINT);
     }
@@ -274,7 +278,8 @@ public class MemorillaController : GameController
         level.text = "Nivel " + (levelsPlayed + 1).ToString();
         for (int i = 0; i < NumberOfStimuli; i++)
         {
-            while (true) {
+            while (true)
+            {
                 int randomX = Random.Range(0, Width);
                 int randomY = Random.Range(0, Height);
                 Cell selectedCell = Grid[randomY][randomX];
@@ -434,13 +439,61 @@ public class MemorillaController : GameController
         }
         mistakesPerLevel.Add(contMistakes);
         successesPerLevel.Add(contSuccesses);
+        addPointsToScore(calculateScore(contMistakes, NumberOfStimuli, height * width));
+        checkStreak(NumberOfStimuli, contMistakes);
         if (levelsPlayed == 0)
         {
             timePerLevel.Add(Time.time - initTime - timePreLevel);
         }
         else
         {
-            timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed-1] - ((timePreLevel + timePostLevel)*(levelsPlayed)) - timePreLevel);
+            timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed - 1] - ((timePreLevel + timePostLevel) * (levelsPlayed)) - timePreLevel);
+        }
+    }
+
+    /// <summary>
+    /// Suma una cantidad de puntos al score.
+    /// </summary>
+    /// <param name="points">Puntos a sumar.</param>
+    private void addPointsToScore(int points)
+    {
+        a_score += points;
+    }
+
+    /// <summary>
+    /// Calcula el puntaje parcial correspondiente a cada nivel.
+    /// </summary>
+    /// <param name="mistakes">Errores cometidos en el nivel actual.</param>
+    /// <param name="maxStimuli">Cantidad de estimulos utilizados.</param>
+    /// <param name="dimension">Dimension del tablero, filas * columnas.</param>
+    /// <returns></returns>
+    public int calculateScore(int mistakes, int maxStimuli, int dimension)
+    {
+        if (IsOnStreak == true)
+        {
+            return Mathf.RoundToInt(((dimension * 1.25f) + ((maxStimuli - mistakes) * 14)) * 1.1f);
+        }
+        else
+        {
+            return Mathf.RoundToInt((dimension * 1.25f) + ((maxStimuli - mistakes) * 14));
+        }
+    }
+
+    /// <summary>
+    /// Chequea si en el ultimo nivel completado no se cometio ningun error, utilizado para calcular el score del nivel siguiente.
+    /// </summary>
+    /// <param name="maxStimuli">Cantidad de estimulos utilizados.</param>
+    /// <param name="mistakes">Errores cometidos en el nivel actual.</param>
+    /// <returns></returns>
+    public bool checkStreak(int maxStimuli, int mistakes)
+    {
+        if ((maxStimuli - mistakes) == maxStimuli)
+        {
+            return IsOnStreak = true;
+        }
+        else
+        {
+            return IsOnStreak = false;
         }
     }
 }
