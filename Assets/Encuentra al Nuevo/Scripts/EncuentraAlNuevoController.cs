@@ -30,7 +30,8 @@ public class EncuentraAlNuevoController : GameController
     public GameObject title;
     public GameObject pauseButton;
     public GameObject startButton;
-
+    public GameObject HUD;
+    public Text scoreHUD;
 
     public int figureQuantity;
     private int maxLevel;
@@ -85,6 +86,7 @@ public class EncuentraAlNuevoController : GameController
     {
         if (encuentraAlNuevo.onTutorial)
         {
+            timer.text = "Tutorial";
             if (isTouching && !prevTutorial)
             {
                 dontTouchAgain = true;
@@ -110,7 +112,8 @@ public class EncuentraAlNuevoController : GameController
             }
             else
             {
-                timer.text = "Nivel " + (encuentraAlNuevo.successes + 1).ToString();
+                timer.text = (encuentraAlNuevo.successes + 1).ToString() + " / " + maxLevel.ToString();
+                scoreHUD.text = encuentraAlNuevo.score.ToString();
             }
 
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
@@ -120,6 +123,7 @@ public class EncuentraAlNuevoController : GameController
                 audioSource.PlayOneShot(sndSuccess);
                 if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)))
                 {
+                    HUD.gameObject.SetActive(false);
                     removeFigures();
                     sendData();
                 }
@@ -135,6 +139,8 @@ public class EncuentraAlNuevoController : GameController
 
             if ((limitTime && (encuentraAlNuevo.totalTime >= maxTime)) || figureQuantity > 20)
             {
+                HUD.gameObject.SetActive(false);
+                timer.text = encuentraAlNuevo.successes.ToString() + " / " + maxLevel.ToString();
                 removeFigures();
                 sendData();
             }
@@ -337,8 +343,6 @@ public class EncuentraAlNuevoController : GameController
     public void showEndScreen(int score)
     {
         pause.gameObject.SetActive(false);
-        GameObject.Find("Timer").SetActive(false);
-        pauseButton.SetActive(false);
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
