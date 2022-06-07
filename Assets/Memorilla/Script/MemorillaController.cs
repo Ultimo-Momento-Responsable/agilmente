@@ -61,6 +61,7 @@ public class MemorillaController : GameController
     public GameObject pauseButton;
     public GameObject endScreen;
     public Text level;
+    public Text scoreHUD;
     private bool canceled = false;
 
     void Start()
@@ -79,7 +80,8 @@ public class MemorillaController : GameController
         CreateGrid();
         StartLevel();
         initTime = Time.time;
-        level.text = "Nivel " + (levelsPlayed + 1).ToString();
+        level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
+        scoreHUD.text = score.ToString();
     }
 
     private void Update()
@@ -240,9 +242,9 @@ public class MemorillaController : GameController
     {
         if (levelsPlayed >= numberOfLevels)
         {
-            level.text = "";
+            level.text = levelsPlayed.ToString() + " / " + numberOfLevels.ToString();
+            scoreHUD.text = score.ToString();
             sendData();
-
         }
         else
         {
@@ -275,7 +277,8 @@ public class MemorillaController : GameController
     /// </summary>
     private void CreateStimuli()
     {
-        level.text = "Nivel " + (levelsPlayed + 1).ToString();
+        level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
+        scoreHUD.text = score.ToString();
         for (int i = 0; i < NumberOfStimuli; i++)
         {
             while (true)

@@ -28,6 +28,7 @@ public class HayUnoRepetidoController : GameController
     public GameObject title;
     public GameObject handPref;
     public GameObject pauseButton;
+    public Text scoreHUD;
 
 
     public int figureQuantity;
@@ -47,6 +48,7 @@ public class HayUnoRepetidoController : GameController
     private GameObject[] a_figures;
     public GameObject endScreen;
     public GameObject background;
+    public GameObject HUD;
 
     public GameObject[] figures
     {
@@ -89,6 +91,7 @@ public class HayUnoRepetidoController : GameController
     {
         if (hayUnoRepetido.onTutorial)
         {
+            timer.text = "Tutorial";
             if (isTouching)
             {
                 dontTouchAgain = true;
@@ -114,7 +117,8 @@ public class HayUnoRepetidoController : GameController
             }
             else
             {
-                timer.text = "Nivel " + (hayUnoRepetido.successes + 1).ToString();
+                timer.text = (hayUnoRepetido.successes + 1).ToString() + " / " + maxLevel.ToString();
+                scoreHUD.text = hayUnoRepetido.score.ToString();
             }
 
             if (isTouching && figureQuantity > 0 && !dontTouchAgain)
@@ -125,6 +129,8 @@ public class HayUnoRepetidoController : GameController
                                 
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
+                    HUD.gameObject.SetActive(false);
+                    timer.text = hayUnoRepetido.successes.ToString() + " / " + maxLevel.ToString();
                     removeFigures();
                     sendData();
                 }
@@ -323,8 +329,6 @@ public class HayUnoRepetidoController : GameController
     public void showEndScreen(int score)
     {
         pause.gameObject.SetActive(false);
-        GameObject.Find("Timer").SetActive(false);
-        pauseButton.SetActive(false);
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
     }
