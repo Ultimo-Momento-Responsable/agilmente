@@ -1158,6 +1158,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 413063640}
     m_Modifications:
+    - target: {fileID: 1563608155001157229, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6766054439192328721, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
       propertyPath: m_Name
       value: GameHud

@@ -1425,6 +1425,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 792152068}
     m_Modifications:
+    - target: {fileID: 1563608155001157229, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6766054439192328721, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
       propertyPath: m_Name
       value: GameHud Variant
@@ -1483,11 +1487,11 @@ PrefabInstance:
       objectReference: {fileID: 839179528}
     - target: {fileID: 8786871885188153550, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: pauseGame
+      value: buttonPauseEvent
       objectReference: {fileID: 0}
     - target: {fileID: 8786871885188153550, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: EncuentraAlNuevoController, NewAssembly
+      value: GameController, NewAssembly
       objectReference: {fileID: 0}
     - target: {fileID: 9193471922392785075, guid: c99d7042762e28f47b2c94487c585d4f, type: 3}
       propertyPath: m_RootOrder

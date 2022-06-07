@@ -164,7 +164,7 @@ public class EncuentraAlNuevoController : GameController
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            goToMainScene();
+            buttonPauseEvent();
         }
 
     }
@@ -342,6 +342,7 @@ public class EncuentraAlNuevoController : GameController
     /// <param name="score">Puntaje final.</param>
     public void showEndScreen(int score)
     {
+        pauseButton.SetActive(false);
         pause.gameObject.SetActive(false);
         endScreen.SetActive(true);
         endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
