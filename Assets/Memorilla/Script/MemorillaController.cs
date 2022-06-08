@@ -63,6 +63,7 @@ public class MemorillaController : GameController
     public Text level;
     public Text scoreHUD;
     private bool canceled = false;
+    public GameObject HUD;
 
     void Start()
     {
@@ -245,6 +246,7 @@ public class MemorillaController : GameController
             level.text = levelsPlayed.ToString() + " / " + numberOfLevels.ToString();
             scoreHUD.text = score.ToString();
             sendData();
+            HUD.gameObject.SetActive(false);
         }
         else
         {
