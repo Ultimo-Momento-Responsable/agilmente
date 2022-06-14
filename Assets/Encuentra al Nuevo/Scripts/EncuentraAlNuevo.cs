@@ -223,7 +223,23 @@ public class EncuentraAlNuevo : ScriptableObject
     /// <returns>El puntaje correspondiente al acierto.</returns>
     public int calculateScoreSuccess(int figureQuantity)
     {
-        return Mathf.RoundToInt(100 * figureQuantity / timeElapsedSinceLastSuccess);
+        if (timeElapsedSinceLastSuccess > 25)
+        {
+            return 0;
+        }
+
+        float timeMultiplier = 2;
+
+        if (figureQuantity >= 11)
+        {
+            timeMultiplier = 1f / 3f;
+        }
+        else if (figureQuantity >= 6)
+        {
+            timeMultiplier = 1f;
+        }
+
+        return 100 - Mathf.RoundToInt(timeMultiplier * timeElapsedSinceLastSuccess);
     }
 
     /// <summary>
@@ -234,7 +250,7 @@ public class EncuentraAlNuevo : ScriptableObject
     /// <returns>El puntaje correspondiente a cometer el error.</returns>
     public int calculateScoreMistake(int figureQuantity)
     {
-        return -Mathf.RoundToInt(25 * timeElapsedSinceLastSuccess / figureQuantity);
+        return -10;
     }
 
     /// <summary>
