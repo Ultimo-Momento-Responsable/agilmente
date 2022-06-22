@@ -14,6 +14,8 @@ TagManager:
   - hayUnoRepeController
   - gameCard
   - boxes
+  - collapsable
+  - cardContainer
   layers:
   - Default
   - TransparentFX
