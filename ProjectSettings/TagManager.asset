@@ -15,6 +15,7 @@ TagManager:
   - gameCard
   - boxes
   - collapsable
+  - cardContainer
   layers:
   - Default
   - TransparentFX
