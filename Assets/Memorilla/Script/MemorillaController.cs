@@ -64,6 +64,9 @@ public class MemorillaController : GameController
     public Text scoreHUD;
     private bool canceled = false;
     public GameObject HUD;
+    public AudioClip tapSound;
+    public AudioClip transitionSuccessSound;
+    public AudioClip transitionWithErrorsSound;
 
     void Start()
     {
@@ -245,6 +248,7 @@ public class MemorillaController : GameController
         {
             level.text = levelsPlayed.ToString() + " / " + numberOfLevels.ToString();
             scoreHUD.text = score.ToString();
+            PlayGameOverSound();
             sendData();
             HUD.gameObject.SetActive(false);
         }
@@ -389,14 +393,39 @@ public class MemorillaController : GameController
     /// </summary>
     public void OnCellClicked()
     {
+        PlayTapSound();
         NumberOfGuesses--;
 
         if (NumberOfGuesses == 0)
         {
             TakeControlFromPlayer();
             ShowResult();
+            PlayTransitionSound();
             levelsPlayed++;
             StartNextLevel();
+        }
+    }
+
+    /// <summary>
+    /// Reproduce un sonido de tap.
+    /// </summary>
+    private void PlayTapSound()
+    {
+        PlaySound(tapSound);
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de la pantalla de transición.
+    /// </summary>
+    private void PlayTransitionSound()
+    {
+        if (mistakesPerLevel.Last() == 0)
+        {
+            PlaySound(transitionSuccessSound);
+        }
+        else
+        {
+            PlaySound(transitionWithErrorsSound);
         }
     }
 

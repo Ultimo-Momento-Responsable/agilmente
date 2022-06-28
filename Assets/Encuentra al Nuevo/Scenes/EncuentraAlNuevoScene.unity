@@ -688,6 +688,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63800f4cbfa015547a2ed61647c55e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 741503598}
+  gameOverSound: {fileID: 8300000, guid: e166f76f5f34dee4f94404985bf32743, type: 3}
   prevTutorial: 1
   camera: {fileID: 2119599485}
   figure: {fileID: 8632990507630729472, guid: 9becdd0579da6e942bbe6096ae578f2d, type: 3}
@@ -712,7 +714,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e67167b32e058bb43be2bd1153f41101, type: 3}
   - {fileID: 21300000, guid: be4909b8fd906654294e8afb4b09aaf0, type: 3}
   - {fileID: 21300000, guid: 156569dc4d3650e4cb3da9a69dd9b86c, type: 3}
-  audioSource: {fileID: 741503598}
   sndSuccess: {fileID: 8300000, guid: 42191cf678c9840428b68b388461533a, type: 3}
   encuentraAlNuevo: {fileID: 0}
   particles: {fileID: 737375528}
