@@ -19,7 +19,6 @@ public class EncuentraAlNuevoController : GameController
     public Camera camera;
     public GameObject figure;
     public Sprite[] sprites;
-    public AudioSource audioSource;
     public AudioClip sndSuccess;
     public EncuentraAlNuevo encuentraAlNuevo;
     public GameObject particles;
@@ -90,7 +89,7 @@ public class EncuentraAlNuevoController : GameController
             if (isTouching && !prevTutorial)
             {
                 dontTouchAgain = true;
-                audioSource.PlayOneShot(sndSuccess);
+                PlaySound(sndSuccess);
                 encuentraAlNuevo.onTutorial = false;
                 tutorial.SetActive(false);
                 GameObject.FindGameObjectWithTag("tutorialhand").SetActive(false);
@@ -120,7 +119,7 @@ public class EncuentraAlNuevoController : GameController
             {
                 dontTouchAgain = true;
                 encuentraAlNuevo.addSuccess(figureQuantity);
-                audioSource.PlayOneShot(sndSuccess);
+                PlaySound(sndSuccess);
                 if ((limitLevel && ((encuentraAlNuevo.successes + 1) > maxLevel)))
                 {
                     HUD.gameObject.SetActive(false);
@@ -342,6 +341,7 @@ public class EncuentraAlNuevoController : GameController
     /// <param name="score">Puntaje final.</param>
     public void showEndScreen(int score)
     {
+        PlayGameOverSound();
         pauseButton.SetActive(false);
         pause.gameObject.SetActive(false);
         endScreen.SetActive(true);
