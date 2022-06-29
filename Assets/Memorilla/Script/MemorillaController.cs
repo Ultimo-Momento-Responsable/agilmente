@@ -7,7 +7,7 @@ using static MainSceneController;
 
 public class MemorillaController : GameController
 {
-
+    private bool onTutorial = true;
     private const string ENDPOINT = "results/memorilla";
 
     [SerializeField]
@@ -56,6 +56,10 @@ public class MemorillaController : GameController
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     public bool IsOnStreak { get => isOnStreak; set => isOnStreak = value; }
 
+    private GameObject tutorialHand;
+    public GameObject tutorial;
+    public GameObject handPref;
+
     public GameObject CellPrefab;
     public GameObject GridGameObject;
     public GameObject pauseButton;
@@ -68,9 +72,10 @@ public class MemorillaController : GameController
     void Start()
     {
         TakeControlFromPlayer();
-        height = SessionMemorilla.numberOfRows;
-        width = SessionMemorilla.numberOfColumns;
-        numberOfLevels = SessionMemorilla.maxLevel;
+        //height = SessionMemorilla.numberOfRows;
+        //width = SessionMemorilla.numberOfColumns;
+        // setGridSize(SessionMemorilla.numberOfRows, SessionMemorilla.numberOfColumns);
+        // numberOfLevels = SessionMemorilla.maxLevel;
         numberOfStimuli = SessionMemorilla.figureQuantity;
         successesPerLevel = new List<int>();
         mistakesPerLevel = new List<int>();
@@ -78,11 +83,32 @@ public class MemorillaController : GameController
         cellSize = 600 / Width;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
+        //CreateGrid();
+        //StartLevel();
+        StartTutorial();
+        initTime = Time.time;
+        //level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
+        scoreHUD.text = score.ToString();
+    }
+
+    /// <summary>
+    /// Define el tamaño de la grilla según los parámetros
+    /// </summary>
+    /// <param name="pHeight">Cantidad de filas que tendra la grilla</param>
+    /// <param name="pWidth">Cantidad de columnas que tendra la grilla</param>
+    private void setGridSize(int pHeight, int pWidth)
+    {
+        height = pHeight;
+        width = pWidth;
+    }
+
+    private void initializeMemorilla()
+    {
+        setGridSize(SessionMemorilla.numberOfRows, SessionMemorilla.numberOfColumns);
+        numberOfLevels = SessionMemorilla.maxLevel;
         CreateGrid();
         StartLevel();
-        initTime = Time.time;
         level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
-        scoreHUD.text = score.ToString();
     }
 
     private void Update()
@@ -236,6 +262,21 @@ public class MemorillaController : GameController
         }
     }
 
+    private void StartTutorial()
+    {
+        level.text = "Tutorial";
+        numberOfStimuli = 3;
+        setGridSize(3, 3);
+        startBtn();
+        CreateGrid();
+        CreateStimuli();
+    }
+
+    public void startBtn()
+    {
+        tutorial.GetComponent<Text>().text = "Recuerda estos cuadros";
+    }
+
     /// <summary>
     /// Inicializa el nivel actual.
     /// </summary>
@@ -253,6 +294,7 @@ public class MemorillaController : GameController
             NumberOfGuesses = NumberOfStimuli;
             CleanGrid();
             CreateStimuli();
+            level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
             StartCoroutine(WaitWhileShowingSolution(timePreLevel));
         }
     }
@@ -279,7 +321,7 @@ public class MemorillaController : GameController
     /// </summary>
     private void CreateStimuli()
     {
-        level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
+        //level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
         scoreHUD.text = score.ToString();
         for (int i = 0; i < NumberOfStimuli; i++)
         {
