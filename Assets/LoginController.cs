@@ -61,9 +61,14 @@ public class LoginController : MonoBehaviour
     {
         this.StartCoroutine(this.getPatientByLoginCodeRoutine(SendData.IP + endpoint, loginCode.text, this.getPatientResponseCallback));
     }
-    /**
-     * Se hace un get a los pacientes para ver si ese código de Logueo existe
-     */
+    
+    /// <summary>
+    /// Hace un get a los pacientes usando el código de logeo.
+    /// </summary>
+    /// <param name="url">URL del endpoint.</param>
+    /// <param name="loginCode">Código de logeo.</param>
+    /// <param name="callback">Lo que se va a hacer cuando finalice el pedido.</param>
+    /// <returns>Un IEnumerator para ejecutarlo como subrutina.</returns>
     private IEnumerator getPatientByLoginCodeRoutine(string url, String loginCode, Action<string> callback = null)
     {
         var request = UnityWebRequest.Get(url + "?loginCode=" + loginCode);
@@ -77,9 +82,13 @@ public class LoginController : MonoBehaviour
         } 
     }
 
-    /**
-     * Se hace un get a los pacientes para ver si ese código de Logueo existe
-     */
+
+    /// <summary>
+    /// Obtiene un paciente por su id.
+    /// </summary>
+    /// <param name="url">URL del endpoint.</param>
+    /// <param name="callback">Lo que se va a hacer cuando finalice el pedido.</param>
+    /// <returns>Un IEnumerator para ejecutarlo como subrutina.</returns>
     private IEnumerator getPatientByIdRoutine(string url, Action<string> callback = null)
     {
         var request = UnityWebRequest.Get(url);
