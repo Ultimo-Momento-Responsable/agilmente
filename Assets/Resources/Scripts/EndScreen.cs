@@ -42,6 +42,10 @@ public class EndScreen : MonoBehaviour
         }
     }
 
+    /**
+     * callback del Get a los scores
+     * @param data. la info con todos los scores
+     */
     private void getScoresResponseCallback (string data)
     {
         data = data.Remove(0,1);
@@ -75,6 +79,12 @@ public class EndScreen : MonoBehaviour
         }
     }
 
+    /**
+     * Crea el texto de cada uno de los scores del ranking
+     * @param i, posición del texto
+     * @param scoreIndex, índice del score obtenido.
+     * @param score, puntaje a escribir.
+     */
     private void createScoreText(int i, int scoreIndex, string score)
     {
         var scoreText = Instantiate(rankingScoreText);
