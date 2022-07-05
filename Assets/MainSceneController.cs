@@ -21,7 +21,7 @@ public class MainSceneController : MonoBehaviour
     public Sprite[] gameLogo;
     public GameObject gameText;
     public GameObject collapsable;
-    private Planning[] planningRequestJson;
+    private PlanningList planningRequestJson;
     private List<Planning> completedPlannings;
     private List<Planning> uncompletedPlannings;
     public new Camera camera;
@@ -82,9 +82,9 @@ public class MainSceneController : MonoBehaviour
          * Por cada juego pendiente, genera una card con la informacion del juego
          * Define un contenedor scrolleable con tamaño igual a la cantidad de cards generadas
          */
-        if (planningRequestJson.Length != 0)
+        if (planningRequestJson.planningList.Length != 0)
         {
-            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, 3 + planningRequestJson.Length);
+            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, 3 + planningRequestJson.planningList.Length);
 
             bodyText.transform.localPosition = new Vector2(0, -0.6f);
             gameText.transform.localPosition = new Vector2(0, -1.6f);
@@ -301,11 +301,11 @@ public class MainSceneController : MonoBehaviour
      * Callback utilizado en getPlanning(), asigna a variables de Unity los datos obtenidos del JSON
      */
     private void getPlanningResponseCallback(string data) { 
-        planningRequestJson = JsonUtility.FromJson<Planning[]>(data);
-        planningRequestJson = planningRequestJson.OrderByDescending(p => p.totalGames).ToArray();
+        planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
+        planningRequestJson.planningList = planningRequestJson.planningList.OrderByDescending(p => p.totalGames).ToArray();
         completedPlannings = new List<Planning>();
         uncompletedPlannings = new List<Planning>();
-        foreach (Planning p in planningRequestJson)
+        foreach (Planning p in planningRequestJson.planningList)
         {
             p.planningList = SortPlannings(p.planningList);
             if (p.gamesPlayed==p.totalGames)
@@ -363,7 +363,7 @@ public class MainSceneController : MonoBehaviour
      */
     private bool isThereAPlanning()
     {
-        return planningRequestJson.Length > 0;
+        return planningRequestJson.planningList.Length > 0;
     }
 
 
@@ -372,9 +372,9 @@ public class MainSceneController : MonoBehaviour
      */
     public void playGame(int planningIndex, int gameSessionIndex)
     {
-        if (planningRequestJson[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Repetido")
+        if (planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Repetido")
         {
-            foreach (Params param in planningRequestJson[planningIndex].planningList[gameSessionIndex].parameters)
+            foreach (Params param in planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters)
             {
                 if (param.name == "maxLevel")
                 {
@@ -403,21 +403,21 @@ public class MainSceneController : MonoBehaviour
                     SessionHayUnoRepetido.figureQuantity = int.Parse(param.value);
                 }
             }
-            SessionHayUnoRepetido.gameSessionId = planningRequestJson[planningIndex].planningList[gameSessionIndex].gameSessionId;
+            SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
         }
-        if (planningRequestJson[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Nuevo")
+        if (planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Nuevo")
         {
-            foreach (Params param in planningRequestJson[planningIndex].planningList[gameSessionIndex].parameters)
+            foreach (Params param in planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters)
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionEncuentraAlNuevo.maxLevel = int.Parse(planningRequestJson[planningIndex].planningList[gameSessionIndex].parameters[0].value);
+                    SessionEncuentraAlNuevo.maxLevel = int.Parse(planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters[0].value);
                     SessionEncuentraAlNuevo.maxTime = -1;
                 }
                 if (param.name == "maximumTime")
                 {
-                    SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson[planningIndex].planningList[gameSessionIndex].parameters[0].value, CultureInfo.InvariantCulture);
+                    SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters[0].value, CultureInfo.InvariantCulture);
                     SessionEncuentraAlNuevo.maxLevel = -1;
                 }
                 if (param.name == "spriteSet")
@@ -429,17 +429,17 @@ public class MainSceneController : MonoBehaviour
                     SessionEncuentraAlNuevo.variableSizes = bool.Parse(param.value);
                 }
             }
-            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson[planningIndex].planningList[gameSessionIndex].gameSessionId;
+            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("EncuentraAlNuevoScene");
         }
 
-        if (planningRequestJson[planningIndex].planningList[gameSessionIndex].game == "Memorilla")
+        if (planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].game == "Memorilla")
         {
-            foreach (Params param in planningRequestJson[planningIndex].planningList[gameSessionIndex].parameters)
+            foreach (Params param in planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters)
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionMemorilla.maxLevel = int.Parse(planningRequestJson[planningIndex].planningList[gameSessionIndex].parameters[0].value);
+                    SessionMemorilla.maxLevel = int.Parse(planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters[0].value);
                 }
                 if (param.name == "figureQuantity")
                 {
@@ -454,7 +454,7 @@ public class MainSceneController : MonoBehaviour
                     SessionMemorilla.numberOfColumns = int.Parse(param.value);
                 }
             }
-            SessionMemorilla.gameSessionId = planningRequestJson[planningIndex].planningList[gameSessionIndex].gameSessionId;
+            SessionMemorilla.gameSessionId = planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("MemorillaScene");
         }
     }
