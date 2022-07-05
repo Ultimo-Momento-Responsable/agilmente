@@ -7,7 +7,7 @@ using static MainSceneController;
 public class HayUnoRepetidoController : GameController
 {
 
-    private const string ENDPOINT = "results/encuentra-al-repetido";
+    private const string ENDPOINT = "result/encuentra-al-repetido";
 
     private List<int> index;
     private string json;
@@ -18,7 +18,6 @@ public class HayUnoRepetidoController : GameController
     public GameObject figure;
     public Sprite[] sprites;
     public Sprite[] distractorsSprites;
-    public AudioSource audioSource;
     public AudioClip sndSuccess;
     public HayUnoRepetido hayUnoRepetido;
     public GameObject particles;
@@ -95,7 +94,7 @@ public class HayUnoRepetidoController : GameController
             if (isTouching)
             {
                 dontTouchAgain = true;
-                audioSource.PlayOneShot(sndSuccess);
+                PlaySound(sndSuccess);
                 hayUnoRepetido.onTutorial = false;
                 tutorial.SetActive(false);
                 GameObject.FindGameObjectWithTag("tutorialhand").SetActive(false);
@@ -125,7 +124,7 @@ public class HayUnoRepetidoController : GameController
             {
                 dontTouchAgain = true;
                 hayUnoRepetido.addSuccess(figureQuantity);
-                audioSource.PlayOneShot(sndSuccess);
+                PlaySound(sndSuccess);
                                 
                 if (limitFigure && ((hayUnoRepetido.successes + 1) > maxLevel))
                 {
@@ -328,10 +327,14 @@ public class HayUnoRepetidoController : GameController
     /// <param name="score">Puntaje final.</param>
     public void showEndScreen(int score)
     {
+        PlayGameOverSound();
         pauseButton.SetActive(false);
         pause.gameObject.SetActive(false);
         endScreen.SetActive(true);
-        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
+        endScreen.GetComponent<EndScreen>().score = score.ToString();
+        endScreen.GetComponent<EndScreen>().game = "Encuentra al Repetido";
+        endScreen.GetComponent<EndScreen>().gameSessionId = SessionHayUnoRepetido.gameSessionId;
+        endScreen.GetComponent<EndScreen>().getScores();
     }
 
     /// <summary>

@@ -9,7 +9,7 @@ public class MemorillaController : GameController
 {
     public bool onTutorial = true;
     private bool tutorialDone = false;
-    private const string ENDPOINT = "results/memorilla";
+    private const string ENDPOINT = "result/memorilla";
 
     [SerializeField]
     private int height = 7;
@@ -71,14 +71,13 @@ public class MemorillaController : GameController
     public Text scoreHUD;
     private bool canceled = false;
     public GameObject HUD;
+    public AudioClip tapSound;
+    public AudioClip transitionSuccessSound;
+    public AudioClip transitionWithErrorsSound;
 
     void Start()
     {
         TakeControlFromPlayer();
-        //height = SessionMemorilla.numberOfRows;
-        //width = SessionMemorilla.numberOfColumns;
-        // setGridSize(SessionMemorilla.numberOfRows, SessionMemorilla.numberOfColumns);
-        // numberOfLevels = SessionMemorilla.maxLevel;
         numberOfStimuli = SessionMemorilla.figureQuantity;
         successesPerLevel = new List<int>();
         mistakesPerLevel = new List<int>();
@@ -86,11 +85,8 @@ public class MemorillaController : GameController
         cellSize = 600 / Width;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
-        //CreateGrid();
-        //StartLevel();
         StartTutorial();
         initTime = Time.time;
-        //level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
         scoreHUD.text = score.ToString();
     }
 
@@ -105,6 +101,9 @@ public class MemorillaController : GameController
         width = pWidth;
     }
 
+    /// <summary>
+    /// Inicia la memorilla con los datos de la sesión
+    /// </summary>
     private void initializeMemorilla()
     {
         GameObject[] cells = GameObject.FindGameObjectsWithTag("figures");
@@ -131,8 +130,9 @@ public class MemorillaController : GameController
         level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
     }
 
-    // TUTORIAL BLOCK //
-
+    /// <summary>
+    /// Crea las manos del tutorial sobre las celdas correctas.
+    /// </summary>
     private void CreateTutoHands()
     {
         for (int i = 0; i < 3; i++)
@@ -140,7 +140,6 @@ public class MemorillaController : GameController
             for (int j = 0; j < 3; j++)
             {
                 Cell selectedCell = Grid[i][j];
-                //Cambiar esto según el estado de la grilla
                 bool cellState = (selectedCell.State == STATES.SELECTED);
 
                 if (cellState)
@@ -155,6 +154,9 @@ public class MemorillaController : GameController
         }
     }
 
+    /// <summary>
+    /// Crea la grilla para el tutorial
+    /// </summary>
     private void StartTutorial()
     {
         level.text = "Tutorial";
@@ -164,7 +166,9 @@ public class MemorillaController : GameController
         CreateStimuli();
     }
 
-
+    /// <summary>
+    /// Controla el comportamiento del botón "Comenzar"
+    /// </summary>
     public void startBtn()
     {
         if(!tutorialDone) { 
@@ -182,14 +186,15 @@ public class MemorillaController : GameController
         }
     }
 
+    /// <summary>
+    /// Elimina las manos de tutorial luego de terminar una fase.
+    /// </summary>
     public void DestroyTutoHands()
     {
         GameObject[] thands = GameObject.FindGameObjectsWithTag("tutorialhand");
         foreach (GameObject thand in thands)
         GameObject.Destroy(thand);
     }
-
-    // END TUTORIAL BLOCK //
 
     private void Update()
     {
@@ -251,7 +256,10 @@ public class MemorillaController : GameController
         pause.gameObject.SetActive(false);
         pauseButton.SetActive(false);
         endScreen.SetActive(true);
-        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
+        endScreen.GetComponent<EndScreen>().score = score.ToString();
+        endScreen.GetComponent<EndScreen>().game = "Memorilla";
+        endScreen.GetComponent<EndScreen>().gameSessionId = SessionMemorilla.gameSessionId;
+        endScreen.GetComponent<EndScreen>().getScores();
     }
 
     public override void sendData()
@@ -351,6 +359,7 @@ public class MemorillaController : GameController
         {
             level.text = levelsPlayed.ToString() + " / " + numberOfLevels.ToString();
             scoreHUD.text = score.ToString();
+            PlayGameOverSound();
             sendData();
             HUD.gameObject.SetActive(false);
         }
@@ -496,6 +505,7 @@ public class MemorillaController : GameController
     /// </summary>
     public void OnCellClicked()
     {
+        PlayTapSound();
         NumberOfGuesses--;
 
         if (NumberOfGuesses == 0)
@@ -503,6 +513,7 @@ public class MemorillaController : GameController
             if(!onTutorial) { 
                 TakeControlFromPlayer();
                 ShowResult();
+                PlayTransitionSound();
                 levelsPlayed++;
                 StartNextLevel();
             }
@@ -515,6 +526,29 @@ public class MemorillaController : GameController
                 tutorialDone = true;
                 startButton.SetActive(true);
             }
+        }
+    }
+
+    /// <summary>
+    /// Reproduce un sonido de tap.
+    /// </summary>
+    private void PlayTapSound()
+    {
+        PlaySound(tapSound);
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de la pantalla de transición.
+    /// </summary>
+    private void PlayTransitionSound()
+    {
+        if (mistakesPerLevel.Last() == 0)
+        {
+            PlaySound(transitionSuccessSound);
+        }
+        else
+        {
+            PlaySound(transitionWithErrorsSound);
         }
     }
 
