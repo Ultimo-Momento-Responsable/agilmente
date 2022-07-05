@@ -6,7 +6,7 @@ using static MainSceneController;
 
 public class EncuentraAlNuevoController : GameController
 {
-    private const string ENDPOINT = "results/encuentra-al-nuevo";
+    private const string ENDPOINT = "result/encuentra-al-nuevo";
 
     private List<int> actualSprites;
     private List<int> index;

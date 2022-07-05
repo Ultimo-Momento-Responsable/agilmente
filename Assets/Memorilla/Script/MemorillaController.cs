@@ -8,7 +8,7 @@ using static MainSceneController;
 public class MemorillaController : GameController
 {
 
-    private const string ENDPOINT = "results/memorilla";
+    private const string ENDPOINT = "result/memorilla";
 
     [SerializeField]
     private int height = 7;
