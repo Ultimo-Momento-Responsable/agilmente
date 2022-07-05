@@ -104,10 +104,21 @@ public class Cell: MonoBehaviour
         if (!controller.ControlsEnabled)
             return;
 
-        if (State == STATES.UNSELECTED)
+        if (!controller.onTutorial)
         {
-            State = STATES.SELECTED;
-            controller.OnCellClicked();
+            if (State == STATES.UNSELECTED)
+            {
+                State = STATES.SELECTED;
+                controller.OnCellClicked();
+            }
+        }
+        else
+        {
+            if (IsActive)
+            {
+                State = STATES.SELECTED;
+                controller.OnCellClicked();
+            }
         }
     }
 

@@ -7,7 +7,8 @@ using static MainSceneController;
 
 public class MemorillaController : GameController
 {
-    private bool onTutorial = true;
+    public bool onTutorial = true;
+    private bool tutorialDone = false;
     private const string ENDPOINT = "results/memorilla";
 
     [SerializeField]
@@ -60,6 +61,8 @@ public class MemorillaController : GameController
     public GameObject tutorial;
     public GameObject handPref;
 
+    public GameObject startButton;
+
     public GameObject CellPrefab;
     public GameObject GridGameObject;
     public GameObject pauseButton;
@@ -104,12 +107,89 @@ public class MemorillaController : GameController
 
     private void initializeMemorilla()
     {
+        GameObject[] cells = GameObject.FindGameObjectsWithTag("figures");
+        foreach (GameObject cell in cells)
+        GameObject.Destroy(cell);
+
+        startButton.SetActive(false);
+        onTutorial = false;
+        HideStimuli();
+        CleanGrid();
+
+        numberOfStimuli = SessionMemorilla.figureQuantity;
+        successesPerLevel = new List<int>();
+        mistakesPerLevel = new List<int>();
+        timePerLevel = new List<float>();
+        
         setGridSize(SessionMemorilla.numberOfRows, SessionMemorilla.numberOfColumns);
         numberOfLevels = SessionMemorilla.maxLevel;
+        cellSize = 600 / Width;
+        float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
+        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         CreateGrid();
         StartLevel();
         level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
     }
+
+    // TUTORIAL BLOCK //
+
+    private void CreateTutoHands()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                Cell selectedCell = Grid[i][j];
+                //Cambiar esto según el estado de la grilla
+                bool cellState = (selectedCell.State == STATES.SELECTED);
+
+                if (cellState)
+                {
+                    GameObject tHand = Instantiate(handPref, GridGameObject.transform);
+                    tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
+                    tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
+                    tHand.GetComponent<TutorialHand>().yPos = selectedCell.PosY/100-0.35f;
+                    tHand.SetActive(true);
+                }
+            }
+        }
+    }
+
+    private void StartTutorial()
+    {
+        level.text = "Tutorial";
+        numberOfStimuli = 3;
+        setGridSize(3, 3);
+        CreateGrid();
+        CreateStimuli();
+    }
+
+
+    public void startBtn()
+    {
+        if(!tutorialDone) { 
+            tutorial.GetComponent<Text>().text = "Toca los cuadros que se mostraron.";
+            NumberOfGuesses = NumberOfStimuli;
+            CreateTutoHands();
+            HideStimuli();
+            ReturnControlToPlayer();
+            startButton.SetActive(false);
+        }
+        else
+        {
+            tutorial.SetActive(false);
+            initializeMemorilla();
+        }
+    }
+
+    public void DestroyTutoHands()
+    {
+        GameObject[] thands = GameObject.FindGameObjectsWithTag("tutorialhand");
+        foreach (GameObject thand in thands)
+        GameObject.Destroy(thand);
+    }
+
+    // END TUTORIAL BLOCK //
 
     private void Update()
     {
@@ -260,21 +340,6 @@ public class MemorillaController : GameController
         {
             streak = auxStreak;
         }
-    }
-
-    private void StartTutorial()
-    {
-        level.text = "Tutorial";
-        numberOfStimuli = 3;
-        setGridSize(3, 3);
-        startBtn();
-        CreateGrid();
-        CreateStimuli();
-    }
-
-    public void startBtn()
-    {
-        tutorial.GetComponent<Text>().text = "Recuerda estos cuadros";
     }
 
     /// <summary>
@@ -435,10 +500,21 @@ public class MemorillaController : GameController
 
         if (NumberOfGuesses == 0)
         {
-            TakeControlFromPlayer();
-            ShowResult();
-            levelsPlayed++;
-            StartNextLevel();
+            if(!onTutorial) { 
+                TakeControlFromPlayer();
+                ShowResult();
+                levelsPlayed++;
+                StartNextLevel();
+            }
+            else
+            {
+                TakeControlFromPlayer();
+                ShowResult();
+                DestroyTutoHands();
+                tutorial.GetComponent<Text>().text = "Intenta recordar lo mas que puedas.";
+                tutorialDone = true;
+                startButton.SetActive(true);
+            }
         }
     }
 
@@ -484,17 +560,19 @@ public class MemorillaController : GameController
                 }
             }
         }
-        mistakesPerLevel.Add(contMistakes);
-        successesPerLevel.Add(contSuccesses);
-        addPointsToScore(calculateScore(contMistakes, NumberOfStimuli, height * width));
-        checkStreak(NumberOfStimuli, contMistakes);
-        if (levelsPlayed == 0)
-        {
-            timePerLevel.Add(Time.time - initTime - timePreLevel);
-        }
-        else
-        {
-            timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed - 1] - ((timePreLevel + timePostLevel) * (levelsPlayed)) - timePreLevel);
+        if(!onTutorial) { 
+            mistakesPerLevel.Add(contMistakes);
+            successesPerLevel.Add(contSuccesses);
+            addPointsToScore(calculateScore(contMistakes, NumberOfStimuli, height * width));
+            checkStreak(NumberOfStimuli, contMistakes);
+            if (levelsPlayed == 0)
+            {
+                timePerLevel.Add(Time.time - initTime - timePreLevel);
+            }
+            else
+            {
+                timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed - 1] - ((timePreLevel + timePostLevel) * (levelsPlayed)) - timePreLevel);
+            }
         }
     }
 
