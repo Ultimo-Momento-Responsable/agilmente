@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class EndScreen : MonoBehaviour
 {
-    private string endpoint = "results/ranking";
+    private string endpoint = "result/ranking";
     public string game;
     public int gameSessionId;
     public string score;
@@ -20,14 +20,14 @@ public class EndScreen : MonoBehaviour
     public Text rankingLabel;
 
     /**
-     * cuando se clickea el botón de ingresar, busca el paciente en la base de datos.
+     * cuando se clickea el botÃ³n de ingresar, busca el paciente en la base de datos.
      */
     public void getScores()
     {
         this.StartCoroutine(this.getScoresRoutine(SendData.IP + endpoint + "?game=" + game + "&id=" + gameSessionId, this.getScoresResponseCallback));
     }
     /**
-     * Se hace un get a los pacientes para ver si ese código de Logueo existe
+     * Se hace un get a los pacientes para ver si ese cÃ³digo de Logueo existe
      */
     private IEnumerator getScoresRoutine(string url, Action<string> callback = null)
     {
@@ -81,8 +81,8 @@ public class EndScreen : MonoBehaviour
 
     /**
      * Crea el texto de cada uno de los scores del ranking
-     * @param i, posición del texto
-     * @param scoreIndex, índice del score obtenido.
+     * @param i, posiciÃ³n del texto
+     * @param scoreIndex, Ã­ndice del score obtenido.
      * @param score, puntaje a escribir.
      */
     private void createScoreText(int i, int scoreIndex, string score)
@@ -104,10 +104,10 @@ public class EndScreen : MonoBehaviour
         {
             scoreText.fontStyle = FontStyle.Bold;
         }
-        scoreText.text = i + "º ------------- " + score;
+        scoreText.text = i + "Âº ------------- " + score;
     }
     /// <summary>
-    /// Cambia la escena al menú principal.
+    /// Cambia la escena al menÃº principal.
     /// </summary>
     public void goToMainScene()
     {
