@@ -148,7 +148,10 @@ public class MemorillaController : GameController
         pause.gameObject.SetActive(false);
         pauseButton.SetActive(false);
         endScreen.SetActive(true);
-        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
+        endScreen.GetComponent<EndScreen>().score = score.ToString();
+        endScreen.GetComponent<EndScreen>().game = "Memorilla";
+        endScreen.GetComponent<EndScreen>().gameSessionId = SessionMemorilla.gameSessionId;
+        endScreen.GetComponent<EndScreen>().getScores();
     }
 
     public override void sendData()

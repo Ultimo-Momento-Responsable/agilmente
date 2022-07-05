@@ -331,7 +331,10 @@ public class HayUnoRepetidoController : GameController
         pauseButton.SetActive(false);
         pause.gameObject.SetActive(false);
         endScreen.SetActive(true);
-        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
+        endScreen.GetComponent<EndScreen>().score = score.ToString();
+        endScreen.GetComponent<EndScreen>().game = "Encuentra al Repetido";
+        endScreen.GetComponent<EndScreen>().gameSessionId = SessionHayUnoRepetido.gameSessionId;
+        endScreen.GetComponent<EndScreen>().getScores();
     }
 
     /// <summary>
