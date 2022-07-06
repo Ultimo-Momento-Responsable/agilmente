@@ -260,6 +260,7 @@ public class MemorillaController : GameController
             NumberOfGuesses = NumberOfStimuli;
             CleanGrid();
             CreateStimuli();
+            PlayNewLevelSound();
             StartCoroutine(WaitWhileShowingSolution(timePreLevel));
         }
     }
@@ -430,6 +431,14 @@ public class MemorillaController : GameController
         {
             PlaySound(transitionWithErrorsSound);
         }
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de nuevo nivel.
+    /// </summary>
+    private void PlayNewLevelSound()
+    {
+        //PlaySound(a);
     }
 
     /// <summary>
