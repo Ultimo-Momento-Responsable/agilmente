@@ -57,7 +57,6 @@ public class MemorillaController : GameController
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     public bool IsOnStreak { get => isOnStreak; set => isOnStreak = value; }
 
-    private GameObject tutorialHand;
     public GameObject tutorial;
     public GameObject handPref;
 
@@ -216,11 +215,21 @@ public class MemorillaController : GameController
 
     public override void pauseGame()
     {
+        if (onTutorial)
+        {
+            DestroyTutoHands();
+            startButton.SetActive(false);
+            tutorial.SetActive(false);
+        }
         deactivateOrActivateCells(false);
     }
 
     public override void unpauseGame()
     {
+        if (onTutorial)
+        {
+            CreateTutoHands();
+        }
         if (Grid != null)
         {
             deactivateOrActivateCells(true);
@@ -395,7 +404,6 @@ public class MemorillaController : GameController
     /// </summary>
     private void CreateStimuli()
     {
-        //level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
         scoreHUD.text = score.ToString();
         for (int i = 0; i < NumberOfStimuli; i++)
         {

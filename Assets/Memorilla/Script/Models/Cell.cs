@@ -114,7 +114,7 @@ public class Cell: MonoBehaviour
         }
         else
         {
-            if (IsActive)
+            if (IsActive && State == STATES.UNSELECTED)
             {
                 State = STATES.SELECTED;
                 controller.OnCellClicked();
