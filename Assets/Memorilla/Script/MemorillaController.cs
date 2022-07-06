@@ -64,6 +64,7 @@ public class MemorillaController : GameController
     public Text scoreHUD;
     private bool canceled = false;
     public GameObject HUD;
+    public AudioClip transitionNewLevel;
     public AudioClip tapSound;
     public AudioClip transitionSuccessSound;
     public AudioClip transitionWithErrorsSound;
@@ -260,6 +261,7 @@ public class MemorillaController : GameController
             NumberOfGuesses = NumberOfStimuli;
             CleanGrid();
             CreateStimuli();
+            PlayNewLevelSound();
             StartCoroutine(WaitWhileShowingSolution(timePreLevel));
         }
     }
@@ -430,6 +432,14 @@ public class MemorillaController : GameController
         {
             PlaySound(transitionWithErrorsSound);
         }
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de nuevo nivel.
+    /// </summary>
+    private void PlayNewLevelSound()
+    {
+        PlaySound(transitionNewLevel);
     }
 
     /// <summary>
