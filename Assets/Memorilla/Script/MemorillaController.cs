@@ -84,9 +84,9 @@ public class MemorillaController : GameController
         cellSize = 600 / Width;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
-        StartTutorial();
         initTime = Time.time;
         scoreHUD.text = score.ToString();
+        StartTutorial();
     }
 
     /// <summary>
