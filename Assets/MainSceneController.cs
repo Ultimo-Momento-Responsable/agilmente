@@ -30,7 +30,7 @@ public class MainSceneController : MonoBehaviour
     public GameObject cardContainer;
     public Sprite maxTime;
     public Sprite maxLevel;
-    private static string endpoint = "/planning/mobile_patient_";
+    private static string endpoint = "planning/mobile_patient/";
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion

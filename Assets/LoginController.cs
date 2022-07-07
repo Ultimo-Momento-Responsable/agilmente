@@ -13,7 +13,7 @@ public class LoginController : MonoBehaviour
     public GameObject loginError;
     public Button loginButton;
     private PatientJson patientJson;
-    private static string endpoint = "patient/";
+    private static string endpoint = "patient";
     private bool networkError = false;
 
     void Start()
@@ -29,7 +29,7 @@ public class LoginController : MonoBehaviour
         bool isLogged = settings.Login.isLogged;
         if (isLogged)
         {
-            this.StartCoroutine(this.getPatientRoutine(SendData.IP + endpoint + settings.Login.patient.id, this.getPatientResponseCallback));
+            this.StartCoroutine(this.getPatientByIdRoutine(SendData.IP + endpoint + "/" + settings.Login.patient.id, this.getPatientResponseCallback));
         }
     }
 
@@ -59,12 +59,37 @@ public class LoginController : MonoBehaviour
      */
     public void getPatient()
     {
-        this.StartCoroutine(this.getPatientRoutine(SendData.IP + endpoint + "/lc" + loginCode.text, this.getPatientResponseCallback));
+        this.StartCoroutine(this.getPatientByLoginCodeRoutine(SendData.IP + endpoint, loginCode.text, this.getPatientResponseCallback));
     }
-    /**
-     * Se hace un get a los pacientes para ver si ese código de Logueo existe
-     */
-    private IEnumerator getPatientRoutine(string url, Action<string> callback = null)
+    
+    /// <summary>
+    /// Hace un get a los pacientes usando el código de logeo.
+    /// </summary>
+    /// <param name="url">URL del endpoint.</param>
+    /// <param name="loginCode">Código de logeo.</param>
+    /// <param name="callback">Lo que se va a hacer cuando finalice el pedido.</param>
+    /// <returns>Un IEnumerator para ejecutarlo como subrutina.</returns>
+    private IEnumerator getPatientByLoginCodeRoutine(string url, String loginCode, Action<string> callback = null)
+    {
+        var request = UnityWebRequest.Get(url + "?loginCode=" + loginCode);
+
+        yield return request.SendWebRequest();
+        var data = request.downloadHandler.text;
+        networkError = request.result == UnityWebRequest.Result.ConnectionError;
+        if (callback != null)
+        {
+            callback(data);
+        } 
+    }
+
+
+    /// <summary>
+    /// Obtiene un paciente por su id.
+    /// </summary>
+    /// <param name="url">URL del endpoint.</param>
+    /// <param name="callback">Lo que se va a hacer cuando finalice el pedido.</param>
+    /// <returns>Un IEnumerator para ejecutarlo como subrutina.</returns>
+    private IEnumerator getPatientByIdRoutine(string url, Action<string> callback = null)
     {
         var request = UnityWebRequest.Get(url);
 
@@ -74,7 +99,7 @@ public class LoginController : MonoBehaviour
         if (callback != null)
         {
             callback(data);
-        } 
+        }
     }
 
     /**
@@ -124,7 +149,7 @@ public class LoginController : MonoBehaviour
                     patientJson.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
                     settings.Login.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
                     File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
-                    this.StartCoroutine(this.putPatientRoutine(SendData.IP + endpoint + patientJson.id));
+                    this.StartCoroutine(this.putPatientRoutine(SendData.IP + endpoint + "/" + patientJson.id));
                 }
             }
         }

@@ -18,6 +18,9 @@ public abstract class GameController: MonoBehaviour
         set => a_pause = value;
     }
 
+    public AudioSource audioSource;
+    public AudioClip gameOverSound;
+
     /// <summary>
     /// Cancela el juego que se está jugando.
     /// </summary>
@@ -65,5 +68,22 @@ public abstract class GameController: MonoBehaviour
     public void goToMainScene()
     {
         SceneManager.LoadScene("mainScene");
+    }
+
+    /// <summary>
+    /// Reproduce un sonido.
+    /// </summary>
+    /// <param name="audioClip">Sonido a reproducir.</param>
+    public void PlaySound(AudioClip audioClip)
+    {
+        audioSource.PlayOneShot(audioClip);
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de juego terminado.
+    /// </summary>
+    public void PlayGameOverSound()
+    {
+        PlaySound(gameOverSound);
     }
 }

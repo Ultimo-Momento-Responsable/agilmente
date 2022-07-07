@@ -8,7 +8,7 @@ using static MainSceneController;
 public class MemorillaController : GameController
 {
 
-    private const string ENDPOINT = "results/memorilla";
+    private const string ENDPOINT = "result/memorilla";
 
     [SerializeField]
     private int height = 7;
@@ -64,6 +64,10 @@ public class MemorillaController : GameController
     public Text scoreHUD;
     private bool canceled = false;
     public GameObject HUD;
+    public AudioClip transitionNewLevel;
+    public AudioClip tapSound;
+    public AudioClip transitionSuccessSound;
+    public AudioClip transitionWithErrorsSound;
 
     void Start()
     {
@@ -145,7 +149,10 @@ public class MemorillaController : GameController
         pause.gameObject.SetActive(false);
         pauseButton.SetActive(false);
         endScreen.SetActive(true);
-        endScreen.transform.Find("Score").GetComponent<Text>().text = score.ToString();
+        endScreen.GetComponent<EndScreen>().score = score.ToString();
+        endScreen.GetComponent<EndScreen>().game = "Memorilla";
+        endScreen.GetComponent<EndScreen>().gameSessionId = SessionMemorilla.gameSessionId;
+        endScreen.GetComponent<EndScreen>().getScores();
     }
 
     public override void sendData()
@@ -245,6 +252,7 @@ public class MemorillaController : GameController
         {
             level.text = levelsPlayed.ToString() + " / " + numberOfLevels.ToString();
             scoreHUD.text = score.ToString();
+            PlayGameOverSound();
             sendData();
             HUD.gameObject.SetActive(false);
         }
@@ -253,6 +261,7 @@ public class MemorillaController : GameController
             NumberOfGuesses = NumberOfStimuli;
             CleanGrid();
             CreateStimuli();
+            PlayNewLevelSound();
             StartCoroutine(WaitWhileShowingSolution(timePreLevel));
         }
     }
@@ -389,15 +398,48 @@ public class MemorillaController : GameController
     /// </summary>
     public void OnCellClicked()
     {
+        PlayTapSound();
         NumberOfGuesses--;
 
         if (NumberOfGuesses == 0)
         {
             TakeControlFromPlayer();
             ShowResult();
+            PlayTransitionSound();
             levelsPlayed++;
             StartNextLevel();
         }
+    }
+
+    /// <summary>
+    /// Reproduce un sonido de tap.
+    /// </summary>
+    private void PlayTapSound()
+    {
+        PlaySound(tapSound);
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de la pantalla de transición.
+    /// </summary>
+    private void PlayTransitionSound()
+    {
+        if (mistakesPerLevel.Last() == 0)
+        {
+            PlaySound(transitionSuccessSound);
+        }
+        else
+        {
+            PlaySound(transitionWithErrorsSound);
+        }
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de nuevo nivel.
+    /// </summary>
+    private void PlayNewLevelSound()
+    {
+        PlaySound(transitionNewLevel);
     }
 
     /// <summary>
