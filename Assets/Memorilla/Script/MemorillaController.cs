@@ -8,7 +8,9 @@ using static MainSceneController;
 public class MemorillaController : GameController
 {
     public bool onTutorial = true;
+    private int tutorialStep = 1;
     private bool tutorialDone = false;
+    private List<GameObject> tutorialHands = new List<GameObject>();
     private const string ENDPOINT = "result/memorilla";
 
     [SerializeField]
@@ -148,6 +150,7 @@ public class MemorillaController : GameController
                     tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
                     tHand.GetComponent<TutorialHand>().yPos = selectedCell.PosY/100-0.35f;
                     tHand.SetActive(true);
+                    tutorialHands.Add(tHand);
                 }
             }
         }
@@ -170,7 +173,8 @@ public class MemorillaController : GameController
     /// </summary>
     public void startBtn()
     {
-        if(!tutorialDone) { 
+        if(!tutorialDone) {
+            tutorialStep++;
             tutorial.GetComponent<Text>().text = "Toca los cuadros que se mostraron.";
             NumberOfGuesses = NumberOfStimuli;
             CreateTutoHands();
@@ -186,13 +190,14 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Elimina las manos de tutorial luego de terminar una fase.
+    /// Activa o desactiva las manos de tutorial por la pausa.
     /// </summary>
-    public void DestroyTutoHands()
+    public void ActiveOrDeactiveHands(bool state)
     {
-        GameObject[] thands = GameObject.FindGameObjectsWithTag("tutorialhand");
-        foreach (GameObject thand in thands)
-        GameObject.Destroy(thand);
+        foreach (GameObject thand in tutorialHands)
+        {
+            thand.SetActive(state);
+        }
     }
 
     private void Update()
@@ -217,7 +222,7 @@ public class MemorillaController : GameController
     {
         if (onTutorial)
         {
-            DestroyTutoHands();
+            ActiveOrDeactiveHands(false);
             startButton.SetActive(false);
             tutorial.SetActive(false);
         }
@@ -228,7 +233,12 @@ public class MemorillaController : GameController
     {
         if (onTutorial)
         {
-            CreateTutoHands();
+            tutorial.SetActive(true);
+            startButton.SetActive(true);
+            if (tutorialStep == 2)
+            {
+                ActiveOrDeactiveHands(true);
+            }
         }
         if (Grid != null)
         {
@@ -529,7 +539,7 @@ public class MemorillaController : GameController
             {
                 TakeControlFromPlayer();
                 ShowResult();
-                DestroyTutoHands();
+                ActiveOrDeactiveHands(false);
                 tutorial.GetComponent<Text>().text = "Intenta recordar lo mas que puedas.";
                 tutorialDone = true;
                 startButton.SetActive(true);

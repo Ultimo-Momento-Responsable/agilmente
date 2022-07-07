@@ -63,7 +63,6 @@ public class EndScreen : MonoBehaviour
         var scoreIndex = scores.IndexOf(score);
         foreach (string s in scores)
         {
-            print(s);
             if (i > 5)
             {
                 if (s == score)
