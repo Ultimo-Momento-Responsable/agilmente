@@ -72,6 +72,7 @@ public class MemorillaController : GameController
     public Text scoreHUD;
     private bool canceled = false;
     public GameObject HUD;
+    public AudioClip transitionNewLevel;
     public AudioClip tapSound;
     public AudioClip transitionSuccessSound;
     public AudioClip transitionWithErrorsSound;
@@ -92,7 +93,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Define el tama駉 de la grilla seg鷑 los par醡etros
+    /// Define el tama帽o de la grilla seg煤n los par谩metros
     /// </summary>
     /// <param name="pHeight">Cantidad de filas que tendra la grilla</param>
     /// <param name="pWidth">Cantidad de columnas que tendra la grilla</param>
@@ -103,7 +104,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Inicia la memorilla con los datos de la sesi髇
+    /// Inicia la memorilla con los datos de la sesi贸n
     /// </summary>
     private void initializeMemorilla()
     {
@@ -169,7 +170,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Controla el comportamiento del bot髇 "Comenzar"
+    /// Controla el comportamiento del bot贸n "Comenzar"
     /// </summary>
     public void startBtn()
     {
@@ -247,7 +248,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Desactiva o activa las celdas seg鷑 necesidad
+    /// Desactiva o activa las celdas seg煤n necesidad
     /// </summary>
     /// <param name="state"></param>
     void deactivateOrActivateCells(bool state)
@@ -388,6 +389,7 @@ public class MemorillaController : GameController
             CleanGrid();
             CreateStimuli();
             level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
+            PlayNewLevelSound();
             StartCoroutine(WaitWhileShowingSolution(timePreLevel));
         }
     }
@@ -395,7 +397,7 @@ public class MemorillaController : GameController
     /// <summary>
     /// Limpia la grilla de estados y colores.
     /// Reinicia todas las celdas al estado UNSELECTED,
-    /// y tambi閚 setea el isActive a false.
+    /// y tambi茅n setea el isActive a false.
     /// </summary>
     private void CleanGrid()
     {
@@ -410,7 +412,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Selecciona n celdas random para el ejercicio
-    /// las cuales conformar醤 la soluci髇 del mismo.
+    /// las cuales conformar谩n la soluci贸n del mismo.
     /// </summary>
     private void CreateStimuli()
     {
@@ -436,7 +438,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Inicia una corrutina para esperar 5 segundos
-    /// antes de ocultar la soluci髇.
+    /// antes de ocultar la soluci贸n.
     /// </summary>
     /// <param name="seconds">Cantidad de segundos a esperar.</param>
     /// <returns>Una corrutina.</returns>
@@ -448,7 +450,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Esconde los est韒ulos (la soluci髇).
+    /// Esconde los est铆mulos (la soluci贸n).
     /// Cambia el estado de todas las celdas a UNSELECTED.
     /// </summary>
     private void HideStimuli()
@@ -483,7 +485,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Crea una grilla del tama駉 especificado.
+    /// Crea una grilla del tama帽o especificado.
     /// </summary>
     private void CreateGrid()
     {
@@ -502,7 +504,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Crea una celda en una posici髇 particular.
+    /// Crea una celda en una posici贸n particular.
     /// </summary>
     /// <param name="row">Fila de la celda.</param>
     /// <param name="column">Columna de la celda.</param>
@@ -556,7 +558,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Reproduce el sonido de la pantalla de transici髇.
+    /// Reproduce el sonido de la pantalla de transici贸n.
     /// </summary>
     private void PlayTransitionSound()
     {
@@ -568,6 +570,14 @@ public class MemorillaController : GameController
         {
             PlaySound(transitionWithErrorsSound);
         }
+    }
+
+    /// <summary>
+    /// Reproduce el sonido de nuevo nivel.
+    /// </summary>
+    private void PlayNewLevelSound()
+    {
+        PlaySound(transitionNewLevel);
     }
 
     /// <summary>
@@ -591,7 +601,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Muestra el resultado del ejercicio, adem醩 contabiliza los resultados del nivel.
+    /// Muestra el resultado del ejercicio, adem谩s contabiliza los resultados del nivel.
     /// </summary>
     private void ShowResult()
     {

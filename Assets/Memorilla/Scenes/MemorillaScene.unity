@@ -1487,6 +1487,7 @@ MonoBehaviour:
   level: {fileID: 1837367426279731510}
   scoreHUD: {fileID: 1837367426279731509}
   HUD: {fileID: 1837367426279731511}
+  transitionNewLevel: {fileID: 8300000, guid: 9684d7f3c40df864ba6577208adb7285, type: 3}
   tapSound: {fileID: 8300000, guid: ccb63c37907dac34e813f4a34ce06dac, type: 3}
   transitionSuccessSound: {fileID: 8300000, guid: d6af84a950432f142b1d7a8ddf5bafd5, type: 3}
   transitionWithErrorsSound: {fileID: 8300000, guid: d27fc739d7066884b9a1abf50e5f3245, type: 3}

@@ -72,8 +72,11 @@ public class EndScreen : MonoBehaviour
                 }
             }else
             {
-                createScoreText(i, scoreIndex, s);
-                i++;
+                if (s.Length > 0)
+                {
+                    createScoreText(i, scoreIndex, s);
+                    i++;
+                }
             }   
         }
     }
