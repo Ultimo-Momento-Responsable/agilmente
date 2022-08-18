@@ -224,7 +224,9 @@ public class MainSceneController : MonoBehaviour
         {
             float completedPercentage = (float)p.gamesPlayed / (float)p.totalGames;
             collapsablePlanning.transform.GetChild(1).transform.GetChild(0).transform.localScale = new Vector2(completedPercentage, 1);
-            collapsablePlanning.transform.GetChild(2).GetComponent<Text>().text = p.gamesPlayed + "/" + p.totalGames;
+            if (!p.unlimited){
+                collapsablePlanning.transform.GetChild(2).GetComponent<Text>().text = p.gamesPlayed + "/" + p.totalGames;
+            }
             collapsablePlanning.transform.GetChild(3).GetComponent<Text>().text = "¡Quedan " + daysLeft + " días!";
         }
         else
@@ -310,7 +312,11 @@ public class MainSceneController : MonoBehaviour
             p.planningList = SortPlannings(p.planningList);
             if (p.gamesPlayed==p.totalGames)
             {
-                completedPlannings.Add(p);
+                if (p.unlimited){
+                    uncompletedPlannings.Add(p);
+                } else {
+                    completedPlannings.Add(p);
+                }
             } else
             {
                 uncompletedPlannings.Add(p);
@@ -483,6 +489,7 @@ public class MainSceneController : MonoBehaviour
         public int totalGames;
         public int gamesPlayed;
         public string dueDate;
+        public bool unlimited;
         public GameSession[] planningList;
     }
 
