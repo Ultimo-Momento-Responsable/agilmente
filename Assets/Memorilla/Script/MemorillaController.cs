@@ -235,7 +235,9 @@ public class MemorillaController : GameController
         if (onTutorial)
         {
             tutorial.SetActive(true);
-            startButton.SetActive(true);
+            if (!(tutorialStep == 2)) { 
+                startButton.SetActive(true);
+            }
             if (tutorialStep == 2)
             {
                 ActiveOrDeactiveHands(true);
@@ -543,6 +545,7 @@ public class MemorillaController : GameController
                 ShowResult();
                 ActiveOrDeactiveHands(false);
                 tutorial.GetComponent<Text>().text = "Intenta recordar lo mas que puedas.";
+                tutorialStep++;
                 tutorialDone = true;
                 startButton.SetActive(true);
             }
