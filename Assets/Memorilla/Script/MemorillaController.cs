@@ -511,6 +511,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Crea una celda en una posición particular.
+    /// Si el usuario se encuentra en el tutorial, la grilla se desplaza temporalmente.
     /// </summary>
     /// <param name="row">Fila de la celda.</param>
     /// <param name="column">Columna de la celda.</param>
@@ -524,7 +525,6 @@ public class MemorillaController : GameController
         cellGameObject.transform.localPosition = new Vector3(cell.PosX, cell.PosY, 0);
         if (onTutorial)
         {
-            //cellGameObject.GetComponent<Transform>().localScale = new Vector3(CellSize / 2, CellSize / 2, 1);
             cellGameObject.transform.localPosition = new Vector3(cell.PosX, (cell.PosY-110), 0);
         }
         return cell;
