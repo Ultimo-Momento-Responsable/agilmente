@@ -76,6 +76,7 @@ public class MemorillaController : GameController
     public AudioClip tapSound;
     public AudioClip transitionSuccessSound;
     public AudioClip transitionWithErrorsSound;
+    public GameObject title;
 
     void Start()
     {
@@ -149,7 +150,7 @@ public class MemorillaController : GameController
                     GameObject tHand = Instantiate(handPref, GridGameObject.transform);
                     tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
                     tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
-                    tHand.GetComponent<TutorialHand>().yPos = selectedCell.PosY/100-0.35f;
+                    tHand.GetComponent<TutorialHand>().yPos = (selectedCell.PosY/100-0.35f)-0.85f;
                     tHand.SetActive(true);
                     tutorialHands.Add(tHand);
                 }
@@ -186,6 +187,7 @@ public class MemorillaController : GameController
         else
         {
             tutorial.SetActive(false);
+            title.SetActive(false);
             initializeMemorilla();
         }
     }
@@ -226,6 +228,7 @@ public class MemorillaController : GameController
             ActiveOrDeactiveHands(false);
             startButton.SetActive(false);
             tutorial.SetActive(false);
+            title.SetActive(false);
         }
         deactivateOrActivateCells(false);
     }
@@ -235,6 +238,7 @@ public class MemorillaController : GameController
         if (onTutorial)
         {
             tutorial.SetActive(true);
+            title.SetActive(true);
             if (!(tutorialStep == 2)) { 
                 startButton.SetActive(true);
             }
@@ -507,6 +511,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Crea una celda en una posición particular.
+    /// Si el usuario se encuentra en el tutorial, la grilla se desplaza temporalmente.
     /// </summary>
     /// <param name="row">Fila de la celda.</param>
     /// <param name="column">Columna de la celda.</param>
@@ -518,6 +523,10 @@ public class MemorillaController : GameController
         Cell cell = cellGameObject.GetComponent<Cell>();
         cell.Create(row, column, this);
         cellGameObject.transform.localPosition = new Vector3(cell.PosX, cell.PosY, 0);
+        if (onTutorial)
+        {
+            cellGameObject.transform.localPosition = new Vector3(cell.PosX, (cell.PosY-110), 0);
+        }
         return cell;
     }
 
@@ -532,7 +541,7 @@ public class MemorillaController : GameController
 
         if (NumberOfGuesses == 0)
         {
-            if(!onTutorial) { 
+            if(!onTutorial) {
                 TakeControlFromPlayer();
                 ShowResult();
                 PlayTransitionSound();
