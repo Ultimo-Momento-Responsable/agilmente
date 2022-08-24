@@ -151,9 +151,7 @@ public class MemorillaController : GameController
                     GameObject tHand = Instantiate(handPref, GridGameObject.transform);
                     tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
                     tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
-                    print(selectedCell.PosY);
                     tHand.GetComponent<TutorialHand>().yPos = -0.8f-k*1.6f;
-                    print(tHand.GetComponent<TutorialHand>().yPos);
                     tHand.SetActive(true);
                     tutorialHands.Add(tHand);
                 }
