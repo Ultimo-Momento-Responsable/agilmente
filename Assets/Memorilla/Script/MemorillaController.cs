@@ -138,6 +138,7 @@ public class MemorillaController : GameController
     /// </summary>
     private void CreateTutoHands()
     {
+        var k = 2;
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
@@ -150,11 +151,12 @@ public class MemorillaController : GameController
                     GameObject tHand = Instantiate(handPref, GridGameObject.transform);
                     tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
                     tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
-                    tHand.GetComponent<TutorialHand>().yPos = (selectedCell.PosY/100-0.35f)-0.85f;
+                    tHand.GetComponent<TutorialHand>().yPos = -0.8f-k*1.6f;
                     tHand.SetActive(true);
                     tutorialHands.Add(tHand);
                 }
             }
+            k--;
         }
     }
 
