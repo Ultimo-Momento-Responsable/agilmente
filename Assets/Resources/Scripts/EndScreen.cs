@@ -13,7 +13,7 @@ public class EndScreen : MonoBehaviour
     public string game;
     public int gameSessionId;
     public string score;
-    private List<string> scores;
+    private List<int> scores;
     public Text rankingScoreText;
     public Text title;
     public Text yourScore;
@@ -51,30 +51,37 @@ public class EndScreen : MonoBehaviour
         data = data.Remove(0,1);
         data = data.Remove(data.Length-1,1);
         var auxScores = data.Split(',');
-        scores = auxScores.OfType<string>().ToList();
-        scores.Add(score);
+        if (auxScores[0] == "")
+        {
+            scores = new List<int>();
+        }
+        else
+        {
+            scores = auxScores.OfType<string>().Select(Int32.Parse).ToList();
+        }
+        scores.Add(Int32.Parse(score));
         scores.Sort();
         scores.Reverse();
         title.transform.localPosition = new Vector2(0, 472);
         rankingLabel.transform.localPosition = new Vector2(0, 200);
 
-        yourScore.text += score; 
+        yourScore.text += score;
         var i = 1;
-        var scoreIndex = scores.IndexOf(score);
-        foreach (string s in scores)
+        var scoreIndex = scores.IndexOf(Int32.Parse(score));
+        foreach (int s in scores)
         {
             if (i > 5)
             {
-                if (s == score)
+                if (s.ToString() == score)
                 {
-                    createScoreText(scoreIndex+1, scoreIndex, s);
+                    createScoreText(scoreIndex+1, scoreIndex, s.ToString());
                     break;
                 }
             }else
             {
-                if (s.Length > 0)
+                if (s.ToString().Length > 0)
                 {
-                    createScoreText(i, scoreIndex, s);
+                    createScoreText(i, scoreIndex, s.ToString());
                     i++;
                 }
             }   
