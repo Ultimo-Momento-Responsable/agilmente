@@ -51,7 +51,14 @@ public class EndScreen : MonoBehaviour
         data = data.Remove(0,1);
         data = data.Remove(data.Length-1,1);
         var auxScores = data.Split(',');
-        scores = auxScores.OfType<string>().Select(Int32.Parse).ToList();
+        if (auxScores[0] == "")
+        {
+            scores = new List<int>();
+        }
+        else
+        {
+            scores = auxScores.OfType<string>().Select(Int32.Parse).ToList();
+        }
         scores.Add(Int32.Parse(score));
         scores.Sort();
         scores.Reverse();
