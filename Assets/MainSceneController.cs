@@ -378,7 +378,6 @@ public class MainSceneController : MonoBehaviour
      */
     public void playGame(int planningIndex, int gameSessionIndex)
     {
-        print("planning index " + planningIndex + " session index " + gameSessionIndex);
         if (uncompletedPlannings[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Repetido")
         {
             foreach (Params param in uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters)
