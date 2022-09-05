@@ -378,9 +378,9 @@ public class MainSceneController : MonoBehaviour
      */
     public void playGame(int planningIndex, int gameSessionIndex)
     {
-        if (planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Repetido")
+        if (uncompletedPlannings[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Repetido")
         {
-            foreach (Params param in planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters)
+            foreach (Params param in uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters)
             {
                 if (param.name == "maxLevel")
                 {
@@ -409,21 +409,21 @@ public class MainSceneController : MonoBehaviour
                     SessionHayUnoRepetido.figureQuantity = int.Parse(param.value);
                 }
             }
-            SessionHayUnoRepetido.gameSessionId = planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].gameSessionId;
+            SessionHayUnoRepetido.gameSessionId = uncompletedPlannings[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("HayUnoRepetidoScene");
         }
-        if (planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Nuevo")
+        if (uncompletedPlannings[planningIndex].planningList[gameSessionIndex].game == "Encuentra al Nuevo")
         {
-            foreach (Params param in planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters)
+            foreach (Params param in uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters)
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionEncuentraAlNuevo.maxLevel = int.Parse(planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters[0].value);
+                    SessionEncuentraAlNuevo.maxLevel = int.Parse(uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters[0].value);
                     SessionEncuentraAlNuevo.maxTime = -1;
                 }
                 if (param.name == "maximumTime")
                 {
-                    SessionEncuentraAlNuevo.maxTime = float.Parse(planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters[0].value, CultureInfo.InvariantCulture);
+                    SessionEncuentraAlNuevo.maxTime = float.Parse(uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters[0].value, CultureInfo.InvariantCulture);
                     SessionEncuentraAlNuevo.maxLevel = -1;
                 }
                 if (param.name == "spriteSet")
@@ -435,17 +435,17 @@ public class MainSceneController : MonoBehaviour
                     SessionEncuentraAlNuevo.variableSizes = bool.Parse(param.value);
                 }
             }
-            SessionEncuentraAlNuevo.gameSessionId = planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].gameSessionId;
+            SessionEncuentraAlNuevo.gameSessionId = uncompletedPlannings[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("EncuentraAlNuevoScene");
         }
 
-        if (planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].game == "Memorilla")
+        if (uncompletedPlannings[planningIndex].planningList[gameSessionIndex].game == "Memorilla")
         {
-            foreach (Params param in planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters)
+            foreach (Params param in uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters)
             {
                 if (param.name == "maxLevel")
                 {
-                    SessionMemorilla.maxLevel = int.Parse(planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].parameters[0].value);
+                    SessionMemorilla.maxLevel = int.Parse(uncompletedPlannings[planningIndex].planningList[gameSessionIndex].parameters[0].value);
                 }
                 if (param.name == "figureQuantity")
                 {
@@ -460,7 +460,7 @@ public class MainSceneController : MonoBehaviour
                     SessionMemorilla.numberOfColumns = int.Parse(param.value);
                 }
             }
-            SessionMemorilla.gameSessionId = planningRequestJson.planningList[planningIndex].planningList[gameSessionIndex].gameSessionId;
+            SessionMemorilla.gameSessionId = uncompletedPlannings[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("MemorillaScene");
         }
     }
