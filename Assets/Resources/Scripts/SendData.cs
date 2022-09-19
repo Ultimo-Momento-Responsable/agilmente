@@ -9,7 +9,7 @@ public class SendData : MonoBehaviour
     public static string IP = IP_PROD;
 
     /// <summary>
-    /// Función que se encarga de armar el HTTP Request y enviarlo al backend 
+    /// Funci�n que se encarga de armar el HTTP Request y enviarlo al backend 
     /// (agilmente-core).
     /// </summary>
     public void sendData(string json, string endpoint)
@@ -26,7 +26,7 @@ public class SendData : MonoBehaviour
     }
 
     /// <summary>
-    /// Función que se encarga de enviar los datos al backend (agilmente-core).
+    /// Funci�n que se encarga de enviar los datos al backend (agilmente-core).
     /// </summary>
     /// <param name="www">Request HTTP (POST).</param>
     /// <returns>Corrutina.</returns>

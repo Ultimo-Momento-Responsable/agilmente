@@ -68,6 +68,7 @@ public class MemorillaController : GameController
     public AudioClip tapSound;
     public AudioClip transitionSuccessSound;
     public AudioClip transitionWithErrorsSound;
+    public GameObject title;
 
     void Start()
     {
@@ -86,7 +87,79 @@ public class MemorillaController : GameController
         StartLevel();
         initTime = Time.time;
         level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
-        scoreHUD.text = score.ToString();
+
+    }
+
+    /// <summary>
+    /// Crea las manos del tutorial sobre las celdas correctas.
+    /// </summary>
+    private void CreateTutoHands()
+    {
+        var k = 2;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                Cell selectedCell = Grid[i][j];
+                bool cellState = (selectedCell.State == STATES.SELECTED);
+
+                if (cellState)
+                {
+                    GameObject tHand = Instantiate(handPref, GridGameObject.transform);
+                    tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
+                    tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
+                    tHand.GetComponent<TutorialHand>().yPos = -0.8f-k*1.6f;
+                    tHand.SetActive(true);
+                    tutorialHands.Add(tHand);
+                }
+            }
+            k--;
+        }
+    }
+
+    /// <summary>
+    /// Crea la grilla para el tutorial
+    /// </summary>
+    private void StartTutorial()
+    {
+        level.text = "Tutorial";
+        numberOfStimuli = 3;
+        setGridSize(3, 3);
+        CreateGrid();
+        CreateStimuli();
+    }
+
+    /// <summary>
+    /// Controla el comportamiento del botÃƒÂ³n "Comenzar"
+    /// </summary>
+    public void startBtn()
+    {
+        if(!tutorialDone) {
+            tutorialStep++;
+            tutorial.GetComponent<Text>().text = "Toca los cuadros que se mostraron.";
+            NumberOfGuesses = NumberOfStimuli;
+            CreateTutoHands();
+            HideStimuli();
+            ReturnControlToPlayer();
+            startButton.SetActive(false);
+        }
+        else
+        {
+            tutorial.SetActive(false);
+            title.SetActive(false);
+            initializeMemorilla();
+        }
+    }
+
+    /// <summary>
+    /// Activa o desactiva las manos de tutorial por la pausa.
+    /// </summary>
+    public void ActiveOrDeactiveHands(bool state)
+    {
+        foreach (GameObject thand in tutorialHands)
+        {
+            thand.SetActive(state);
+        }
     }
 
     private void Update()
@@ -109,11 +182,30 @@ public class MemorillaController : GameController
 
     public override void pauseGame()
     {
+        if (onTutorial)
+        {
+            ActiveOrDeactiveHands(false);
+            startButton.SetActive(false);
+            tutorial.SetActive(false);
+            title.SetActive(false);
+        }
         deactivateOrActivateCells(false);
     }
 
     public override void unpauseGame()
     {
+        if (onTutorial)
+        {
+            tutorial.SetActive(true);
+            title.SetActive(true);
+            if (!(tutorialStep == 2)) { 
+                startButton.SetActive(true);
+            }
+            if (tutorialStep == 2)
+            {
+                ActiveOrDeactiveHands(true);
+            }
+        }
         if (Grid != null)
         {
             deactivateOrActivateCells(true);
@@ -121,7 +213,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Desactiva o activa las celdas según necesidad
+    /// Desactiva o activa las celdas segÃºn necesidad
     /// </summary>
     /// <param name="state"></param>
     void deactivateOrActivateCells(bool state)
@@ -269,7 +361,7 @@ public class MemorillaController : GameController
     /// <summary>
     /// Limpia la grilla de estados y colores.
     /// Reinicia todas las celdas al estado UNSELECTED,
-    /// y también setea el isActive a false.
+    /// y tambiÃ©n setea el isActive a false.
     /// </summary>
     private void CleanGrid()
     {
@@ -284,7 +376,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Selecciona n celdas random para el ejercicio
-    /// las cuales conformarán la solución del mismo.
+    /// las cuales conformarÃ¡n la soluciÃ³n del mismo.
     /// </summary>
     private void CreateStimuli()
     {
@@ -311,7 +403,7 @@ public class MemorillaController : GameController
 
     /// <summary>
     /// Inicia una corrutina para esperar 5 segundos
-    /// antes de ocultar la solución.
+    /// antes de ocultar la soluciÃ³n.
     /// </summary>
     /// <param name="seconds">Cantidad de segundos a esperar.</param>
     /// <returns>Una corrutina.</returns>
@@ -323,7 +415,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Esconde los estímulos (la solución).
+    /// Esconde los estÃ­mulos (la soluciÃ³n).
     /// Cambia el estado de todas las celdas a UNSELECTED.
     /// </summary>
     private void HideStimuli()
@@ -358,7 +450,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Crea una grilla del tamaño especificado.
+    /// Crea una grilla del tamaÃ±o especificado.
     /// </summary>
     private void CreateGrid()
     {
@@ -377,7 +469,8 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Crea una celda en una posición particular.
+    /// Crea una celda en una posiciÃƒÂ³n particular.
+    /// Si el usuario se encuentra en el tutorial, la grilla se desplaza temporalmente.
     /// </summary>
     /// <param name="row">Fila de la celda.</param>
     /// <param name="column">Columna de la celda.</param>
@@ -389,6 +482,10 @@ public class MemorillaController : GameController
         Cell cell = cellGameObject.GetComponent<Cell>();
         cell.Create(row, column, this);
         cellGameObject.transform.localPosition = new Vector3(cell.PosX, cell.PosY, 0);
+        if (onTutorial)
+        {
+            cellGameObject.transform.localPosition = new Vector3(cell.PosX, (cell.PosY-110), 0);
+        }
         return cell;
     }
 
@@ -403,11 +500,23 @@ public class MemorillaController : GameController
 
         if (NumberOfGuesses == 0)
         {
-            TakeControlFromPlayer();
-            ShowResult();
-            PlayTransitionSound();
-            levelsPlayed++;
-            StartNextLevel();
+            if(!onTutorial) {
+                TakeControlFromPlayer();
+                ShowResult();
+                PlayTransitionSound();
+                levelsPlayed++;
+                StartNextLevel();
+            }
+            else
+            {
+                TakeControlFromPlayer();
+                ShowResult();
+                ActiveOrDeactiveHands(false);
+                tutorial.GetComponent<Text>().text = "Intenta recordar lo mas que puedas.";
+                tutorialStep++;
+                tutorialDone = true;
+                startButton.SetActive(true);
+            }
         }
     }
 
@@ -420,7 +529,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Reproduce el sonido de la pantalla de transición.
+    /// Reproduce el sonido de la pantalla de transiciÃ³n.
     /// </summary>
     private void PlayTransitionSound()
     {
@@ -463,7 +572,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Muestra el resultado del ejercicio, además contabiliza los resultados del nivel.
+    /// Muestra el resultado del ejercicio, ademÃ¡s contabiliza los resultados del nivel.
     /// </summary>
     private void ShowResult()
     {
