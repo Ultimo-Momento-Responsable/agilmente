@@ -243,8 +243,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: -43.380005}
-  m_SizeDelta: {x: 0, y: -146.80005}
+  m_AnchoredPosition: {x: -0.000030517578, y: -58.390015}
+  m_SizeDelta: {x: 0, y: -116.78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &762272611
 MonoBehaviour:
@@ -726,22 +726,18 @@ MonoBehaviour:
   title: {fileID: 986175933}
   completedGamesText: {fileID: 1759784910}
   bodyText: {fileID: 2031816245}
-  profileButton: {fileID: 0}
-  backButton: {fileID: 0}
-  viewGamesButton: {fileID: 0}
-  notificationButton: {fileID: 0}
   gameLogo:
   - {fileID: 21300000, guid: 62120de20e704764787d6e92cf7d1272, type: 3}
   - {fileID: 21300000, guid: 94d99b3169fb27c4c9b2843f15d61a37, type: 3}
   - {fileID: 21300000, guid: e2712731f205b84478893151f57fc0c5, type: 3}
   gameText: {fileID: 857048726}
   collapsable: {fileID: 2439270960825865239, guid: d4e00f46cc0763643a71e9c325a5c3ab, type: 3}
-  camera: {fileID: 506470673}
   gameCard: {fileID: 4343112129678271998, guid: 86ace72d4008fa44abef229e370a5e2e, type: 3}
   gameCanvas: {fileID: 1473360240}
   cardContainer: {fileID: 2076258243}
   maxTime: {fileID: 21300000, guid: ec4c34c872a41db44b694072466e064f, type: 3}
   maxLevel: {fileID: 21300000, guid: 4023d8e00ea94d0408787730a708f3ad, type: 3}
+  camera: {fileID: 506470673}
 --- !u!4 &1572026030
 Transform:
   m_ObjectHideFlags: 0
