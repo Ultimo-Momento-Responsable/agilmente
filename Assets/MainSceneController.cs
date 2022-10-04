@@ -245,38 +245,6 @@ public class MainSceneController : MonoBehaviour
     }
 
     /**
-     * Muestra todos los elementos de la sección "Perfil" de la aplicación
-     */
-    public void GoToProfile()
-    {
-        viewGamesButton.gameObject.SetActive(true);
-        backButton.gameObject.SetActive(true);
-        profileButton.gameObject.SetActive(false);
-        notificationButton.gameObject.SetActive(false);
-        gameText.SetActive(false);
-        clearCards();
-        viewGamesButton.enabled = true;
-        title.text = "Perfil";
-        bodyText.SetActive(false);
-    }
-
-    /**
-     * Vuelve a la pantalla de Home
-     */
-    public void BackToHome()
-    {
-        viewGamesButton.gameObject.SetActive(false);
-        backButton.gameObject.SetActive(false);
-        profileButton.gameObject.SetActive(true);
-        notificationButton.gameObject.SetActive(true);
-        gameText.SetActive(true);
-        bodyText.SetActive(true);
-        title.text = "AgilMente";
-        clearCards();
-        ShowGameCards();
-    }
-
-    /**
      * GET para planificaciones desde backend para un paciente
      */
     public void getPlanning()
