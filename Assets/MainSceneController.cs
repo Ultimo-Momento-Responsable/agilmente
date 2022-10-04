@@ -16,13 +16,14 @@ public class MainSceneController : MonoBehaviour
     public Sprite[] gameLogo;
     public GameObject gameText;
     public GameObject collapsable;
-    public new Camera camera;
     public Button gameCard;
     public GameObject gameCanvas;
     public GameObject cardContainer;
     public Sprite maxTime;
     public Sprite maxLevel;
+    public new Camera camera; 
 
+    private Settings settings;
     private PlanningList planningRequestJson;
     private List<Planning> completedPlannings;
     private List<Planning> uncompletedPlannings;
@@ -130,7 +131,7 @@ public class MainSceneController : MonoBehaviour
     private void createPlanningCard(GameSession planningCard, GameObject collapsablePlanning, int posCollapsable, int posPlanningCard)
     {
         Button gameCardInstance = Instantiate(gameCard);
-        gameCardInstance.transform.SetParent(collapsablePlanning.transform.GetChild(0).transform.GetChild(2));
+        gameCardInstance.transform.SetParent(collapsablePlanning.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1));
         gameCardInstance.transform.localScale = new Vector2(0.95f, 0.95f);          //Escala actual del canvas
         gameCardInstance.transform.localPosition = new Vector3(0, -2.3f + (posPlanningCard * -1.45f), 0); //Tamaño de cards + offset
 
@@ -218,28 +219,11 @@ public class MainSceneController : MonoBehaviour
         collapsablePlanning.GetComponent<Collapsable>().Position = position;
         if (!completed)
         {
-            float completedPercentage = (float)p.gamesPlayed / (float)p.totalGames;
-            if (p.unlimited && p.totalGames == 0)
-            {
-                completedPercentage = 1;
-            }
-            collapsablePlanning.transform.GetChild(1).transform.GetChild(0).transform.localScale = new Vector2(completedPercentage, 1);
-            if (p.totalGames > 0){
-                collapsablePlanning.transform.GetChild(2).GetComponent<Text>().text = p.gamesPlayed + "/" + p.totalGames;
-            }
-            collapsablePlanning.transform.GetChild(3).GetComponent<Text>().text = "¡Quedan " + daysLeft + " días!";
+            collapsablePlanning.GetComponent<Collapsable>().SetPlanningData(p.gamesPlayed, p.totalGames, p.unlimited, daysLeft);
         }
         else
         {
-            collapsablePlanning.transform.GetChild(3).gameObject.SetActive(true);
-            collapsablePlanning.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
-            collapsablePlanning.transform.GetChild(0).GetChild(1).GetChild(0).gameObject.SetActive(false);
-            collapsablePlanning.transform.GetChild(1).transform.GetChild(0).gameObject.SetActive(false);
-            collapsablePlanning.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(true);
-            collapsablePlanning.transform.GetChild(4).gameObject.SetActive(true);
-            collapsablePlanning.transform.GetChild(5).gameObject.SetActive(true);
-            if (p.totalGames > 0)
-                collapsablePlanning.transform.GetChild(6).GetComponent<Text>().text = p.gamesPlayed + "/" + p.totalGames;
+            collapsablePlanning.GetComponent<Collapsable>().SetCompleted(p.gamesPlayed, p.totalGames);
         }
         return collapsablePlanning;
     }
