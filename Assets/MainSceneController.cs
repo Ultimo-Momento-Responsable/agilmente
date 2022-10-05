@@ -13,24 +13,21 @@ public class MainSceneController : MonoBehaviour
     public Text title;
     public GameObject completedGamesText;
     public GameObject bodyText;
-    private Settings settings;
-    public Button profileButton;
-    public Button backButton;
-    public Button viewGamesButton;
-    public Button notificationButton;
     public Sprite[] gameLogo;
     public GameObject gameText;
     public GameObject collapsable;
-    private PlanningList planningRequestJson;
-    private List<Planning> completedPlannings;
-    private List<Planning> uncompletedPlannings;
     public new Camera camera;
     public Button gameCard;
     public GameObject gameCanvas;
     public GameObject cardContainer;
     public Sprite maxTime;
     public Sprite maxLevel;
+
+    private PlanningList planningRequestJson;
+    private List<Planning> completedPlannings;
+    private List<Planning> uncompletedPlannings;
     private static string endpoint = "planning/mobile_patient/";
+    private Settings settings;
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion
@@ -66,7 +63,6 @@ public class MainSceneController : MonoBehaviour
     public void ShowGameCards()
     {
         clearCards();
-        viewGamesButton.gameObject.SetActive(false);
         bodyText.SetActive(true);
 
         if (isThereAPlanning())
@@ -134,7 +130,7 @@ public class MainSceneController : MonoBehaviour
     private void createPlanningCard(GameSession planningCard, GameObject collapsablePlanning, int posCollapsable, int posPlanningCard)
     {
         Button gameCardInstance = Instantiate(gameCard);
-        gameCardInstance.transform.parent = collapsablePlanning.transform.GetChild(0).transform.GetChild(2);
+        gameCardInstance.transform.SetParent(collapsablePlanning.transform.GetChild(0).transform.GetChild(2));
         gameCardInstance.transform.localScale = new Vector2(0.95f, 0.95f);          //Escala actual del canvas
         gameCardInstance.transform.localPosition = new Vector3(0, -2.3f + (posPlanningCard * -1.45f), 0); //Tamaño de cards + offset
 
@@ -213,7 +209,7 @@ public class MainSceneController : MonoBehaviour
     private GameObject createCollapsable(Planning p, bool completed, int position, string daysLeft = "")
     {
         GameObject collapsablePlanning = Instantiate(collapsable);
-        collapsablePlanning.transform.parent = cardContainer.transform;
+        collapsablePlanning.transform.SetParent(cardContainer.transform);
         collapsablePlanning.transform.localScale = new Vector2(0.0078f, 0.0078f);
         var offset = -2.3f;
         if (completed) offset = -3.3f;
@@ -223,8 +219,12 @@ public class MainSceneController : MonoBehaviour
         if (!completed)
         {
             float completedPercentage = (float)p.gamesPlayed / (float)p.totalGames;
+            if (p.unlimited && p.totalGames == 0)
+            {
+                completedPercentage = 1;
+            }
             collapsablePlanning.transform.GetChild(1).transform.GetChild(0).transform.localScale = new Vector2(completedPercentage, 1);
-            if (!p.unlimited){
+            if (p.totalGames > 0){
                 collapsablePlanning.transform.GetChild(2).GetComponent<Text>().text = p.gamesPlayed + "/" + p.totalGames;
             }
             collapsablePlanning.transform.GetChild(3).GetComponent<Text>().text = "¡Quedan " + daysLeft + " días!";
@@ -242,38 +242,6 @@ public class MainSceneController : MonoBehaviour
                 collapsablePlanning.transform.GetChild(6).GetComponent<Text>().text = p.gamesPlayed + "/" + p.totalGames;
         }
         return collapsablePlanning;
-    }
-
-    /**
-     * Muestra todos los elementos de la sección "Perfil" de la aplicación
-     */
-    public void GoToProfile()
-    {
-        viewGamesButton.gameObject.SetActive(true);
-        backButton.gameObject.SetActive(true);
-        profileButton.gameObject.SetActive(false);
-        notificationButton.gameObject.SetActive(false);
-        gameText.SetActive(false);
-        clearCards();
-        viewGamesButton.enabled = true;
-        title.text = "Perfil";
-        bodyText.SetActive(false);
-    }
-
-    /**
-     * Vuelve a la pantalla de Home
-     */
-    public void BackToHome()
-    {
-        viewGamesButton.gameObject.SetActive(false);
-        backButton.gameObject.SetActive(false);
-        profileButton.gameObject.SetActive(true);
-        notificationButton.gameObject.SetActive(true);
-        gameText.SetActive(true);
-        bodyText.SetActive(true);
-        title.text = "AgilMente";
-        clearCards();
-        ShowGameCards();
     }
 
     /**

@@ -14,7 +14,7 @@ public class HayUnoRepetidoController : GameController
     private bool canceled = false;
     private int dontTouchTimer = 20;
 
-    public Camera camera;
+    public Camera mainCamera;
     public GameObject figure;
     public Sprite[] sprites;
     public Sprite[] distractorsSprites;
@@ -64,8 +64,10 @@ public class HayUnoRepetidoController : GameController
 
     void Start()
     {
+        scoreHUD.text = "";
         endScreen.SetActive(false);
-        hayUnoRepetido = new HayUnoRepetido(this);
+        hayUnoRepetido = ScriptableObject.CreateInstance<HayUnoRepetido>();
+        hayUnoRepetido.Initialize(this);
         maxLevel = SessionHayUnoRepetido.maxLevel;
         maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
@@ -82,7 +84,7 @@ public class HayUnoRepetidoController : GameController
             maxLevel = 20;
         }
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
-        hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -153,7 +155,7 @@ public class HayUnoRepetidoController : GameController
             {
                 isMakingMistake = false;
                 hayUnoRepetido.addMistake(figureQuantity);
-                camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
 
@@ -193,7 +195,7 @@ public class HayUnoRepetidoController : GameController
         removeFigures();
         
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
-        hayUnoRepetido.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
         isTouching = false;
     }
 
@@ -342,13 +344,6 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void OnApplicationPause()
     {
-        if (hayUnoRepetido.onTutorial)
-        {
-            goToMainScene();
-        }
-        else
-        {
             this.pause.pauseGame();
-        }
     }
 }

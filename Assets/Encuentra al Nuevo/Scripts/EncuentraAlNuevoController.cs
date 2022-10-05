@@ -16,7 +16,7 @@ public class EncuentraAlNuevoController : GameController
     private GameObject[] a_figures;
 
     public bool prevTutorial = true;
-    public Camera camera;
+    public Camera mainCamera;
     public GameObject figure;
     public Sprite[] sprites;
     public AudioClip sndSuccess;
@@ -58,8 +58,10 @@ public class EncuentraAlNuevoController : GameController
 
     void Start()
     {
+        scoreHUD.text = "";
         endScreen.SetActive(false);
-        encuentraAlNuevo = new EncuentraAlNuevo(this);
+        encuentraAlNuevo = ScriptableObject.CreateInstance<EncuentraAlNuevo>();
+        encuentraAlNuevo.Initialize(this);
         maxLevel = SessionEncuentraAlNuevo.maxLevel;
         maxTime = SessionEncuentraAlNuevo.maxTime;
         variableSizes = SessionEncuentraAlNuevo.variableSizes;
@@ -77,7 +79,7 @@ public class EncuentraAlNuevoController : GameController
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -148,7 +150,7 @@ public class EncuentraAlNuevoController : GameController
             {
                 isMakingMistake = false;
                 encuentraAlNuevo.addMistake(figureQuantity);
-                camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
 
@@ -189,7 +191,7 @@ public class EncuentraAlNuevoController : GameController
         
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
 
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
         isTouching = false;
     }
 

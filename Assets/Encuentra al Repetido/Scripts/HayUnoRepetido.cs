@@ -23,7 +23,11 @@ public class HayUnoRepetido : ScriptableObject
     private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
     private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
 
-    public HayUnoRepetido(HayUnoRepetidoController hayUnoRepetidoController)
+    /// <summary>
+    /// Setea los valores iniciales para el objeto.
+    /// </summary>
+    /// <param name="hayUnoRepetidoController">Controlador del juego.</param>
+    public void Initialize(HayUnoRepetidoController hayUnoRepetidoController)
     {
         timeMarkFromLastSuccess = Time.time;
         a_mistakes = 0;
