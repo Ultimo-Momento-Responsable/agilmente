@@ -694,7 +694,7 @@ MonoBehaviour:
   audioSource: {fileID: 741503598}
   gameOverSound: {fileID: 8300000, guid: e166f76f5f34dee4f94404985bf32743, type: 3}
   prevTutorial: 1
-  camera: {fileID: 2119599485}
+  mainCamera: {fileID: 2119599485}
   figure: {fileID: 8632990507630729472, guid: 9becdd0579da6e942bbe6096ae578f2d, type: 3}
   sprites:
   - {fileID: 21300000, guid: b866cc37472cc7846a79c0e35551ee08, type: 3}

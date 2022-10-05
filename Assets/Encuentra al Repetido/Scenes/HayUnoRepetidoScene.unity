@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1216273299}
   gameOverSound: {fileID: 8300000, guid: e166f76f5f34dee4f94404985bf32743, type: 3}
-  camera: {fileID: 601624657}
+  mainCamera: {fileID: 601624657}
   figure: {fileID: 8632990507630729472, guid: ed6113b53ee99394599cca9cdf319ba9, type: 3}
   sprites:
   - {fileID: 21300000, guid: b866cc37472cc7846a79c0e35551ee08, type: 3}

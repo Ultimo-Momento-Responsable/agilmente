@@ -18,7 +18,7 @@ public class FigureBehaviourEAN : MonoBehaviour
     {
         if (Input.touchCount == 1) // si se pulsa la pantalla
         {
-            Vector3 wp = controller.camera.ScreenToWorldPoint(Input.GetTouch(0).position);
+            Vector3 wp = controller.mainCamera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posición donde se pulsa es donde se encuentra la figura
             {
@@ -53,7 +53,7 @@ public class FigureBehaviourEAN : MonoBehaviour
         }
         else
         {
-            if (controller.camera.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.encuentraAlNuevo.onTutorial)
+            if (controller.mainCamera.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.encuentraAlNuevo.onTutorial)
             {
                 controller.isMakingMistake = true;
             }

@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using static MainSceneController;
 
-// TODO: Check fruits spawn
 public class EncuentraAlNuevoController : GameController
 {
     private const string ENDPOINT = "result/encuentra-al-nuevo";
@@ -17,7 +16,7 @@ public class EncuentraAlNuevoController : GameController
     private GameObject[] a_figures;
 
     public bool prevTutorial = true;
-    public Camera camera;
+    public Camera mainCamera;
     public GameObject figure;
     public Sprite[] sprites;
     public AudioClip sndSuccess;
@@ -80,7 +79,7 @@ public class EncuentraAlNuevoController : GameController
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -151,7 +150,7 @@ public class EncuentraAlNuevoController : GameController
             {
                 isMakingMistake = false;
                 encuentraAlNuevo.addMistake(figureQuantity);
-                camera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
 
@@ -192,7 +191,7 @@ public class EncuentraAlNuevoController : GameController
         
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
 
-        encuentraAlNuevo.createFigures(figureQuantity, camera, figure, sprites, index, this, particles);
+        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
         isTouching = false;
     }
 
@@ -359,7 +358,6 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void OnApplicationPause()
     {
-        // TODO: Check if game cancels on tutorial
         this.pause.pauseGame();
     }
 }
