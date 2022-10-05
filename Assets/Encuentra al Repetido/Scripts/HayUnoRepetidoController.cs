@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static MainSceneController;
 
+// TODO: Check fruits spawn
 public class HayUnoRepetidoController : GameController
 {
 
@@ -64,8 +65,10 @@ public class HayUnoRepetidoController : GameController
 
     void Start()
     {
+        scoreHUD.text = "";
         endScreen.SetActive(false);
-        hayUnoRepetido = new HayUnoRepetido(this);
+        hayUnoRepetido = ScriptableObject.CreateInstance<HayUnoRepetido>();
+        hayUnoRepetido.Initialize(this);
         maxLevel = SessionHayUnoRepetido.maxLevel;
         maxTime = SessionHayUnoRepetido.maxTime;
         variableSizes = SessionHayUnoRepetido.variableSizes;
@@ -342,13 +345,13 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void OnApplicationPause()
     {
-        if (hayUnoRepetido.onTutorial)
-        {
-            goToMainScene();
-        }
-        else
-        {
+        //if (hayUnoRepetido.onTutorial)
+        //{
+        //    goToMainScene();
+        //}
+        //else
+        //{
+        // TODO: Check if game cancels on tutorial
             this.pause.pauseGame();
-        }
     }
 }

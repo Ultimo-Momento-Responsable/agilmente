@@ -89,7 +89,7 @@ public class MemorillaController : GameController
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         initTime = Time.time;
-        scoreHUD.text = score.ToString();
+        scoreHUD.text = "";
         StartTutorial();
     }
 
@@ -424,7 +424,10 @@ public class MemorillaController : GameController
     /// </summary>
     private void CreateStimuli()
     {
-        scoreHUD.text = score.ToString();
+        if (!onTutorial)
+        {
+            scoreHUD.text = score.ToString();
+        }
         for (int i = 0; i < NumberOfStimuli; i++)
         {
             while (true)

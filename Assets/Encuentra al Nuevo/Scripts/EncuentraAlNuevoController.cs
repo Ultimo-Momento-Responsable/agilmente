@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static MainSceneController;
 
+// TODO: Check fruits spawn
 public class EncuentraAlNuevoController : GameController
 {
     private const string ENDPOINT = "result/encuentra-al-nuevo";
@@ -58,8 +59,10 @@ public class EncuentraAlNuevoController : GameController
 
     void Start()
     {
+        scoreHUD.text = "";
         endScreen.SetActive(false);
-        encuentraAlNuevo = new EncuentraAlNuevo(this);
+        encuentraAlNuevo = ScriptableObject.CreateInstance<EncuentraAlNuevo>();
+        encuentraAlNuevo.Initialize(this);
         maxLevel = SessionEncuentraAlNuevo.maxLevel;
         maxTime = SessionEncuentraAlNuevo.maxTime;
         variableSizes = SessionEncuentraAlNuevo.variableSizes;
@@ -356,6 +359,7 @@ public class EncuentraAlNuevoController : GameController
     /// </summary>
     public override void OnApplicationPause()
     {
+        // TODO: Check if game cancels on tutorial
         this.pause.pauseGame();
     }
 }

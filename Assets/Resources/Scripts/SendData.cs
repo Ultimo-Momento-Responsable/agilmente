@@ -18,7 +18,8 @@ public class SendData : MonoBehaviour
         json = json.Replace("False", "false");
         json = json.Replace("True", "true");
         parameters.Add("Content-Type", "application/json");
-        parameters.Add("Content-Length", json.Length.ToString());
+        //TODO: Check this comment
+        //parameters.Add("Content-Length", json.Length.ToString());
         json = json.Replace("'", "\"");
         byte[] postData = System.Text.Encoding.UTF8.GetBytes(json);
         WWW www = new WWW(IP + endpoint, postData, parameters);

@@ -21,7 +21,11 @@ public class EncuentraAlNuevo : ScriptableObject
     private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
 
-    public EncuentraAlNuevo(EncuentraAlNuevoController encuentraAlNuevoController)
+    /// <summary>
+    /// Setea los valores iniciales para el objeto.
+    /// </summary>
+    /// <param name="encuentraAlNuevoController">Controlador del juego.</param>
+    public void Initialize(EncuentraAlNuevoController encuentraAlNuevoController)
     {
         timeMarkFromLastSuccess = Time.time;
         a_mistakes = 0;
