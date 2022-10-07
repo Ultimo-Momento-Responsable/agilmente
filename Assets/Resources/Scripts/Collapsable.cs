@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Collapsable : MonoBehaviour
 {
@@ -7,47 +8,47 @@ public class Collapsable : MonoBehaviour
     public GameObject progressBar;
     public GameObject txtNumberOfGames;
     public GameObject txtNumberOfDaysLeft;
+    public GameObject arrowDown;
+    public GameObject arrowUp;
+    public GameObject trophy;
+    public Color completedGreen;
 
+    private bool isCompleted;
     private bool isCollapsed;
     private float a_offset;
     private int a_position;
     public float Offset { get => a_offset; set => a_offset = value; }
     public int Position { get => a_position; set => a_position = value; }
     public bool IsCollapsed { get => isCollapsed; set => isCollapsed = value; }
-
+    private bool IsCompleted { get => trophy.activeSelf; }
 
     private void Start()
     {
-        this.isCollapsed = true;
-    }
-
-    /**
-     * Desplaza los colapsables que hay debajo para no superponerse
-     */
-    public void DisplaceCollapsable()
-    {
-        IsCollapsed = !IsCollapsed;
-        body.SetActive(IsCollapsed);
-        int direction = this.IsCollapsed ? 1 : 0;
-        GameObject[] collapsables = GameObject.FindGameObjectsWithTag("collapsable");
-        GameObject cardContainer = GameObject.FindGameObjectWithTag("cardContainer");
-        foreach (GameObject collapsable in collapsables)
-        {
-           if (collapsable.GetComponent<Collapsable>().Position > Position)
-           {
-                collapsable.transform.localPosition = new Vector2(collapsable.transform.localPosition.x,collapsable.transform.localPosition.y - (Offset * direction));
-           }
-        }
-        cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, cardContainer.GetComponent<RectTransform>().sizeDelta.y + Offset * direction);
+        isCollapsed = true;
     }
 
     /// <summary>
-    /// Le pasa los datos de la planning a la card para que se acomode.
+    /// Activa o desactiva el collapsable para mostrar u ocultar las sesiones
+    /// según corresponda.
     /// </summary>
-    /// <param name="gamesPlayed"></param>
-    /// <param name="totalGames"></param>
-    /// <param name="unlimited"></param>
-    /// <param name="daysLeft"></param>
+    public void ToggleCollapsable()
+    {
+        if (!IsCompleted)
+        {
+            arrowDown.SetActive(!IsCollapsed);
+            arrowUp.SetActive(IsCollapsed);
+        }
+        body.SetActive(IsCollapsed);
+        IsCollapsed = !IsCollapsed;
+    }
+
+    /// <summary>
+    /// Usa los datos de una planning en progreso para mostrarla en el collapsable.
+    /// </summary>
+    /// <param name="gamesPlayed">Cantidad de sesiones jugadas.</param>
+    /// <param name="totalGames">Cantidad total de sesiones.</param>
+    /// <param name="unlimited">Contiene juegos libres.</param>
+    /// <param name="daysLeft">Días restantes en la planificación.</param>
     public void SetPlanningData(float gamesPlayed, float totalGames, bool unlimited, string daysLeft)
     {
         float completedPercentage = gamesPlayed / totalGames;
@@ -59,30 +60,57 @@ public class Collapsable : MonoBehaviour
 
         progressBar.transform.localScale = new Vector2(completedPercentage, 1);
 
-        if (totalGames > 0)
-        {
-            txtNumberOfGames.GetComponent<Text>().text = gamesPlayed + "/" + totalGames;
-        }
-
-        txtNumberOfDaysLeft.GetComponent<Text>().text = "¡Quedan " + daysLeft + " días!";
+        SetNumerOfGamesText(gamesPlayed, totalGames);
+        txtNumberOfDaysLeft.GetComponent<Text>().text = GetNumberOfDaysLeftText(daysLeft);
     }
-    
+
     /// <summary>
-    /// Le pasa los datos de la planning completada para que se muestre.
+    /// Genera el texto correspondiente al número de días restantes.
     /// </summary>
-    /// <param name="gamesPlayed"></param>
-    /// <param name="totalGames"></param>
+    /// <param name="daysLeft">Número de días restantes.</param>
+    /// <returns>Texto.</returns>
+    private string GetNumberOfDaysLeftText(string daysLeft)
+    {
+        switch (int.Parse(daysLeft))
+        {
+            case 0:
+                return "¡Último día!";
+            case 1:
+                return "¡Queda " + daysLeft + " día!";
+            default:
+                return "¡Quedan " + daysLeft + " días!";
+        }
+    }
+
+    /// <summary>
+    /// Usa los datos de una planning completada para mostrarla en el collapsable.
+    /// </summary>
+    /// <param name="gamesPlayed">Cantidad de sesiones jugadas.</param>
+    /// <param name="totalGames">Cantidad total de sesiones.</param>
     public void SetCompleted(float gamesPlayed, float totalGames)
     {
-        //collapsablePlanning.GetComponent<Collapsable>().SetCompleted(gamesPlayed, totalGames);
-        //collapsablePlanning.transform.GetChild(3).gameObject.SetActive(true);
-        //collapsablePlanning.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
-        //collapsablePlanning.transform.GetChild(0).GetChild(1).GetChild(0).gameObject.SetActive(false);
-        //collapsablePlanning.transform.GetChild(1).transform.GetChild(0).gameObject.SetActive(false);
-        //collapsablePlanning.transform.GetChild(1).transform.GetChild(1).gameObject.SetActive(true);
-        //collapsablePlanning.transform.GetChild(4).gameObject.SetActive(true);
-        //collapsablePlanning.transform.GetChild(5).gameObject.SetActive(true);
-        //if (p.totalGames > 0)
-        //    collapsablePlanning.transform.GetChild(6).GetComponent<Text>().text = gamesPlayed + "/" + totalGames;
+        progressBar.GetComponent<Image>().color = completedGreen;
+        txtNumberOfDaysLeft.GetComponent<Text>().color = completedGreen;
+        txtNumberOfDaysLeft.GetComponent<Text>().text = "¡Completada!";
+        txtNumberOfGames.GetComponent<Text>().color = completedGreen;
+        SetNumerOfGamesText(gamesPlayed, totalGames);
+        arrowDown.SetActive(false); 
+        arrowUp.SetActive(false);
+        trophy.SetActive(true);
+    }
+
+    /// <summary>
+    /// Setea el texto correspondiente al progreso del paciente.
+    /// </summary>
+    /// <param name="gamesPlayed">Cantidad de juegos jugados.</param>
+    /// <param name="totalGames">Cantidad de juegos terminados.</param>
+    private void SetNumerOfGamesText(float gamesPlayed, float totalGames)
+    {
+        txtNumberOfGames.GetComponent<Text>().text = totalGames > 0 ? gamesPlayed + "/" + totalGames : "";
+    }
+
+    public void AddSession(Button session)
+    {
+
     }
 }

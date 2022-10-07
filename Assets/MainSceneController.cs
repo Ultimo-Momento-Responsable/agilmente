@@ -13,7 +13,6 @@ public class MainSceneController : MonoBehaviour
     public Text title;
     public GameObject completedGamesText;
     public GameObject bodyText;
-    public Sprite[] gameLogo;
     public GameObject gameText;
     public GameObject collapsable;
     public Button gameCard;
@@ -21,14 +20,16 @@ public class MainSceneController : MonoBehaviour
     public GameObject cardContainer;
     public Sprite maxTime;
     public Sprite maxLevel;
-    public new Camera camera; 
+    public Camera mainCamera;
+    public GameObject currentPlanningCanvas;
+    public GameObject completedPlanningCanvas;
+    public Color agilmenteBlue;
 
     private Settings settings;
     private PlanningList planningRequestJson;
     private List<Planning> completedPlannings;
     private List<Planning> uncompletedPlannings;
     private static string endpoint = "planning/mobile_patient/";
-    private Settings settings;
 
     /**
      * Inicio de escena, genera una request que obtiene un JSON con los juegos pendientes asignados a una planificacion
@@ -81,10 +82,6 @@ public class MainSceneController : MonoBehaviour
          */
         if (planningRequestJson.planningList.Length != 0)
         {
-            cardContainer.GetComponent<RectTransform>().sizeDelta = new Vector2(cardContainer.GetComponent<RectTransform>().sizeDelta.x, 3 + planningRequestJson.planningList.Length);
-
-            bodyText.transform.localPosition = new Vector2(0, -0.6f);
-            gameText.transform.localPosition = new Vector2(0, -1.6f);
             int i = 0;
             foreach (Planning p in uncompletedPlannings)
             {
@@ -93,7 +90,7 @@ public class MainSceneController : MonoBehaviour
                 DateTime now = DateTime.Now;
                 string daysLeft = ((int)(dueDate - now).TotalDays).ToString();
                 int j = 0;
-                GameObject collapsablePlanning = createCollapsable(p, false, i, daysLeft);
+                GameObject collapsablePlanning = createCollapsable(p, false, daysLeft);
                 foreach (GameSession planningCard in p.planningList)
                 {
                     createPlanningCard(planningCard, collapsablePlanning, i, j);
@@ -104,19 +101,16 @@ public class MainSceneController : MonoBehaviour
             if (completedPlannings.Count > 0)
             {
                 completedGamesText.gameObject.SetActive(true);
-                completedGamesText.transform.localPosition = new Vector3(0, -2.55f + (i * -1), 0);
-                completedGamesText.GetComponent<Collapsable>().Position = i;
-                completedGamesText.GetComponent<Collapsable>().Offset = 1;
                 foreach (Planning p in completedPlannings) {
                     int j = 0;
-                    GameObject collapsablePlanning = createCollapsable(p, true, i);
+                    GameObject collapsablePlanning = createCollapsable(p, true);
                     foreach (GameSession planningCard in p.planningList)
                     {
                         createPlanningCard(planningCard, collapsablePlanning, i, j);
                         j++;
                     }
                     i++;
-                }   
+                }
             }
         }
     }
@@ -125,77 +119,18 @@ public class MainSceneController : MonoBehaviour
      * Crea la card de la sesión.
      * @Param planningCard Sesión a la que corresponde,
      * @Param collapsablePlanning en el colapsable que tiene que estar,
-     * @Param posCollapsable, posición del colapsable
-     * @Param posPlanningCard, posición de la card.
+     * @Param gameSessionIndex, índice del colapsable
+     * @Param planningIndex, índice de la card.
      */
-    private void createPlanningCard(GameSession planningCard, GameObject collapsablePlanning, int posCollapsable, int posPlanningCard)
+    private void createPlanningCard(GameSession planningCard, GameObject collapsablePlanning, int gameSessionIndex, int planningIndex)
     {
-        Button gameCardInstance = Instantiate(gameCard);
-        gameCardInstance.transform.SetParent(collapsablePlanning.transform.GetChild(0).transform.GetChild(0).transform.GetChild(1));
-        gameCardInstance.transform.localScale = new Vector2(0.95f, 0.95f);          //Escala actual del canvas
-        gameCardInstance.transform.localPosition = new Vector3(0, -2.3f + (posPlanningCard * -1.45f), 0); //Tamaño de cards + offset
+        Button gameCardInstance = Instantiate(gameCard, collapsablePlanning.GetComponent<Collapsable>().body.transform);
+        GameSessionCard gameSessionCard = gameCardInstance.GetComponent<GameSessionCard>();
+        gameSessionCard.InitializeCard(planningCard.game, planningCard.numberOfSession);
 
-        foreach (Sprite logo in gameLogo)
+       if (planningCard.numberOfSession != 0)
         {
-            if (planningCard.game == logo.name)
-            {
-                foreach (Image gameCardImage in gameCardInstance.GetComponentsInChildren<Image>())
-                {
-                    if (gameCardImage.gameObject.name == "Logo")
-                    {
-                        gameCardImage.sprite = logo;
-                    }
-                    if (gameCardImage.gameObject.name == "MedalComplete")
-                    {
-                        if (planningCard.numberOfSession == 0)
-                        {
-                            gameCardImage.gameObject.SetActive(true);
-                        }
-                        else
-                        {
-                            gameCardImage.gameObject.SetActive(false);
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach (Text gameName in gameCardInstance.GetComponentsInChildren<Text>())
-        {
-            if (gameName.gameObject.name == "GameName")
-            {
-                gameName.text = planningCard.game;
-            }
-            if (planningCard.numberOfSession > 0)
-            {
-                if (gameName.gameObject.name == "NumberOfSessions")
-                {
-                    gameName.text = "Quedan " + planningCard.numberOfSession + " partidas por jugar";
-                }
-            }
-            else if (planningCard.numberOfSession == 0)
-            {
-                if (gameName.gameObject.name == "NumberOfSessions")
-                {
-                    gameName.text = "No quedan partidas restantes";
-                }
-            }
-            else
-            {
-                if (gameName.gameObject.name == "NumberOfSessions")
-                {
-                    gameName.text = "¡Juega libremente!";
-                }
-                gameName.color = gameCardInstance.GetComponent<Image>().color;
-            }
-        }
-        if (planningCard.numberOfSession == -1)
-        {
-            gameCardInstance.GetComponent<Image>().color = Color.white;
-        }
-        if (planningCard.numberOfSession != 0)
-        {
-            btnClickPlayGame(gameCardInstance, posCollapsable, posPlanningCard);
+            btnClickPlayGame(gameCardInstance, gameSessionIndex, planningIndex);
         }
     }
 
@@ -203,27 +138,20 @@ public class MainSceneController : MonoBehaviour
      * Crea el colapsable.
      * @Param p Planning a la que corresponde,
      * @Param completed si está completada o no,
-     * @Param position, posición del colapsable
      * @Param daysLeft, días restantes de la planning.
-     * @Return collapsablePlanning, devuelve el colapsable creado.
      */
-    private GameObject createCollapsable(Planning p, bool completed, int position, string daysLeft = "")
+    private GameObject createCollapsable(Planning p, bool completed, string daysLeft = "")
     {
-        GameObject collapsablePlanning = Instantiate(collapsable);
-        collapsablePlanning.transform.SetParent(cardContainer.transform);
-        collapsablePlanning.transform.localScale = new Vector2(0.0078f, 0.0078f);
-        var offset = -2.3f;
-        if (completed) offset = -3.3f;
-        collapsablePlanning.transform.localPosition = new Vector3(0, offset + (position * -1), 0);
-        collapsablePlanning.GetComponent<Collapsable>().Offset = p.planningList.Length * 1.3f;
-        collapsablePlanning.GetComponent<Collapsable>().Position = position;
-        if (!completed)
+        GameObject collapsablePlanning;
+        if (completed)
         {
-            collapsablePlanning.GetComponent<Collapsable>().SetPlanningData(p.gamesPlayed, p.totalGames, p.unlimited, daysLeft);
+            collapsablePlanning = Instantiate(collapsable, completedPlanningCanvas.transform);
+            collapsablePlanning.GetComponent<Collapsable>().SetCompleted(p.gamesPlayed, p.totalGames);
         }
         else
         {
-            collapsablePlanning.GetComponent<Collapsable>().SetCompleted(p.gamesPlayed, p.totalGames);
+            collapsablePlanning = Instantiate(collapsable, currentPlanningCanvas.transform);
+            collapsablePlanning.GetComponent<Collapsable>().SetPlanningData(p.gamesPlayed, p.totalGames, p.unlimited, daysLeft);
         }
         return collapsablePlanning;
     }
@@ -273,7 +201,7 @@ public class MainSceneController : MonoBehaviour
             {
                 uncompletedPlannings.Add(p);
             }
-        } 
+        }
         ShowGameCards();
     }
 
@@ -316,12 +244,13 @@ public class MainSceneController : MonoBehaviour
         return planningList.ToArray();
     }
 
-    /**
-     * Checkea si hay planning
-     */
+    /// <summary>
+    /// Checkea si hay planificaciones sin completar.
+    /// </summary>
+    /// <returns></returns>
     private bool isThereAPlanning()
     {
-        return planningRequestJson.planningList.Length > 0;
+        return uncompletedPlannings.Count > 0;
     }
 
 
@@ -415,14 +344,6 @@ public class MainSceneController : MonoBehaviour
             SessionMemorilla.gameSessionId = uncompletedPlannings[planningIndex].planningList[gameSessionIndex].gameSessionId;
             SceneManager.LoadScene("MemorillaScene");
         }
-    }
-
-    /**
-     * Muestra la pantalla del historial de partidas
-     */
-    public void viewHistory()
-    {
-        SceneManager.LoadScene("viewGamesPlayedScene");
     }
 
     [System.Serializable]
