@@ -157,11 +157,11 @@ public class LoginController : MonoBehaviour
             loginError.SetActive(true);
             if (networkError)
             {
-                loginError.GetComponent<Text>().text = "Ha ocurrido un error, int�ntelo de nuevo m�s tarde";
+                loginError.GetComponent<Text>().text = "Ha ocurrido un error, inténtelo de nuevo más tarde";
             }
             else
             {
-                loginError.GetComponent<Text>().text = "El c�digo ingresado no es v�lido";
+                loginError.GetComponent<Text>().text = "El código ingresado no es válido";
             }
         }
     }
