@@ -139,6 +139,7 @@ public class MainSceneController : MonoBehaviour
      * @Param p Planning a la que corresponde,
      * @Param completed si está completada o no,
      * @Param daysLeft, días restantes de la planning.
+     * @Return collapsablePlanning, devuelve el colapsable creado.
      */
     private GameObject createCollapsable(Planning p, bool completed, string daysLeft = "")
     {
@@ -247,7 +248,7 @@ public class MainSceneController : MonoBehaviour
     /// <summary>
     /// Checkea si hay planificaciones sin completar.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Devuelve verdadero si hay plannings vigentes.</returns>
     private bool isThereAPlanning()
     {
         return uncompletedPlannings.Count > 0;

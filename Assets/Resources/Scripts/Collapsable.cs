@@ -13,7 +13,6 @@ public class Collapsable : MonoBehaviour
     public GameObject trophy;
     public Color completedGreen;
 
-    private bool isCompleted;
     private bool isCollapsed;
     private float a_offset;
     private int a_position;
@@ -107,10 +106,5 @@ public class Collapsable : MonoBehaviour
     private void SetNumerOfGamesText(float gamesPlayed, float totalGames)
     {
         txtNumberOfGames.GetComponent<Text>().text = totalGames > 0 ? gamesPlayed + "/" + totalGames : "";
-    }
-
-    public void AddSession(Button session)
-    {
-
     }
 }
