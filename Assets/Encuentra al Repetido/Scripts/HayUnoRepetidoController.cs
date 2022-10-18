@@ -29,7 +29,6 @@ public class HayUnoRepetidoController : GameController
     public GameObject pauseButton;
     public Text scoreHUD;
 
-
     public int figureQuantity;
     private int maxLevel;
     private int maxFigures;
@@ -44,10 +43,11 @@ public class HayUnoRepetidoController : GameController
     public bool isMakingMistake = false;
     public bool dontTouchAgain = false;
     public bool onTutorial = true;
-    private GameObject[] a_figures;
     public GameObject endScreen;
     public GameObject background;
     public GameObject HUD;
+    public GameObject grid;
+    private GameObject[] a_figures;
 
     public GameObject[] figures
     {
@@ -61,7 +61,6 @@ public class HayUnoRepetidoController : GameController
         }
         set => a_figures = value;
     }
-
     void Start()
     {
         scoreHUD.text = "";
