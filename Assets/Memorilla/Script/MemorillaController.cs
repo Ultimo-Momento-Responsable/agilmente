@@ -148,10 +148,10 @@ public class MemorillaController : GameController
 
                 if (cellState)
                 {
-                    GameObject tHand = Instantiate(handPref, GridGameObject.transform);
-                    tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
-                    tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
-                    tHand.GetComponent<TutorialHand>().yPos = -0.8f-k*1.6f;
+                    Transform container = selectedCell.transform.Find("Container");
+                    GameObject tHand = Instantiate(handPref, container);
+                    tHand.GetComponent<Transform>().localScale = new Vector3(0.25f, 0.25f, 1);
+                    tHand.GetComponent<TutorialHand>().yPos = container.position.y;
                     tHand.SetActive(true);
                     tutorialHands.Add(tHand);
                 }
