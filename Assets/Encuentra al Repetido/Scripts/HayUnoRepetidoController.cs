@@ -61,6 +61,7 @@ public class HayUnoRepetidoController : GameController
         }
         set => a_figures = value;
     }
+
     void Start()
     {
         scoreHUD.text = "";
@@ -154,7 +155,7 @@ public class HayUnoRepetidoController : GameController
             {
                 isMakingMistake = false;
                 hayUnoRepetido.addMistake(figureQuantity);
-                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+                grid.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
 

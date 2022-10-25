@@ -97,47 +97,50 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
     {
+        // Nuevo spawn de figuras
         if (!onTutorial)
         {
-            for (int i = 0; i < index.Count; i++)
+            for (int i = 0; i < figureQuantity; i++)
             {
-                hayUnoRepetidoController.grid.CreateFigureOnRandomCell(sprites, index[i], controller);
+                hayUnoRepetidoController.grid.CreateFigureOnRandomCell(sprites, index[i], i, controller);
             }
+
+            const float DISTRACTOR_CHANCE = 0.25f;
+
+            if (hayUnoRepetidoController.distractors && Random.value <= DISTRACTOR_CHANCE)
+            {
+                LoadDistractorsResources();
+                int spriteIndex = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
+                hayUnoRepetidoController.grid.CreateFigureOnRandomCell(hayUnoRepetidoController.distractorsSprites, spriteIndex, -1, controller);
+            }
+
             return;
         }
-        int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
+
+        // Lógica del tutorial
+        int handPosition = Random.Range(0, 2);
         Vector2 figurePosition;
-        for (int i = 0; i < figureQuantity; i++)
+
+        const float SIZE = 0.15f;
+
+        for(int i = 0; i < 3; i ++)
         {
-            size = 0.15f;
-            float minSize = 0.122f;
-            float maxSize = 0.2f;
-            
-            if (!onTutorial)
-            {
-                figurePosition = locateFigures(minSize, maxSize, controller);
-            }
-            else
+            figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
+            while (thereIsSomethingIn(figurePosition, SIZE))
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
-                while (thereIsSomethingIn(figurePosition,size))
-                {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
-                }
             }
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
-
-            fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
+            fig.GetComponent<Transform>().localScale = new Vector3(SIZE, SIZE, 1);
             fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
             fig.GetComponent<FigureBehaviour>().controller = controller;
             fig.GetComponent<FigureBehaviour>().index = i;
 
-
-            // Si está en tutorial crea la mano en una fruta repetida
-            if (i < 2) 
+            // Crea la mano en una fruta repetida
+            if (i < 2)
             {
-                if (i == handPosition && onTutorial) 
+                if (i == handPosition)
                 {
                     GameObject tHand = Instantiate(hayUnoRepetidoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
@@ -146,32 +149,17 @@ public class HayUnoRepetido : ScriptableObject
                 fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
         }
+    }
 
-        int countSpritesets = 2;
-        if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
+    /// <summary>
+    /// Carga los assets de los distractores.
+    /// </summary>
+    private void LoadDistractorsResources()
+    {
+        int spriteSetDistractor = MainSceneController.SessionHayUnoRepetido.spriteSet == 1 ? 2 : 1;
+        if (hayUnoRepetidoController.distractorsSprites == null)
         {
-            figurePosition = locateFigures(0.2f, 0.2f, controller);
-            
-            GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
-
-            int spriteSetDistractor = Random.Range(1, countSpritesets + 1);
-            while (spriteSetDistractor == MainSceneController.SessionHayUnoRepetido.spriteSet)
-            {
-                spriteSetDistractor = Random.Range(1, countSpritesets + 1);
-            }
-            if (spriteSetDistractor == 1)
-            {
-                distractor.GetComponent<Transform>().localScale = new Vector3(0.2f, 0.2f, 1);
-            } else
-            {
-                distractor.GetComponent<Transform>().localScale = new Vector3(0.15f, 0.15f, 1);
-            }
-            
             hayUnoRepetidoController.distractorsSprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + spriteSetDistractor + "/");
-            int pos = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
-            distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
-            distractor.GetComponent<FigureBehaviour>().controller = controller;
-            distractor.GetComponent<FigureBehaviour>().index = -1;
         }
     }
 

@@ -11,16 +11,16 @@ public class FlexibleGameGrid : MonoBehaviour
     private List<GameObject> cells;
     public List<GameObject> availableCells;
     public GameObject figurePrefab;
-    public float CellWidth { get => GridLayoutGroup.cellSize.x; }
-    public float CellHeight { get => GridLayoutGroup.cellSize.y; }
     private float HorizontalSpacing { get => GridLayoutGroup.spacing.x; }
     private float VerticalSpacing { get => GridLayoutGroup.spacing.y; }
+    private RectTransform GridRectTransform { get => gridRectTransform == null ? GetComponent<RectTransform>() : gridRectTransform; }
+    private GridLayoutGroup GridLayoutGroup { get => gridLayoutGroup == null ? GetComponent<GridLayoutGroup>() : gridLayoutGroup; }
+    public float CellWidth { get => GridLayoutGroup.cellSize.x; }
+    public float CellHeight { get => GridLayoutGroup.cellSize.y; }
     public float GridWidth { get => GridRectTransform.rect.width; }
     public float GridHeight { get => GridRectTransform.rect.height; }
     public float NumberOfRows { get => Mathf.FloorToInt((GridWidth - CellWidth) / (CellWidth + HorizontalSpacing)) + 1 ; }
     public float NumberOfColumns { get => Mathf.FloorToInt((GridHeight - CellHeight) / (CellHeight + VerticalSpacing)) + 1 ; }
-    private RectTransform GridRectTransform { get => gridRectTransform == null ? GetComponent<RectTransform>() : gridRectTransform; }
-    private GridLayoutGroup GridLayoutGroup { get => gridLayoutGroup == null ? GetComponent<GridLayoutGroup>() : gridLayoutGroup; }
 
     void Start()
     {
@@ -46,14 +46,15 @@ public class FlexibleGameGrid : MonoBehaviour
     /// No se debe usar para el tutorial.
     /// </summary>
     /// <param name="figure">El prefab de la figura a instanciar.</param>
-    public void CreateFigureOnRandomCell(Sprite[] sprites, int i, HayUnoRepetidoController controller)
+    public void CreateFigureOnRandomCell(Sprite[] sprites, int spriteIndex, int figureIndex, HayUnoRepetidoController controller)
     {
+        // TODO: Add slight offset
         int index = Random.Range(0, availableCells.Count);
         GameObject randomCell = availableCells[index];
         availableCells.Remove(randomCell);
         GameObject fig = Instantiate(figurePrefab, randomCell.transform);
-        fig.GetComponent<FigureBehaviour>().sprite = sprites[i];
-        fig.GetComponent<FigureBehaviour>().controller = controller;
-        fig.GetComponent<FigureBehaviour>().index = i;
+        fig.GetComponent<FigureBehaviourWithCanvas>().sprite = sprites[spriteIndex];
+        fig.GetComponent<FigureBehaviourWithCanvas>().controller = controller;
+        fig.GetComponent<FigureBehaviourWithCanvas>().index = figureIndex;
     }
 }

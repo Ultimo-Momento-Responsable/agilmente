@@ -584,6 +584,7 @@ GameObject:
   - component: {fileID: 568021612}
   - component: {fileID: 568021613}
   - component: {fileID: 8151731887461720794}
+  - component: {fileID: 568021614}
   m_Layer: 5
   m_Name: GameGrid
   m_TagString: Untagged
@@ -635,6 +636,19 @@ MonoBehaviour:
   m_Spacing: {x: 24, y: 24}
   m_Constraint: 0
   m_ConstraintCount: 1
+--- !u!114 &568021614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568021611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53b0525995e522f4da54a79bf2b7430f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeDuration: 0
 --- !u!1 &601624656
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,7 +660,6 @@ GameObject:
   - component: {fileID: 601624659}
   - component: {fileID: 601624657}
   - component: {fileID: 601624658}
-  - component: {fileID: 601624660}
   m_Layer: 0
   m_Name: HayUnoRepetidoCamera
   m_TagString: camera
@@ -724,19 +737,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &601624660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 601624656}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53b0525995e522f4da54a79bf2b7430f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shakeDuration: 0
 --- !u!1 &836075408
 GameObject:
   m_ObjectHideFlags: 0
@@ -1713,3 +1713,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   templateCell: {fileID: 836075408}
   availableCells: []
+  figurePrefab: {fileID: 8632990507630729472, guid: 8f3622b00a84bfe439dd14602c8c3fe2, type: 3}

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// TODO: Rename to TutorialFigureBehaviour
 public class FigureBehaviour : MonoBehaviour
 {
     public Sprite sprite;
@@ -50,13 +51,6 @@ public class FigureBehaviour : MonoBehaviour
             controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
             ps.Stop();
             ps.Play();
-        }
-        else
-        {
-            if (controller.mainCamera.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.hayUnoRepetido.onTutorial)
-            {
-                controller.isMakingMistake = true;
-            }
         }
     }
 }
