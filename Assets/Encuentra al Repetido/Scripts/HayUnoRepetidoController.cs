@@ -46,7 +46,7 @@ public class HayUnoRepetidoController : GameController
     public GameObject endScreen;
     public GameObject background;
     public GameObject HUD;
-    public GameObject grid;
+    public FlexibleGameGrid grid;
     private GameObject[] a_figures;
 
     public GameObject[] figures
