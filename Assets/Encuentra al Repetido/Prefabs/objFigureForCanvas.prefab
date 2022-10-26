@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1053279976351382810}
   - component: {fileID: 2323387568916341819}
   - component: {fileID: 5464991519459294797}
-  - component: {fileID: 2027469743407327581}
   m_Layer: 3
   m_Name: objFigureForCanvas
   m_TagString: figures
@@ -149,17 +148,3 @@ MonoBehaviour:
   sprite: {fileID: 0}
   controller: {fileID: 0}
   index: 0
-  ps: {fileID: 0}
---- !u!114 &2027469743407327581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8632990507630729472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53b0525995e522f4da54a79bf2b7430f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shakeDuration: 0

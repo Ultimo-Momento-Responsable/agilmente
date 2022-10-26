@@ -175,6 +175,9 @@ public class HayUnoRepetidoController : GameController
 
     }
 
+
+    
+
     /// <summary>
     /// Elimina las figuras que hay en la pantalla
     /// </summary>

@@ -8,8 +8,8 @@ public class FlexibleGameGrid : MonoBehaviour
     public GameObject templateCell;
     private RectTransform gridRectTransform;
     private GridLayoutGroup gridLayoutGroup;
-    private List<GameObject> cells;
     public List<GameObject> availableCells;
+    public List<GameObject> cells;
     public GameObject figurePrefab;
     private float HorizontalSpacing { get => GridLayoutGroup.spacing.x; }
     private float VerticalSpacing { get => GridLayoutGroup.spacing.y; }
@@ -19,13 +19,8 @@ public class FlexibleGameGrid : MonoBehaviour
     public float CellHeight { get => GridLayoutGroup.cellSize.y; }
     public float GridWidth { get => GridRectTransform.rect.width; }
     public float GridHeight { get => GridRectTransform.rect.height; }
-    public float NumberOfRows { get => Mathf.FloorToInt((GridWidth - CellWidth) / (CellWidth + HorizontalSpacing)) + 1 ; }
-    public float NumberOfColumns { get => Mathf.FloorToInt((GridHeight - CellHeight) / (CellHeight + VerticalSpacing)) + 1 ; }
-
-    void Start()
-    {
-        CreateCells();
-    }
+    public float NumberOfColumns { get => Mathf.FloorToInt((GridWidth - CellWidth) / (CellWidth + HorizontalSpacing)) + 1 ; }
+    public float NumberOfRows { get => Mathf.FloorToInt((GridHeight - CellHeight) / (CellHeight + VerticalSpacing)) + 1 ; }
 
     /// <summary>
     /// Crea una grilla que se ajusta al tamaño de la pantalla para 
@@ -33,11 +28,23 @@ public class FlexibleGameGrid : MonoBehaviour
     /// </summary>
     public void CreateCells()
     {
+        Debug.Log(NumberOfColumns);
+        if(cells != null && cells.Count > 0)
+        {
+            foreach(GameObject cell in cells)
+            {
+                Destroy(cell);
+            }
+        }
+
+        cells = new List<GameObject>();
         availableCells = new List<GameObject>();
 
-        for(int i = 1; i < NumberOfColumns * NumberOfRows; i ++)
+        for (int i = 1; i < NumberOfColumns * NumberOfRows; i ++)
         {
-            availableCells.Add(Instantiate(templateCell, transform));
+            GameObject cell = Instantiate(templateCell, transform);
+            cells.Add(cell);
+            availableCells.Add(cell);
         }
     }
 
@@ -48,7 +55,7 @@ public class FlexibleGameGrid : MonoBehaviour
     /// <param name="figure">El prefab de la figura a instanciar.</param>
     public void CreateFigureOnRandomCell(Sprite[] sprites, int spriteIndex, int figureIndex, HayUnoRepetidoController controller)
     {
-        // TODO: Add slight offset
+        // TODO: Avoid overlapping
         int index = Random.Range(0, availableCells.Count);
         GameObject randomCell = availableCells[index];
         availableCells.Remove(randomCell);
@@ -56,5 +63,26 @@ public class FlexibleGameGrid : MonoBehaviour
         fig.GetComponent<FigureBehaviourWithCanvas>().sprite = sprites[spriteIndex];
         fig.GetComponent<FigureBehaviourWithCanvas>().controller = controller;
         fig.GetComponent<FigureBehaviourWithCanvas>().index = figureIndex;
+        SetRandomOffsetToFigure(fig);
+        
+        if (controller.variableSizes)
+        {
+            SetRandomSizeToFigure(fig);
+        }
+    }
+
+    public void SetRandomOffsetToFigure(GameObject fig)
+    {
+        // TODO: Add variation with size
+        float MAX_OFFSET = HorizontalSpacing + 5;
+        Vector2 offset = Random.insideUnitCircle * MAX_OFFSET;
+        fig.GetComponent<RectTransform>().anchoredPosition = offset;
+    }
+
+    public void SetRandomSizeToFigure(GameObject fig)
+    {
+        const float MAX_VARIATION = 24;
+        float randomSize = Random.insideUnitCircle.x * MAX_VARIATION;
+        fig.GetComponent<RectTransform>().sizeDelta = new Vector2(CellWidth + randomSize, CellHeight + randomSize);
     }
 }

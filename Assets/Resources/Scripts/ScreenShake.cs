@@ -3,7 +3,7 @@ using UnityEngine;
 public class ScreenShake : MonoBehaviour
 {
     public float shakeDuration = 0f;
-    private float shakeMagnitude = 0.4f;
+    private float shakeMagnitude = 40f;
     private float dampingSpeed = 1.0f;
     private RectTransform tr;
     Vector3 initialPosition;
@@ -11,21 +11,21 @@ public class ScreenShake : MonoBehaviour
     void OnEnable()
     {
         tr = GetComponent<RectTransform>();
-        initialPosition = tr.position;
+        initialPosition = tr.anchoredPosition;
     }
 
     void Update()
     {
         if (shakeDuration > 0)
         {
-            tr.position = initialPosition + Random.insideUnitSphere * shakeMagnitude;
+            tr.anchoredPosition = initialPosition + Random.insideUnitSphere * shakeMagnitude;
 
             shakeDuration -= Time.deltaTime * dampingSpeed;
         }
         else
         {
             shakeDuration = 0f;
-            tr.position = initialPosition;
+            tr.anchoredPosition = initialPosition;
         }
     }
 

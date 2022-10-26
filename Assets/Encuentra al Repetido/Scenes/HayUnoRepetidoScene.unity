@@ -633,7 +633,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 24, y: 24}
+  m_Spacing: {x: 50, y: 50}
   m_Constraint: 0
   m_ConstraintCount: 1
 --- !u!114 &568021614
@@ -1713,4 +1713,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   templateCell: {fileID: 836075408}
   availableCells: []
+  cells: []
   figurePrefab: {fileID: 8632990507630729472, guid: 8f3622b00a84bfe439dd14602c8c3fe2, type: 3}

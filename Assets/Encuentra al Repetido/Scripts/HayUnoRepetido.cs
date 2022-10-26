@@ -60,29 +60,6 @@ public class HayUnoRepetido : ScriptableObject
         return index;
     }
 
-    /// <summary>
-    /// Posiciona las figuras en el lugar correcto
-    /// </summary>
-    /// <param name="size">Tamaño estándar</param>
-    /// <param name="minSize">Tamaño mínimo</param>
-    /// <param name="maxSize">Tamaño máximo</param>
-    /// <param name="controller">Controlador del juego.</param>
-    /// <returns>Retorna un vector con la posición de la figura</returns>
-    Vector2 locateFigures(float minSize, float maxSize, HayUnoRepetidoController controller)
-    {
-        Vector2 figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-        figurePosition = centerFigures(figurePosition);
-        if (controller.variableSizes)
-        {
-            size = Random.Range(minSize, maxSize);
-        }
-        while (thereIsSomethingIn(figurePosition, size))
-        {
-            figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-            figurePosition = centerFigures(figurePosition);
-        }
-        return figurePosition;
-    }
 
     /// <summary>
     /// Función que instancia las figuras que se mostrarán al inicio y al 
@@ -100,6 +77,8 @@ public class HayUnoRepetido : ScriptableObject
         // Nuevo spawn de figuras
         if (!onTutorial)
         {
+            hayUnoRepetidoController.grid.CreateCells();
+
             for (int i = 0; i < figureQuantity; i++)
             {
                 hayUnoRepetidoController.grid.CreateFigureOnRandomCell(sprites, index[i], i, controller);
