@@ -15,12 +15,13 @@ public class FlexibleGameGrid : MonoBehaviour
     private float VerticalSpacing { get => GridLayoutGroup.spacing.y; }
     private RectTransform GridRectTransform { get => gridRectTransform == null ? GetComponent<RectTransform>() : gridRectTransform; }
     private GridLayoutGroup GridLayoutGroup { get => gridLayoutGroup == null ? GetComponent<GridLayoutGroup>() : gridLayoutGroup; }
-    public float CellWidth { get => GridLayoutGroup.cellSize.x; }
-    public float CellHeight { get => GridLayoutGroup.cellSize.y; }
+    public Vector2 CellSize { get => GridLayoutGroup.cellSize; }
     public float GridWidth { get => GridRectTransform.rect.width; }
     public float GridHeight { get => GridRectTransform.rect.height; }
-    public float NumberOfColumns { get => Mathf.FloorToInt((GridWidth - CellWidth) / (CellWidth + HorizontalSpacing)) + 1 ; }
-    public float NumberOfRows { get => Mathf.FloorToInt((GridHeight - CellHeight) / (CellHeight + VerticalSpacing)) + 1 ; }
+    public float NumberOfColumns { get => Mathf.FloorToInt((GridWidth - CellSize.x) / (CellSize.x + HorizontalSpacing)) + 1; }
+    public float NumberOfRows { get => Mathf.FloorToInt((GridHeight - CellSize.y) / (CellSize.y + VerticalSpacing)) + 1; }
+    private static float MAX_VARIABLE_SIZE_ADJUSTMENT = 0f;
+    public float MaxVariableSize { get => (HorizontalSpacing / 2) - MAX_VARIABLE_SIZE_ADJUSTMENT; }
 
     /// <summary>
     /// Crea una grilla que se ajusta al tamaño de la pantalla para 
@@ -28,10 +29,9 @@ public class FlexibleGameGrid : MonoBehaviour
     /// </summary>
     public void CreateCells()
     {
-        Debug.Log(NumberOfColumns);
-        if(cells != null && cells.Count > 0)
+        if (cells != null && cells.Count > 0)
         {
-            foreach(GameObject cell in cells)
+            foreach (GameObject cell in cells)
             {
                 Destroy(cell);
             }
@@ -40,7 +40,7 @@ public class FlexibleGameGrid : MonoBehaviour
         cells = new List<GameObject>();
         availableCells = new List<GameObject>();
 
-        for (int i = 1; i < NumberOfColumns * NumberOfRows; i ++)
+        for (int i = 1; i < NumberOfColumns * NumberOfRows; i++)
         {
             GameObject cell = Instantiate(templateCell, transform);
             cells.Add(cell);
@@ -55,34 +55,52 @@ public class FlexibleGameGrid : MonoBehaviour
     /// <param name="figure">El prefab de la figura a instanciar.</param>
     public void CreateFigureOnRandomCell(Sprite[] sprites, int spriteIndex, int figureIndex, HayUnoRepetidoController controller)
     {
-        // TODO: Avoid overlapping
         int index = Random.Range(0, availableCells.Count);
         GameObject randomCell = availableCells[index];
         availableCells.Remove(randomCell);
+
         GameObject fig = Instantiate(figurePrefab, randomCell.transform);
-        fig.GetComponent<FigureBehaviourWithCanvas>().sprite = sprites[spriteIndex];
-        fig.GetComponent<FigureBehaviourWithCanvas>().controller = controller;
-        fig.GetComponent<FigureBehaviourWithCanvas>().index = figureIndex;
-        SetRandomOffsetToFigure(fig);
-        
+        fig.GetComponent<FigureBehaviour>().Initialize(controller, sprites[spriteIndex], figureIndex);
+
+        RectTransform figureTransform = fig.GetComponent<RectTransform>();
+
         if (controller.variableSizes)
         {
-            SetRandomSizeToFigure(fig);
+            SetRandomSizeToFigure(figureTransform);
         }
+
+        SetRandomOffsetToFigure(figureTransform);
     }
 
-    public void SetRandomOffsetToFigure(GameObject fig)
+    /// <summary>
+    /// Cambia el tamaño de la figura aleatoriamente.
+    /// </summary>
+    /// <param name="fig">El RectTransform de la figura
+    /// para cambiar el tamaño.</param>
+    public void SetRandomSizeToFigure(RectTransform fig)
     {
-        // TODO: Add variation with size
-        float MAX_OFFSET = HorizontalSpacing + 5;
-        Vector2 offset = Random.insideUnitCircle * MAX_OFFSET;
+        float randomSize = Random.Range(-1, 1) * MaxVariableSize;
+        fig.sizeDelta = new Vector2(CellSize.x + randomSize, CellSize.y + randomSize);
+    }
+
+    /// <summary>
+    /// Cambia el offset de una figura, teniendo en cuenta
+    /// el tamaño variable y el espaciado entre celdas.
+    /// </summary>
+    /// <param name="fig">El RectTransform de la figura 
+    /// para cambiar el offset.</param>
+    public void SetRandomOffsetToFigure(RectTransform fig)
+    {
+        Vector2 figureSize = fig.GetComponent<RectTransform>().sizeDelta;
+        Debug.Log(figureSize);
+        Debug.Log(MaxVariableSize);
+        Vector2 MaxOffset = CellSize + MaxVariableSize * Vector2.one - figureSize;
+
+        float offsetX = Random.Range(-1, 1) * MaxOffset.x;
+        float offsetY = Random.Range(-1, 1) * MaxOffset.y;
+
+        Vector2 offset = new Vector2(offsetX, offsetY);
         fig.GetComponent<RectTransform>().anchoredPosition = offset;
     }
 
-    public void SetRandomSizeToFigure(GameObject fig)
-    {
-        const float MAX_VARIATION = 24;
-        float randomSize = Random.insideUnitCircle.x * MAX_VARIATION;
-        fig.GetComponent<RectTransform>().sizeDelta = new Vector2(CellWidth + randomSize, CellHeight + randomSize);
-    }
 }

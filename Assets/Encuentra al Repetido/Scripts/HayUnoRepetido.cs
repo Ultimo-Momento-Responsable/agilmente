@@ -112,9 +112,9 @@ public class HayUnoRepetido : ScriptableObject
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
             fig.GetComponent<Transform>().localScale = new Vector3(SIZE, SIZE, 1);
-            fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
-            fig.GetComponent<FigureBehaviour>().controller = controller;
-            fig.GetComponent<FigureBehaviour>().index = i;
+            fig.GetComponent<TutorialFigureBehaviour>().sprite = sprites[index[i]];
+            fig.GetComponent<TutorialFigureBehaviour>().controller = controller;
+            fig.GetComponent<TutorialFigureBehaviour>().index = i;
 
             // Crea la mano en una fruta repetida
             if (i < 2)
@@ -125,7 +125,7 @@ public class HayUnoRepetido : ScriptableObject
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
                 GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
-                fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
+                fig.GetComponent<TutorialFigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
         }
     }
