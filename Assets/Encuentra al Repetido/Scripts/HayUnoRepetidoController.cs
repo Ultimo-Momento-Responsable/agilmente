@@ -84,7 +84,7 @@ public class HayUnoRepetidoController : GameController
             maxLevel = 20;
         }
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
-        hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
+        hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -198,7 +198,7 @@ public class HayUnoRepetidoController : GameController
         removeFigures();
         
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
-        hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
+        hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this);
         isTouching = false;
     }
 

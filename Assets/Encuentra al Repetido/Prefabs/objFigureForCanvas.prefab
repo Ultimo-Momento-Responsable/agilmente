@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1053279976351382810}
   - component: {fileID: 2323387568916341819}
   - component: {fileID: 5464991519459294797}
-  m_Layer: 3
+  m_Layer: 5
   m_Name: objFigureForCanvas
   m_TagString: figures
   m_Icon: {fileID: 0}
@@ -145,6 +145,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7c5c0be507d78a47874324765d1eb9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  controller: {fileID: 0}
-  index: 0
+  ps: {fileID: 0}

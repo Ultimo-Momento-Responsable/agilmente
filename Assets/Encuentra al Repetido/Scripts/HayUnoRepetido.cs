@@ -72,7 +72,7 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="index">Índice.</param>
     /// <param name="controller">Controlador del juego.</param>
     /// <param name="particles">Partículas.</param>
-    public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
+    public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller)
     {
         // Nuevo spawn de figuras
         if (!onTutorial)
@@ -124,7 +124,7 @@ public class HayUnoRepetido : ScriptableObject
                     GameObject tHand = Instantiate(hayUnoRepetidoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
-                GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
+                GameObject part = Instantiate(controller.particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<TutorialFigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
         }

@@ -5,14 +5,29 @@ public class FigureBehaviour : MonoBehaviour
 {
     private HayUnoRepetidoController controller;
     private int index;
-    // TODO: Fix particle system
-    //public ParticleSystem ps;
+    public ParticleSystem ps;
+    public bool isClicked = false;
+    public bool IsCorrectFigure { get => index == 0 || index == 1; }
 
-    public void Initialize(HayUnoRepetidoController controller, Sprite sprite, int figureIndex)
+    public void OnDestroy()
+    {
+        if(!isClicked && ps != null)
+        {
+            Destroy(ps.gameObject);
+        }
+    }
+
+    public void Initialize(HayUnoRepetidoController controller, Sprite sprite, int figureIndex, GameObject cell)
     {
         GetComponent<Image>().sprite = sprite;
         this.controller = controller;
         index = figureIndex;
+
+        if (IsCorrectFigure)
+        {
+            ps = Instantiate(controller.particles, cell.transform).GetComponent<ParticleSystem>();
+            ps.transform.localPosition = GetComponent<RectTransform>().anchoredPosition;
+        }
     }
 
 
@@ -24,9 +39,10 @@ public class FigureBehaviour : MonoBehaviour
     {
         if (index == 0 || index == 1)
         {
+            isClicked = true;
             controller.isTouching = true;
-            //ps.Stop();
-            //ps.Play();
+            ps.Stop();
+            ps.Play();
         }
         else
         {
