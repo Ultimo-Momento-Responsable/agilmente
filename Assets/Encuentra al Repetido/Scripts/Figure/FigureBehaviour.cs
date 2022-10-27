@@ -17,6 +17,13 @@ public class FigureBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Inicializa los datos de la figura.
+    /// </summary>
+    /// <param name="controller">Controlador del juego.</param>
+    /// <param name="sprite">Sprite de la figura.</param>
+    /// <param name="figureIndex">Índice que identifica a la figura.</param>
+    /// <param name="cell">Celda donde se encuentra la figura.</param>
     public void Initialize(ControllerWithFigureBehaviour controller, Sprite sprite, int figureIndex, GameObject cell)
     {
         GetComponent<Image>().sprite = sprite;
