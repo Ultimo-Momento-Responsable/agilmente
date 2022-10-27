@@ -45,11 +45,15 @@ public class FlexibleGameGrid : MonoBehaviour
         availableCells.AddRange(cells);
     }
 
+
     /// <summary>
     /// Crea una figura en un lugar random de la pantalla.
     /// No se debe usar para el tutorial.
     /// </summary>
-    /// <param name="figure">El prefab de la figura a instanciar.</param>
+    /// <param name="sprites">Todos los sprites del spriteset.</param>
+    /// <param name="spriteIndex">El índice del sprite a utilizar para esta figura.</param>
+    /// <param name="figureIndex">Índice de la figura.</param>
+    /// <param name="controller">Controlador del juego.</param>
     public void CreateFigureOnRandomCell(Sprite[] sprites, int spriteIndex, int figureIndex, ControllerWithFigureBehaviour controller)
     {
         int index = Random.Range(0, availableCells.Count);
