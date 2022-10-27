@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Resources.Scripts;
 
-public class EncuentraAlNuevo : ScriptableObject
+public class EncuentraAlNuevo : ScriptableObject, GameWithFigureBehaviour
 {
     private int a_mistakes;
     private int a_successes;
@@ -20,6 +21,8 @@ public class EncuentraAlNuevo : ScriptableObject
     private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
     private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
+
+    public bool OnTutorial => onTutorial;
 
     /// <summary>
     /// Setea los valores iniciales para el objeto.
@@ -74,71 +77,58 @@ public class EncuentraAlNuevo : ScriptableObject
     /// <param name="sprites">Set de sprites a usar.</param>
     /// <param name="index">Índice.</param>
     /// <param name="controller">Controlador del juego.</param>
-    /// <param name="particles">Partículas.</param>
-    public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, EncuentraAlNuevoController controller, GameObject particles)
+    public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, EncuentraAlNuevoController controller)
     {
+        // Nuevo spawn de figuras
+        if (!OnTutorial)
+        {
+            encuentraAlNuevoController.Grid.CreateCells();
+
+            for (int i = 0; i < figureQuantity; i++)
+            {
+                encuentraAlNuevoController.Grid.CreateFigureOnRandomCell(sprites, index[i], i, controller);
+            }
+
+            return;
+        }
+
+        // Lógica del tutorial
+        const float SIZE = 0.15f;
+
         for (int i = figureQuantity-1; i >= 0; i--)
         {
-            float size = 0.15f;
-            float minsize = 0.122f;
-            float maxsize = 0.2f;
-
             Vector2 figurePosition;
-            if (!onTutorial)
+            
+            float space;
+            if (figureQuantity == 2)
             {
-                figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-                figurePosition = centerFigures(figurePosition);
-
-                while (thereIsSomethingIn(figurePosition))
-                {
-                    figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-                    figurePosition = centerFigures(figurePosition);
-                }
-
-                if (controller.variableSizes)
-                {
-                    size = Random.Range(minsize, maxsize);
-                }
+                space = 0.33f;
+            } else
+            {
+                space = 0.25f;
             }
-            else
+            figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, figureQuantity + 1) * space, 0.4f));
+            while (thereIsSomethingIn(figurePosition))
             {
-                
-                float space;
-                if (figureQuantity == 2)
-                {
-                    space = 0.33f;
-                } else
-                {
-                    space = 0.25f;
-                }
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, figureQuantity + 1) * space, 0.4f));
-                while (thereIsSomethingIn(figurePosition))
-                {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, figureQuantity + 1) * space, 0.4f));
-                }
             }
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
-            fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
-            fig.GetComponent<FigureBehaviourEAN>().sprite = sprites[index[i]];
-            fig.GetComponent<FigureBehaviourEAN>().controller = controller;
-            fig.GetComponent<FigureBehaviourEAN>().index = i;
+            fig.GetComponent<Transform>().localScale = new Vector3(SIZE, SIZE, 1);
+            fig.GetComponent<TutorialFigureBehaviour>().sprite = sprites[index[i]];
+            fig.GetComponent<TutorialFigureBehaviour>().controller = controller;
+            fig.GetComponent<TutorialFigureBehaviour>().index = i;
 
-            // Si está en tutorial crea la mano en una fruta nueva
+            // Crea la mano en una fruta nueva
             if (i == 0 && !encuentraAlNuevoController.prevTutorial)
             {
-                if (onTutorial)
-                {
-                    GameObject tHand = Instantiate(encuentraAlNuevoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
-                    tHand.SetActive(true);
-                    tHand.GetComponent<TutorialHand>().yPos = -2.8f;
-                }
-                GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
-                fig.GetComponent<FigureBehaviourEAN>().ps = part.GetComponent<ParticleSystem>();
+                GameObject tHand = Instantiate(encuentraAlNuevoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
+                tHand.SetActive(true);
+                tHand.GetComponent<TutorialHand>().yPos = -2.8f;
+                GameObject part = Instantiate(controller.Particles, figurePosition, Quaternion.identity);
+                fig.GetComponent<TutorialFigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
-
         }
-
     }
 
     /// <summary>

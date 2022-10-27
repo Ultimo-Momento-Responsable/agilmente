@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using Assets.Resources.Scripts;
 public class FigureBehaviour : MonoBehaviour
 {
-    private HayUnoRepetidoController controller;
+    private ControllerWithFigureBehaviour controller;
     private int index;
     public ParticleSystem ps;
     public bool isClicked = false;
-    public bool IsCorrectFigure { get => index == 0 || index == 1; }
+    public bool IsCorrectFigure { get => controller.GetType() == typeof(HayUnoRepetidoController) ? index == 0 || index == 1 : index == 0; }
 
     public void OnDestroy()
     {
@@ -17,7 +17,7 @@ public class FigureBehaviour : MonoBehaviour
         }
     }
 
-    public void Initialize(HayUnoRepetidoController controller, Sprite sprite, int figureIndex, GameObject cell)
+    public void Initialize(ControllerWithFigureBehaviour controller, Sprite sprite, int figureIndex, GameObject cell)
     {
         GetComponent<Image>().sprite = sprite;
         this.controller = controller;
@@ -25,7 +25,7 @@ public class FigureBehaviour : MonoBehaviour
 
         if (IsCorrectFigure)
         {
-            ps = Instantiate(controller.particles, cell.transform).GetComponent<ParticleSystem>();
+            ps = Instantiate(controller.Particles, cell.transform).GetComponent<ParticleSystem>();
             ps.transform.localPosition = GetComponent<RectTransform>().anchoredPosition;
         }
     }
@@ -40,15 +40,15 @@ public class FigureBehaviour : MonoBehaviour
         if (index == 0 || index == 1)
         {
             isClicked = true;
-            controller.isTouching = true;
+            controller.IsTouching = true;
             ps.Stop();
             ps.Play();
         }
         else
         {
-            if (controller.grid.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.hayUnoRepetido.onTutorial)
+            if (controller.Grid.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.Game.OnTutorial)
             {
-                controller.isMakingMistake = true;
+                controller.IsMakingMistake = true;
             }
         }
     }

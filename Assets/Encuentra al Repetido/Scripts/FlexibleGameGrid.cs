@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Resources.Scripts;
 
 public class FlexibleGameGrid : MonoBehaviour
 {
@@ -50,7 +50,7 @@ public class FlexibleGameGrid : MonoBehaviour
     /// No se debe usar para el tutorial.
     /// </summary>
     /// <param name="figure">El prefab de la figura a instanciar.</param>
-    public void CreateFigureOnRandomCell(Sprite[] sprites, int spriteIndex, int figureIndex, HayUnoRepetidoController controller)
+    public void CreateFigureOnRandomCell(Sprite[] sprites, int spriteIndex, int figureIndex, ControllerWithFigureBehaviour controller)
     {
         int index = Random.Range(0, availableCells.Count);
         GameObject randomCell = availableCells[index];
@@ -60,7 +60,7 @@ public class FlexibleGameGrid : MonoBehaviour
 
         RectTransform figureTransform = fig.GetComponent<RectTransform>();
 
-        if (controller.variableSizes)
+        if (controller.VariableSizes)
         {
             SetRandomSizeToFigure(figureTransform);
         }
@@ -76,7 +76,7 @@ public class FlexibleGameGrid : MonoBehaviour
     /// para cambiar el tamaño.</param>
     public void SetRandomSizeToFigure(RectTransform fig)
     {
-        float randomSize = Random.Range(-1, 1) * MaxVariableSize;
+        float randomSize = Random.Range(-1f, 1f) * MaxVariableSize;
         fig.sizeDelta = new Vector2(CellSize.x + randomSize, CellSize.y + randomSize);
     }
 
@@ -91,8 +91,8 @@ public class FlexibleGameGrid : MonoBehaviour
         Vector2 figureSize = fig.GetComponent<RectTransform>().sizeDelta;
         Vector2 MaxOffset = CellSize + MaxVariableSize * Vector2.one - figureSize;
 
-        float offsetX = Random.Range(-1, 1) * MaxOffset.x;
-        float offsetY = Random.Range(-1, 1) * MaxOffset.y;
+        float offsetX = Random.Range(-1f, 1f) * MaxOffset.x;
+        float offsetY = Random.Range(-1f, 1f) * MaxOffset.y;
 
         Vector2 offset = new Vector2(offsetX, offsetY);
         fig.GetComponent<RectTransform>().anchoredPosition = offset;

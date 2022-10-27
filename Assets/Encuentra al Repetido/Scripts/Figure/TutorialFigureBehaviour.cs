@@ -1,10 +1,9 @@
 using UnityEngine;
-
-// TODO: Rename to TutorialFigureBehaviour
+using Assets.Resources.Scripts;
 public class TutorialFigureBehaviour : MonoBehaviour
 {
     public Sprite sprite;
-    public HayUnoRepetidoController controller;
+    public ControllerWithFigureBehaviour controller;
     public int index;
     private new Collider2D collider2D;
     public ParticleSystem ps;
@@ -19,7 +18,7 @@ public class TutorialFigureBehaviour : MonoBehaviour
     {
         if (Input.touchCount == 1) // si se pulsa la pantalla
         {
-            Vector3 wp = controller.mainCamera.ScreenToWorldPoint(Input.GetTouch(0).position);
+            Vector3 wp = controller.MainCamera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posición donde se pulsa es donde se encuentra la figura
             {
@@ -48,7 +47,7 @@ public class TutorialFigureBehaviour : MonoBehaviour
     {
         if (index == 0 || index == 1)
         {
-            controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
+            controller.IsTouching = true;
             ps.Stop();
             ps.Play();
         }

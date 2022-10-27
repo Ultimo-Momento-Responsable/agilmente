@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static MainSceneController;
+using Assets.Resources.Scripts;
 
-public class HayUnoRepetidoController : GameController
+public class HayUnoRepetidoController : GameController, ControllerWithFigureBehaviour
 {
 
     private const string ENDPOINT = "result/encuentra-al-repetido";
@@ -48,6 +49,8 @@ public class HayUnoRepetidoController : GameController
     public GameObject HUD;
     public FlexibleGameGrid grid;
     private GameObject[] a_figures;
+    
+    public GameWithFigureBehaviour Game { get => hayUnoRepetido; }
 
     public GameObject[] figures
     {
@@ -61,6 +64,13 @@ public class HayUnoRepetidoController : GameController
         }
         set => a_figures = value;
     }
+
+    public GameObject Particles { get => particles; set => particles = value; }
+    public bool IsTouching { get => isTouching; set => isTouching = value; }
+    public bool IsMakingMistake { get => isMakingMistake; set => isMakingMistake = value; }
+    public FlexibleGameGrid Grid { get => grid; set => grid = value; }
+    public Camera MainCamera => mainCamera;
+    public bool VariableSizes => variableSizes;
 
     void Start()
     {
@@ -90,14 +100,14 @@ public class HayUnoRepetidoController : GameController
 
     void Update()
     {
-        if (hayUnoRepetido.onTutorial)
+        if (hayUnoRepetido.OnTutorial)
         {
             timer.text = "Tutorial";
-            if (isTouching)
+            if (IsTouching)
             {
                 dontTouchAgain = true;
                 PlaySound(sndSuccess);
-                hayUnoRepetido.onTutorial = false;
+                hayUnoRepetido.OnTutorial = false;
                 tutorial.SetActive(false);
                 GameObject.FindGameObjectWithTag("tutorialhand").SetActive(false);
                 title.SetActive(false);
@@ -122,7 +132,7 @@ public class HayUnoRepetidoController : GameController
                 scoreHUD.text = hayUnoRepetido.score.ToString();
             }
 
-            if (isTouching && figureQuantity > 0 && !dontTouchAgain)
+            if (IsTouching && figureQuantity > 0 && !dontTouchAgain)
             {
                 dontTouchAgain = true;
                 hayUnoRepetido.addSuccess(figureQuantity);
@@ -151,11 +161,11 @@ public class HayUnoRepetidoController : GameController
                 sendData();
             }
 
-            if (isMakingMistake)
+            if (IsMakingMistake)
             {
-                isMakingMistake = false;
+                IsMakingMistake = false;
                 hayUnoRepetido.addMistake(figureQuantity);
-                grid.GetComponent<ScreenShake>().TriggerShake(0.1f);
+                Grid.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
 
@@ -174,9 +184,6 @@ public class HayUnoRepetidoController : GameController
         }
 
     }
-
-
-    
 
     /// <summary>
     /// Elimina las figuras que hay en la pantalla
@@ -199,7 +206,7 @@ public class HayUnoRepetidoController : GameController
         
         index = hayUnoRepetido.chooseSprites(sprites, figureQuantity);
         hayUnoRepetido.createFigures(figureQuantity, mainCamera, figure, sprites, index, this);
-        isTouching = false;
+        IsTouching = false;
     }
 
     /// <summary>
@@ -268,7 +275,7 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void pauseGame()
     {
-        if (hayUnoRepetido.onTutorial)
+        if (hayUnoRepetido.OnTutorial)
         {
             if (tutorial)
             {
@@ -304,7 +311,7 @@ public class HayUnoRepetidoController : GameController
     /// </summary>
     public override void unpauseGame()
     {
-        if (hayUnoRepetido.onTutorial)
+        if (hayUnoRepetido.OnTutorial)
         {
             if (tutorial)
             {

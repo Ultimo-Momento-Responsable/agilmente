@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Assets.Resources.Scripts;
 
-public class HayUnoRepetido : ScriptableObject
+public class HayUnoRepetido : ScriptableObject, GameWithFigureBehaviour
 {
     private int a_mistakes;
     private int a_successes;
@@ -13,7 +14,6 @@ public class HayUnoRepetido : ScriptableObject
     private float a_timeElapsedSinceLastSuccess = 1;
     public bool onTutorial = true;
     public HayUnoRepetidoController hayUnoRepetidoController;
-    private float size;
 
     public int mistakes { get => a_mistakes; set => a_mistakes = value; }
     public int successes { get => a_successes; set => a_successes = value; }
@@ -22,6 +22,7 @@ public class HayUnoRepetido : ScriptableObject
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
     private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
+    public bool OnTutorial { get => onTutorial; set => onTutorial = value; }
 
     /// <summary>
     /// Setea los valores iniciales para el objeto.
@@ -71,17 +72,16 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="sprites">Set de sprites a usar.</param>
     /// <param name="index">Índice.</param>
     /// <param name="controller">Controlador del juego.</param>
-    /// <param name="particles">Partículas.</param>
     public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller)
     {
         // Nuevo spawn de figuras
-        if (!onTutorial)
+        if (!OnTutorial)
         {
-            hayUnoRepetidoController.grid.CreateCells();
+            hayUnoRepetidoController.Grid.CreateCells();
 
             for (int i = 0; i < figureQuantity; i++)
             {
-                hayUnoRepetidoController.grid.CreateFigureOnRandomCell(sprites, index[i], i, controller);
+                hayUnoRepetidoController.Grid.CreateFigureOnRandomCell(sprites, index[i], i, controller);
             }
 
             const float DISTRACTOR_CHANCE = 0.25f;
@@ -90,7 +90,7 @@ public class HayUnoRepetido : ScriptableObject
             {
                 LoadDistractorsResources();
                 int spriteIndex = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
-                hayUnoRepetidoController.grid.CreateFigureOnRandomCell(hayUnoRepetidoController.distractorsSprites, spriteIndex, -1, controller);
+                hayUnoRepetidoController.Grid.CreateFigureOnRandomCell(hayUnoRepetidoController.distractorsSprites, spriteIndex, -1, controller);
             }
 
             return;
@@ -124,7 +124,7 @@ public class HayUnoRepetido : ScriptableObject
                     GameObject tHand = Instantiate(hayUnoRepetidoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
-                GameObject part = Instantiate(controller.particles, figurePosition, Quaternion.identity);
+                GameObject part = Instantiate(controller.Particles, figurePosition, Quaternion.identity);
                 fig.GetComponent<TutorialFigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
         }
