@@ -1,9 +1,9 @@
 using UnityEngine;
-
-public class FigureBehaviourEAN : MonoBehaviour
+using Assets.Resources.Scripts;
+public class TutorialFigureBehaviour : MonoBehaviour
 {
     public Sprite sprite;
-    public EncuentraAlNuevoController controller;
+    public ControllerWithFigureBehaviour controller;
     public int index;
     private new Collider2D collider2D;
     public ParticleSystem ps;
@@ -18,7 +18,7 @@ public class FigureBehaviourEAN : MonoBehaviour
     {
         if (Input.touchCount == 1) // si se pulsa la pantalla
         {
-            Vector3 wp = controller.mainCamera.ScreenToWorldPoint(Input.GetTouch(0).position);
+            Vector3 wp = controller.MainCamera.ScreenToWorldPoint(Input.GetTouch(0).position);
             Vector2 touchPos = new Vector2(wp.x, wp.y);
             if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posición donde se pulsa es donde se encuentra la figura
             {
@@ -40,23 +40,16 @@ public class FigureBehaviourEAN : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica si el usuario tapeó la figura correcta, y el comportamiento 
+    /// Verifica si el usuario tapeó la fruta correcta, y el comportamiento 
     /// correspondiente.
     /// </summary>
     void checkIfUserTappedFigure()
     {
-        if (index == 0 && !controller.prevTutorial)
+        if (index == 0 || index == 1)
         {
-            controller.GetComponent<EncuentraAlNuevoController>().isTouching = true;
+            controller.IsTouching = true;
             ps.Stop();
             ps.Play();
-        }
-        else
-        {
-            if (controller.mainCamera.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.encuentraAlNuevo.onTutorial)
-            {
-                controller.isMakingMistake = true;
-            }
         }
     }
 }

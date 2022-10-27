@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Assets.Resources.Scripts;
 
-public class HayUnoRepetido : ScriptableObject
+public class HayUnoRepetido : ScriptableObject, GameWithFigureBehaviour
 {
     private int a_mistakes;
     private int a_successes;
@@ -13,7 +14,6 @@ public class HayUnoRepetido : ScriptableObject
     private float a_timeElapsedSinceLastSuccess = 1;
     public bool onTutorial = true;
     public HayUnoRepetidoController hayUnoRepetidoController;
-    private float size;
 
     public int mistakes { get => a_mistakes; set => a_mistakes = value; }
     public int successes { get => a_successes; set => a_successes = value; }
@@ -22,6 +22,7 @@ public class HayUnoRepetido : ScriptableObject
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     private float timeMarkFromLastSuccess { get => a_timeMarkFromLastSuccess; set => a_timeMarkFromLastSuccess = value; }
     private float timeElapsedSinceLastSuccess { get => a_timeElapsedSinceLastSuccess; set => a_timeElapsedSinceLastSuccess = value; }
+    public bool OnTutorial { get => onTutorial; set => onTutorial = value; }
 
     /// <summary>
     /// Setea los valores iniciales para el objeto.
@@ -60,29 +61,6 @@ public class HayUnoRepetido : ScriptableObject
         return index;
     }
 
-    /// <summary>
-    /// Posiciona las figuras en el lugar correcto
-    /// </summary>
-    /// <param name="size">Tamaño estándar</param>
-    /// <param name="minSize">Tamaño mínimo</param>
-    /// <param name="maxSize">Tamaño máximo</param>
-    /// <param name="controller">Controlador del juego.</param>
-    /// <returns>Retorna un vector con la posición de la figura</returns>
-    Vector2 locateFigures(float minSize, float maxSize, HayUnoRepetidoController controller)
-    {
-        Vector2 figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-        figurePosition = centerFigures(figurePosition);
-        if (controller.variableSizes)
-        {
-            size = Random.Range(minSize, maxSize);
-        }
-        while (thereIsSomethingIn(figurePosition, size))
-        {
-            figurePosition = new Vector2(Random.Range(0, 6) * 0.9f - 2.5f + Random.Range(-0.15f, 0.15f), Random.Range(0, 9) * 1.2f - 4.5f + Random.Range(-0.2f, 0));
-            figurePosition = centerFigures(figurePosition);
-        }
-        return figurePosition;
-    }
 
     /// <summary>
     /// Función que instancia las figuras que se mostrarán al inicio y al 
@@ -94,75 +72,73 @@ public class HayUnoRepetido : ScriptableObject
     /// <param name="sprites">Set de sprites a usar.</param>
     /// <param name="index">Índice.</param>
     /// <param name="controller">Controlador del juego.</param>
-    /// <param name="particles">Partículas.</param>
-    public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller, GameObject particles)
+    public void createFigures(int figureQuantity, Camera camera, GameObject figure, Sprite[] sprites, List<int> index, HayUnoRepetidoController controller)
     {
-        int handPosition = Random.Range(0, 2); // Posición de la mano del tutorial
-        Vector2 figurePosition;
-        for (int i = 0; i < figureQuantity; i++)
+        // Nuevo spawn de figuras
+        if (!OnTutorial)
         {
-            size = 0.15f;
-            float minSize = 0.122f;
-            float maxSize = 0.2f;
-            
-            if (!onTutorial)
+            hayUnoRepetidoController.Grid.CreateCells();
+
+            for (int i = 0; i < figureQuantity; i++)
             {
-                figurePosition = locateFigures(minSize, maxSize, controller);
+                hayUnoRepetidoController.Grid.CreateFigureOnRandomCell(sprites, index[i], i, controller);
             }
-            else
+
+            const float DISTRACTOR_CHANCE = 0.25f;
+
+            if (hayUnoRepetidoController.distractors && Random.value <= DISTRACTOR_CHANCE)
+            {
+                LoadDistractorsResources();
+                int spriteIndex = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
+                hayUnoRepetidoController.Grid.CreateFigureOnRandomCell(hayUnoRepetidoController.distractorsSprites, spriteIndex, -1, controller);
+            }
+
+            return;
+        }
+
+        // Lógica del tutorial
+        int handPosition = Random.Range(0, 2);
+        Vector2 figurePosition;
+
+        const float SIZE = 0.15f;
+
+        for(int i = 0; i < 3; i ++)
+        {
+            figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
+            while (thereIsSomethingIn(figurePosition, SIZE))
             {
                 figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
-                while (thereIsSomethingIn(figurePosition,size))
-                {
-                    figurePosition = camera.ViewportToWorldPoint(new Vector2(Random.Range(1, 4) * 0.25f, 0.4f));
-                }
             }
 
             GameObject fig = Instantiate(figure, figurePosition, Quaternion.identity);
-            
-            fig.GetComponent<Transform>().localScale = new Vector3(size, size, 1);
-            fig.GetComponent<FigureBehaviour>().sprite = sprites[index[i]];
-            fig.GetComponent<FigureBehaviour>().controller = controller;
-            fig.GetComponent<FigureBehaviour>().index = i;
+            fig.GetComponent<Transform>().localScale = new Vector3(SIZE, SIZE, 1);
+            fig.GetComponent<TutorialFigureBehaviour>().sprite = sprites[index[i]];
+            fig.GetComponent<TutorialFigureBehaviour>().controller = controller;
+            fig.GetComponent<TutorialFigureBehaviour>().index = i;
 
-            // Si está en tutorial crea la mano en una fruta repetida
-            if (i < 2) 
+            // Crea la mano en una fruta repetida
+            if (i < 2)
             {
-                if (i == handPosition && onTutorial) 
+                if (i == handPosition)
                 {
                     GameObject tHand = Instantiate(hayUnoRepetidoController.handPref, new Vector2(figurePosition.x, figurePosition.y), Quaternion.identity);
                     tHand.GetComponent<TutorialHand>().yPos = -2.8f;
                 }
-                GameObject part = Instantiate(particles, figurePosition, Quaternion.identity);
-                fig.GetComponent<FigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
+                GameObject part = Instantiate(controller.Particles, figurePosition, Quaternion.identity);
+                fig.GetComponent<TutorialFigureBehaviour>().ps = part.GetComponent<ParticleSystem>();
             }
         }
+    }
 
-        int countSpritesets = 2;
-        if (hayUnoRepetidoController.distractors && Random.value <= 0.25f && !onTutorial)
+    /// <summary>
+    /// Carga los assets de los distractores.
+    /// </summary>
+    private void LoadDistractorsResources()
+    {
+        int spriteSetDistractor = MainSceneController.SessionHayUnoRepetido.spriteSet == 1 ? 2 : 1;
+        if (hayUnoRepetidoController.distractorsSprites == null)
         {
-            figurePosition = locateFigures(0.2f, 0.2f, controller);
-            
-            GameObject distractor = Instantiate(figure, figurePosition, Quaternion.identity);
-
-            int spriteSetDistractor = Random.Range(1, countSpritesets + 1);
-            while (spriteSetDistractor == MainSceneController.SessionHayUnoRepetido.spriteSet)
-            {
-                spriteSetDistractor = Random.Range(1, countSpritesets + 1);
-            }
-            if (spriteSetDistractor == 1)
-            {
-                distractor.GetComponent<Transform>().localScale = new Vector3(0.2f, 0.2f, 1);
-            } else
-            {
-                distractor.GetComponent<Transform>().localScale = new Vector3(0.15f, 0.15f, 1);
-            }
-            
             hayUnoRepetidoController.distractorsSprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + spriteSetDistractor + "/");
-            int pos = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
-            distractor.GetComponent<FigureBehaviour>().sprite = hayUnoRepetidoController.distractorsSprites[pos];
-            distractor.GetComponent<FigureBehaviour>().controller = controller;
-            distractor.GetComponent<FigureBehaviour>().index = -1;
         }
     }
 
