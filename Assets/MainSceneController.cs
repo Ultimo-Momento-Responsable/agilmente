@@ -46,8 +46,8 @@ public class MainSceneController : MonoBehaviour
         settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
         medals.text = settings.Login.patient.medals.ToString();
         trophies.text = settings.Login.patient.trophies.ToString();
-        getMedalsAndTrophies();
         getPlanning();
+        getMedalsAndTrophies();
     }
 
     /**
