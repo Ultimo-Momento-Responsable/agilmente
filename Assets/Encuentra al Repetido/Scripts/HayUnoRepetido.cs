@@ -90,7 +90,6 @@ public class HayUnoRepetido : ScriptableObject, GameWithFigureBehaviour
             {
                 LoadDistractorsResources();
                 int spriteIndex = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
-                Debug.Log(hayUnoRepetidoController.distractorsSprites.Length);
                 hayUnoRepetidoController.Grid.CreateFigureOnRandomCell(hayUnoRepetidoController.distractorsSprites, spriteIndex, -1, controller);
             }
 
