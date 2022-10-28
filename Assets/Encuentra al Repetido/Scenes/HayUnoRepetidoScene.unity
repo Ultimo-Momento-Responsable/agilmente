@@ -701,7 +701,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7920622046347982421, guid: e7f7e17527cb91441a7ecf04f177b003, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7920622046347982421, guid: e7f7e17527cb91441a7ecf04f177b003, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1214,9 +1214,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e67167b32e058bb43be2bd1153f41101, type: 3}
   - {fileID: 21300000, guid: be4909b8fd906654294e8afb4b09aaf0, type: 3}
   - {fileID: 21300000, guid: 156569dc4d3650e4cb3da9a69dd9b86c, type: 3}
-  distractorsSprites:
-  - {fileID: 21300000, guid: 7b60a3d5b86d75f40bcca968e2626a69, type: 3}
-  - {fileID: 21300000, guid: 0b6440fe997061040b37078441f38c45, type: 3}
+  distractorsSprites: []
   sndSuccess: {fileID: 8300000, guid: 42191cf678c9840428b68b388461533a, type: 3}
   hayUnoRepetido: {fileID: 0}
   particles: {fileID: 1116839700}
@@ -1527,7 +1525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6766362558009011597, guid: b7b215b67f3bd4b419b5a9b8e1902208, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6766362558009011597, guid: b7b215b67f3bd4b419b5a9b8e1902208, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1628,7 +1626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3174037268283046660, guid: cac839b6a89ebac4cb937c8458fba4ee, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3174037268283046660, guid: cac839b6a89ebac4cb937c8458fba4ee, type: 3}
       propertyPath: m_AnchorMax.x

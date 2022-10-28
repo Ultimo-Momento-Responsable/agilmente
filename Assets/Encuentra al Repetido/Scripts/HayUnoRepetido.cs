@@ -90,6 +90,7 @@ public class HayUnoRepetido : ScriptableObject, GameWithFigureBehaviour
             {
                 LoadDistractorsResources();
                 int spriteIndex = Random.Range(0, hayUnoRepetidoController.distractorsSprites.Length);
+                Debug.Log(hayUnoRepetidoController.distractorsSprites.Length);
                 hayUnoRepetidoController.Grid.CreateFigureOnRandomCell(hayUnoRepetidoController.distractorsSprites, spriteIndex, -1, controller);
             }
 
@@ -136,7 +137,7 @@ public class HayUnoRepetido : ScriptableObject, GameWithFigureBehaviour
     private void LoadDistractorsResources()
     {
         int spriteSetDistractor = MainSceneController.SessionHayUnoRepetido.spriteSet == 1 ? 2 : 1;
-        if (hayUnoRepetidoController.distractorsSprites == null)
+        if (hayUnoRepetidoController.distractorsSprites.Length == 0)
         {
             hayUnoRepetidoController.distractorsSprites = Resources.LoadAll<Sprite>("Sprites/Figures/SpriteSet" + spriteSetDistractor + "/");
         }
