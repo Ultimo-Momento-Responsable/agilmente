@@ -1,61 +1,61 @@
 using UnityEngine;
-
+using UnityEngine.UI;
+using Assets.Resources.Scripts;
 public class FigureBehaviour : MonoBehaviour
 {
-    public Sprite sprite;
-    public HayUnoRepetidoController controller;
-    public int index;
-    private new Collider2D collider2D;
+    private ControllerWithFigureBehaviour controller;
+    private int index;
     public ParticleSystem ps;
+    public bool isClicked = false;
+    public bool IsCorrectFigure { get => controller.GetType() == typeof(HayUnoRepetidoController) ? index == 0 || index == 1 : index == 0; }
 
-    void Start()
+    public void OnDestroy()
     {
-        GetComponent<SpriteRenderer>().sprite = sprite;
-        collider2D = GetComponent<Collider2D>();
-    }
-
-    void Update()
-    {
-        if (Input.touchCount == 1) // si se pulsa la pantalla
+        if(!isClicked && ps != null)
         {
-            Vector3 wp = controller.mainCamera.ScreenToWorldPoint(Input.GetTouch(0).position);
-            Vector2 touchPos = new Vector2(wp.x, wp.y);
-            if (collider2D == Physics2D.OverlapPoint(touchPos)) // si la posición donde se pulsa es donde se encuentra la figura
-            {
-                if (Input.GetTouch(0).phase == TouchPhase.Began)
-                {
-                    checkIfUserTappedFigure();
-                }
-
-            }
+            Destroy(ps.gameObject);
         }
     }
 
-    void OnMouseOver()
+    /// <summary>
+    /// Inicializa los datos de la figura.
+    /// </summary>
+    /// <param name="controller">Controlador del juego.</param>
+    /// <param name="sprite">Sprite de la figura.</param>
+    /// <param name="figureIndex">Índice que identifica a la figura.</param>
+    /// <param name="cell">Celda donde se encuentra la figura.</param>
+    public void Initialize(ControllerWithFigureBehaviour controller, Sprite sprite, int figureIndex, GameObject cell)
     {
-        if (Input.GetMouseButtonDown(0)) // si se pulsa con el mouse
+        GetComponent<Image>().sprite = sprite;
+        this.controller = controller;
+        index = figureIndex;
+
+        if (IsCorrectFigure)
         {
-            checkIfUserTappedFigure();
+            ps = Instantiate(controller.Particles, cell.transform).GetComponent<ParticleSystem>();
+            ps.transform.localPosition = GetComponent<RectTransform>().anchoredPosition;
         }
     }
+
 
     /// <summary>
     /// Verifica si el usuario tapeó la fruta correcta, y el comportamiento 
     /// correspondiente.
     /// </summary>
-    void checkIfUserTappedFigure()
+    public void checkIfUserTappedFigure()
     {
         if (index == 0 || index == 1)
         {
-            controller.GetComponent<HayUnoRepetidoController>().isTouching = true;
+            isClicked = true;
+            controller.IsTouching = true;
             ps.Stop();
             ps.Play();
         }
         else
         {
-            if (controller.mainCamera.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.hayUnoRepetido.onTutorial)
+            if (controller.Grid.GetComponent<ScreenShake>().shakeDuration <= 0 && !controller.Game.OnTutorial)
             {
-                controller.isMakingMistake = true;
+                controller.IsMakingMistake = true;
             }
         }
     }

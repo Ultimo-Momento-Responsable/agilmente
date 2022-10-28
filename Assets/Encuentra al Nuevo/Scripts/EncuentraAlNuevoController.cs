@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static MainSceneController;
+using Assets.Resources.Scripts;
 
-public class EncuentraAlNuevoController : GameController
+public class EncuentraAlNuevoController : GameController, ControllerWithFigureBehaviour
 {
     private const string ENDPOINT = "result/encuentra-al-nuevo";
 
@@ -31,6 +32,7 @@ public class EncuentraAlNuevoController : GameController
     public GameObject startButton;
     public GameObject HUD;
     public Text scoreHUD;
+    public FlexibleGameGrid grid;
 
     public int figureQuantity;
     private int maxLevel;
@@ -56,6 +58,14 @@ public class EncuentraAlNuevoController : GameController
         set => a_figures = value; 
     }
 
+    public GameObject Particles => particles;
+    public bool IsTouching { get => isTouching; set => isTouching = value; }
+    public bool IsMakingMistake { get => isMakingMistake; set => isMakingMistake = value; }
+    public FlexibleGameGrid Grid => grid;
+    public GameWithFigureBehaviour Game => encuentraAlNuevo;
+    public Camera MainCamera => mainCamera;
+    public bool VariableSizes => variableSizes;
+
     void Start()
     {
         scoreHUD.text = "";
@@ -79,7 +89,7 @@ public class EncuentraAlNuevoController : GameController
         figureQuantity = 2;
         actualSprites = encuentraAlNuevo.intialSprites(sprites);
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
-        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
+        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this);
         figures = GameObject.FindGameObjectsWithTag("figures");
     }
 
@@ -150,7 +160,7 @@ public class EncuentraAlNuevoController : GameController
             {
                 isMakingMistake = false;
                 encuentraAlNuevo.addMistake(figureQuantity);
-                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.1f);
+                grid.GetComponent<ScreenShake>().TriggerShake(0.1f);
             }
         }
 
@@ -191,7 +201,7 @@ public class EncuentraAlNuevoController : GameController
         
         index = encuentraAlNuevo.chooseSprites(sprites, actualSprites);
 
-        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this, particles);
+        encuentraAlNuevo.createFigures(figureQuantity, mainCamera, figure, sprites, index, this);
         isTouching = false;
     }
 
