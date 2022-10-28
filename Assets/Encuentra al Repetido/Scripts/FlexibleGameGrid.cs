@@ -93,10 +93,10 @@ public class FlexibleGameGrid : MonoBehaviour
     public void SetRandomOffsetToFigure(RectTransform fig)
     {
         Vector2 figureSize = fig.GetComponent<RectTransform>().sizeDelta;
-        Vector2 MaxOffset = CellSize + MaxVariableSize * Vector2.one - figureSize;
+        Vector2 maxOffset = CellSize / 2f + MaxVariableSize * Vector2.one - figureSize / 2f;
 
-        float offsetX = Random.Range(-1f, 1f) * MaxOffset.x;
-        float offsetY = Random.Range(-1f, 1f) * MaxOffset.y;
+        float offsetX = Random.Range(-1f, 1f) * maxOffset.x;
+        float offsetY = Random.Range(-1f, 1f) * maxOffset.y;
 
         Vector2 offset = new Vector2(offsetX, offsetY);
         fig.GetComponent<RectTransform>().anchoredPosition = offset;

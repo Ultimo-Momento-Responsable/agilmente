@@ -44,7 +44,7 @@ public class FigureBehaviour : MonoBehaviour
     /// </summary>
     public void checkIfUserTappedFigure()
     {
-        if (index == 0 || index == 1)
+        if (IsCorrectFigure)
         {
             isClicked = true;
             controller.IsTouching = true;
