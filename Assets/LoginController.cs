@@ -125,6 +125,8 @@ public class LoginController : MonoBehaviour
                 settings.Login.patient.id = patientJson.id;
                 settings.Login.patient.firstName = patientJson.firstName;
                 settings.Login.patient.lastName = patientJson.lastName;
+                settings.Login.patient.medals = patientJson.medals;
+                settings.Login.patient.trophies = patientJson.trophies;
                 File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
             }
             else if (patientJson.loginCode == "" && patientJson.logged == true && patientJson.joinDate == settings.Login.joinDate)
@@ -142,6 +144,8 @@ public class LoginController : MonoBehaviour
                     settings.Login.patient.id = patientJson.id;
                     settings.Login.patient.firstName = patientJson.firstName;
                     settings.Login.patient.lastName = patientJson.lastName;
+                    settings.Login.patient.medals = patientJson.medals;
+                    settings.Login.patient.trophies = patientJson.trophies;
                     patientJson.logged = true;
                     patientJson.loginCode = null;
                     var joinDate = DateTime.Now;
@@ -207,6 +211,8 @@ public class Patient
     public long id;
     public string firstName;
     public string lastName;
+    public int medals;
+    public int trophies;
 }
 
 public class PatientJson
@@ -220,4 +226,6 @@ public class PatientJson
     public string loginCode;
     public bool logged;
     public string joinDate;
+    public int medals;
+    public int trophies;
 }
