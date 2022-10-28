@@ -97,6 +97,7 @@ public class EncuentraAlNuevoController : GameController, ControllerWithFigureBe
     {
         if (encuentraAlNuevo.onTutorial)
         {
+            pauseButton.SetActive(true);
             timer.text = "Tutorial";
             if (isTouching && !prevTutorial)
             {
