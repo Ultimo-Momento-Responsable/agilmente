@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +12,8 @@ using UnityEngine.UI;
 public class MainSceneController : MonoBehaviour
 {
     public Text title;
+    public Text medals;
+    public Text trophies;
     public GameObject completedGamesText;
     public GameObject bodyText;
     public GameObject gameText;
@@ -18,6 +21,8 @@ public class MainSceneController : MonoBehaviour
     public Button gameCard;
     public GameObject gameCanvas;
     public GameObject cardContainer;
+    public GameObject medalAnimation;
+    public GameObject trophyAnimation;
     public Sprite maxTime;
     public Sprite maxLevel;
     public Camera mainCamera;
@@ -25,6 +30,8 @@ public class MainSceneController : MonoBehaviour
     public GameObject completedPlanningCanvas;
     public Color agilmenteBlue;
 
+    private Animator medalAnimator;
+    private Animator trophyAnimator;
     private Settings settings;
     private PlanningList planningRequestJson;
     private List<Planning> completedPlannings;
@@ -36,7 +43,27 @@ public class MainSceneController : MonoBehaviour
      */
     public void Start()
     {
+        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
+        medals.text = settings.Login.patient.medals.ToString();
+        trophies.text = settings.Login.patient.trophies.ToString();
+        getMedalsAndTrophies();
         getPlanning();
+    }
+
+    /**
+     * Inicia la animación del aumento de medallas
+     */
+    private void startMedalAnimation() {
+        medalAnimator = medalAnimation.GetComponent<Animator>();
+        medalAnimator.Play("medalsAndTrophiesAnimation");
+    }
+
+    /**
+     * Inicia la animación del aumento de trofeos
+     */
+    private void startTrophyAnimation() {
+        trophyAnimator = trophyAnimation.GetComponent<Animator>();
+        trophyAnimator.Play("medalsAndTrophiesAnimation");
     }
 
     /**
@@ -50,6 +77,97 @@ public class MainSceneController : MonoBehaviour
         }
     }
 
+    /**
+     * GET para las medallas y trofeos del paciente
+     */
+    void getMedalsAndTrophies(){
+        this.StartCoroutine(this.getRoutine(SendData.IP + "patient/medalsAndTrophies/" + settings.Login.patient.id, this.getMedalsAndTrophiesResponseCallback));
+    }
+
+    /**
+     * Callback utilizado en getMedalsAndTrophies(), asigna a variables de Unity los datos obtenidos del JSON
+     */
+    private void getMedalsAndTrophiesResponseCallback(string data) { 
+        MedalsAndTrophies medalsAndTrophies = JsonUtility.FromJson<MedalsAndTrophies>(data);
+        checkForMedalOrTrophieChanges(medalsAndTrophies);
+    }
+
+    /**
+     * Chequea si hubo un aumento de trofeos o medallas para ejecutar la animación.
+     * @Param medalsAndTrophies medallas y trofeos traídos del backend
+     */
+    private void checkForMedalOrTrophieChanges(MedalsAndTrophies medalsAndTrophies) {
+        if (settings.Login.patient.medals != medalsAndTrophies.medals) {
+            startMedalAnimation();
+            StartCoroutine(waitForAnimation(medalsAndTrophies));
+            settings.Login.patient.medals = medalsAndTrophies.medals;
+            File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+        }
+        if (settings.Login.patient.trophies != medalsAndTrophies.trophies) {
+            startTrophyAnimation();
+            StartCoroutine(waitForAnimation(medalsAndTrophies));
+            settings.Login.patient.trophies = medalsAndTrophies.trophies;
+            File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+        }
+    }
+
+    /**
+     * Hace una espera de 1 segundo antes de actualizar el contador de trofeos y medallas
+     * @Param medalsAndTrophies medallas y trofeos traídos del backend
+     */
+    private IEnumerator waitForAnimation(MedalsAndTrophies medalsAndTrophies) {
+        yield return new WaitForSeconds(1);
+        medals.text = medalsAndTrophies.medals.ToString();
+        trophies.text = medalsAndTrophies.trophies.ToString();
+    }
+
+    /**
+     * GET para planificaciones desde backend para un paciente
+     */
+    public void getPlanning()
+    {
+        this.StartCoroutine(this.getRoutine(SendData.IP + endpoint + settings.Login.patient.id, this.getPlanningResponseCallback));
+    }
+
+    /**
+     * Se hace un get a los pacientes para ver si ese código de Logueo existe
+     */
+    private IEnumerator getRoutine(string url, Action<string> callback = null)
+    {
+        var request = UnityWebRequest.Get(url);
+
+        yield return request.SendWebRequest();
+        var data = request.downloadHandler.text;
+
+        if (callback != null)
+            callback(data);
+    }
+
+    /**
+     * Callback utilizado en getPlanning(), asigna a variables de Unity los datos obtenidos del JSON
+     */
+    private void getPlanningResponseCallback(string data) { 
+        planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
+        planningRequestJson.planningList = planningRequestJson.planningList.OrderByDescending(p => p.totalGames).ToArray();
+        completedPlannings = new List<Planning>();
+        uncompletedPlannings = new List<Planning>();
+        foreach (Planning p in planningRequestJson.planningList)
+        {
+            p.planningList = SortPlannings(p.planningList);
+            if (p.gamesPlayed==p.totalGames)
+            {
+                if (p.unlimited){
+                    uncompletedPlannings.Add(p);
+                } else {
+                    completedPlannings.Add(p);
+                }
+            } else
+            {
+                uncompletedPlannings.Add(p);
+            }
+        }
+        ShowGameCards();
+    }
 
     /**
      * Llama al inicio del juego cuando se clickea en alguna de las cards
@@ -157,54 +275,6 @@ public class MainSceneController : MonoBehaviour
         return collapsablePlanning;
     }
 
-    /**
-     * GET para planificaciones desde backend para un paciente
-     */
-    public void getPlanning()
-    {
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
-        this.StartCoroutine(this.getPlanningRoutine(SendData.IP + endpoint + settings.Login.patient.id, this.getPlanningResponseCallback));
-    }
-
-    /**
-     * Se hace un get a los pacientes para ver si ese código de Logueo existe
-     */
-    private IEnumerator getPlanningRoutine(string url, Action<string> callback = null)
-    {
-        var request = UnityWebRequest.Get(url);
-
-        yield return request.SendWebRequest();
-        var data = request.downloadHandler.text;
-
-        if (callback != null)
-            callback(data);
-    }
-
-    /**
-     * Callback utilizado en getPlanning(), asigna a variables de Unity los datos obtenidos del JSON
-     */
-    private void getPlanningResponseCallback(string data) { 
-        planningRequestJson = JsonUtility.FromJson<PlanningList>(data);
-        planningRequestJson.planningList = planningRequestJson.planningList.OrderByDescending(p => p.totalGames).ToArray();
-        completedPlannings = new List<Planning>();
-        uncompletedPlannings = new List<Planning>();
-        foreach (Planning p in planningRequestJson.planningList)
-        {
-            p.planningList = SortPlannings(p.planningList);
-            if (p.gamesPlayed==p.totalGames)
-            {
-                if (p.unlimited){
-                    uncompletedPlannings.Add(p);
-                } else {
-                    completedPlannings.Add(p);
-                }
-            } else
-            {
-                uncompletedPlannings.Add(p);
-            }
-        }
-        ShowGameCards();
-    }
 
     /**
      * Ordena los juegos de las plannings para que queden los que tienen sesiones arriba, en el medio los libres, y abajo los completados.
@@ -411,5 +481,12 @@ public class MainSceneController : MonoBehaviour
         static public int figureQuantity = 15;
         static public int numberOfRows = 6;
         static public int numberOfColumns = 8;
+    }
+
+    [System.Serializable]
+    public class MedalsAndTrophies 
+    {
+        public int medals = 0;
+        public int trophies = 0;
     }
 }
