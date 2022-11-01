@@ -62,8 +62,6 @@ public class EndScreen : MonoBehaviour
         scores.Add(Int32.Parse(score));
         scores.Sort();
         scores.Reverse();
-        title.transform.localPosition = new Vector2(0, 472);
-        rankingLabel.transform.localPosition = new Vector2(0, 200);
 
         yourScore.text += score;
         var i = 1;

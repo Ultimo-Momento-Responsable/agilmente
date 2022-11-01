@@ -7,7 +7,10 @@ using static MainSceneController;
 
 public class MemorillaController : GameController
 {
-
+    public bool onTutorial = true;
+    private int tutorialStep = 1;
+    private bool tutorialDone = false;
+    private List<GameObject> tutorialHands = new List<GameObject>();
     private const string ENDPOINT = "result/memorilla";
 
     [SerializeField]
@@ -56,6 +59,11 @@ public class MemorillaController : GameController
     public int score { get => a_score < 0 ? 0 : a_score; set => a_score = value; }
     public bool IsOnStreak { get => isOnStreak; set => isOnStreak = value; }
 
+    public GameObject tutorial;
+    public GameObject handPref;
+
+    public GameObject startButton;
+
     public GameObject CellPrefab;
     public GameObject GridGameObject;
     public GameObject pauseButton;
@@ -73,9 +81,6 @@ public class MemorillaController : GameController
     void Start()
     {
         TakeControlFromPlayer();
-        height = SessionMemorilla.numberOfRows;
-        width = SessionMemorilla.numberOfColumns;
-        numberOfLevels = SessionMemorilla.maxLevel;
         numberOfStimuli = SessionMemorilla.figureQuantity;
         successesPerLevel = new List<int>();
         mistakesPerLevel = new List<int>();
@@ -83,11 +88,49 @@ public class MemorillaController : GameController
         cellSize = 600 / Width;
         float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
         GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
+        initTime = Time.time;
+        scoreHUD.text = "";
+        StartTutorial();
+    }
+
+    /// <summary>
+    /// Define el tamaño de la grilla según los parámetros
+    /// </summary>
+    /// <param name="pHeight">Cantidad de filas que tendra la grilla</param>
+    /// <param name="pWidth">Cantidad de columnas que tendra la grilla</param>
+    private void setGridSize(int pHeight, int pWidth)
+    {
+        height = pHeight;
+        width = pWidth;
+    }
+
+    /// <summary>
+    /// Inicia la memorilla con los datos de la sesión
+    /// </summary>
+    private void initializeMemorilla()
+    {
+        GameObject[] cells = GameObject.FindGameObjectsWithTag("figures");
+        foreach (GameObject cell in cells)
+        GameObject.Destroy(cell);
+
+        startButton.SetActive(false);
+        onTutorial = false;
+        HideStimuli();
+        CleanGrid();
+
+        numberOfStimuli = SessionMemorilla.figureQuantity;
+        successesPerLevel = new List<int>();
+        mistakesPerLevel = new List<int>();
+        timePerLevel = new List<float>();
+        
+        setGridSize(SessionMemorilla.numberOfRows, SessionMemorilla.numberOfColumns);
+        numberOfLevels = SessionMemorilla.maxLevel;
+        cellSize = 600 / Width;
+        float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
+        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
         CreateGrid();
         StartLevel();
-        initTime = Time.time;
         level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
-
     }
 
     /// <summary>
@@ -105,10 +148,10 @@ public class MemorillaController : GameController
 
                 if (cellState)
                 {
-                    GameObject tHand = Instantiate(handPref, GridGameObject.transform);
-                    tHand.GetComponent<Transform>().localScale = new Vector3(CellSize/5, CellSize/5, 1);
-                    tHand.transform.localPosition = new Vector3(selectedCell.PosX+90f, 0);
-                    tHand.GetComponent<TutorialHand>().yPos = -0.8f-k*1.6f;
+                    Transform container = selectedCell.transform.Find("Container");
+                    GameObject tHand = Instantiate(handPref, container);
+                    tHand.GetComponent<Transform>().localScale = new Vector3(0.25f, 0.25f, 1);
+                    tHand.GetComponent<TutorialHand>().yPos = container.position.y;
                     tHand.SetActive(true);
                     tutorialHands.Add(tHand);
                 }
@@ -130,7 +173,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Controla el comportamiento del botÃ³n "Comenzar"
+    /// Controla el comportamiento del botón "Comenzar"
     /// </summary>
     public void startBtn()
     {
@@ -353,6 +396,7 @@ public class MemorillaController : GameController
             NumberOfGuesses = NumberOfStimuli;
             CleanGrid();
             CreateStimuli();
+            level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
             PlayNewLevelSound();
             StartCoroutine(WaitWhileShowingSolution(timePreLevel));
         }
@@ -380,8 +424,10 @@ public class MemorillaController : GameController
     /// </summary>
     private void CreateStimuli()
     {
-        level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();
-        scoreHUD.text = score.ToString();
+        if (!onTutorial)
+        {
+            scoreHUD.text = score.ToString();
+        }
         for (int i = 0; i < NumberOfStimuli; i++)
         {
             while (true)
@@ -469,7 +515,7 @@ public class MemorillaController : GameController
     }
 
     /// <summary>
-    /// Crea una celda en una posiciÃ³n particular.
+    /// Crea una celda en una posición particular.
     /// Si el usuario se encuentra en el tutorial, la grilla se desplaza temporalmente.
     /// </summary>
     /// <param name="row">Fila de la celda.</param>
@@ -593,17 +639,19 @@ public class MemorillaController : GameController
                 }
             }
         }
-        mistakesPerLevel.Add(contMistakes);
-        successesPerLevel.Add(contSuccesses);
-        addPointsToScore(calculateScore(contMistakes, NumberOfStimuli, height * width));
-        checkStreak(NumberOfStimuli, contMistakes);
-        if (levelsPlayed == 0)
-        {
-            timePerLevel.Add(Time.time - initTime - timePreLevel);
-        }
-        else
-        {
-            timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed - 1] - ((timePreLevel + timePostLevel) * (levelsPlayed)) - timePreLevel);
+        if(!onTutorial) { 
+            mistakesPerLevel.Add(contMistakes);
+            successesPerLevel.Add(contSuccesses);
+            addPointsToScore(calculateScore(contMistakes, NumberOfStimuli, height * width));
+            checkStreak(NumberOfStimuli, contMistakes);
+            if (levelsPlayed == 0)
+            {
+                timePerLevel.Add(Time.time - initTime - timePreLevel);
+            }
+            else
+            {
+                timePerLevel.Add(Time.time - initTime - timePerLevel[levelsPlayed - 1] - ((timePreLevel + timePostLevel) * (levelsPlayed)) - timePreLevel);
+            }
         }
     }
 

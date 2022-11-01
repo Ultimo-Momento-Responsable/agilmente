@@ -55,7 +55,7 @@ public class LoginController : MonoBehaviour
     }
 
     /**
-     * cuando se clickea el botón de ingresar, busca el paciente en la base de datos.
+     * cuando se clickea el botï¿½n de ingresar, busca el paciente en la base de datos.
      */
     public void getPatient()
     {
@@ -63,15 +63,15 @@ public class LoginController : MonoBehaviour
     }
     
     /// <summary>
-    /// Hace un get a los pacientes usando el código de logeo.
+    /// Hace un get a los pacientes usando el cï¿½digo de logeo.
     /// </summary>
     /// <param name="url">URL del endpoint.</param>
-    /// <param name="loginCode">Código de logeo.</param>
+    /// <param name="loginCode">Cï¿½digo de logeo.</param>
     /// <param name="callback">Lo que se va a hacer cuando finalice el pedido.</param>
     /// <returns>Un IEnumerator para ejecutarlo como subrutina.</returns>
     private IEnumerator getPatientByLoginCodeRoutine(string url, String loginCode, Action<string> callback = null)
     {
-        var request = UnityWebRequest.Get(url + "?loginCode=" + loginCode);
+        var request = UnityWebRequest.Get(url + "/loginCode/" + loginCode);
 
         yield return request.SendWebRequest();
         var data = request.downloadHandler.text;
@@ -81,7 +81,6 @@ public class LoginController : MonoBehaviour
             callback(data);
         } 
     }
-
 
     /// <summary>
     /// Obtiene un paciente por su id.
@@ -126,6 +125,8 @@ public class LoginController : MonoBehaviour
                 settings.Login.patient.id = patientJson.id;
                 settings.Login.patient.firstName = patientJson.firstName;
                 settings.Login.patient.lastName = patientJson.lastName;
+                settings.Login.patient.medals = patientJson.medals;
+                settings.Login.patient.trophies = patientJson.trophies;
                 File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
             }
             else if (patientJson.loginCode == "" && patientJson.logged == true && patientJson.joinDate == settings.Login.joinDate)
@@ -143,6 +144,8 @@ public class LoginController : MonoBehaviour
                     settings.Login.patient.id = patientJson.id;
                     settings.Login.patient.firstName = patientJson.firstName;
                     settings.Login.patient.lastName = patientJson.lastName;
+                    settings.Login.patient.medals = patientJson.medals;
+                    settings.Login.patient.trophies = patientJson.trophies;
                     patientJson.logged = true;
                     patientJson.loginCode = null;
                     var joinDate = DateTime.Now;
@@ -158,17 +161,17 @@ public class LoginController : MonoBehaviour
             loginError.SetActive(true);
             if (networkError)
             {
-                loginError.GetComponent<Text>().text = "Ha ocurrido un error, inténtelo de nuevo más tarde";
+                loginError.GetComponent<Text>().text = "Ha ocurrido un error, intÃ©ntelo de nuevo mÃ¡s tarde";
             }
             else
             {
-                loginError.GetComponent<Text>().text = "El código ingresado no es válido";
+                loginError.GetComponent<Text>().text = "El cÃ³digo ingresado no es vÃ¡lido";
             }
         }
     }
 
     /**
-     * Se hace un put en la base de datos para decirle que el paciente está logueado y que el código no sirve más
+     * Se hace un put en la base de datos para decirle que el paciente estï¿½ logueado y que el cï¿½digo no sirve mï¿½s
      */
     private IEnumerator putPatientRoutine(string url)
     {
@@ -208,6 +211,8 @@ public class Patient
     public long id;
     public string firstName;
     public string lastName;
+    public int medals;
+    public int trophies;
 }
 
 public class PatientJson
@@ -221,4 +226,6 @@ public class PatientJson
     public string loginCode;
     public bool logged;
     public string joinDate;
+    public int medals;
+    public int trophies;
 }

@@ -23,7 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Memorilla/Scenes/MemorillaScene.unity
     guid: 80cf9e39fe042194a8e1056231c88aa9
-  - enabled: 1
+  - enabled: 0
     path: Assets/viewGamesPlayedScene.unity
     guid: 06cbdeb4ef2550443b26cc5e880c75a0
   m_configObjects: {}
