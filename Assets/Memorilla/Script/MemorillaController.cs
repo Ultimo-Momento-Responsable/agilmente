@@ -7,6 +7,8 @@ using static MainSceneController;
 
 public class MemorillaController : GameController
 {
+    public const float VIRTUAL_CANVAS_HEIGHT = 1050;
+    public const float VIRTUAL_CANVAS_WIDTH = 600;
     public bool onTutorial = true;
     private int tutorialStep = 1;
     private bool tutorialDone = false;
@@ -85,9 +87,10 @@ public class MemorillaController : GameController
         successesPerLevel = new List<int>();
         mistakesPerLevel = new List<int>();
         timePerLevel = new List<float>();
-        cellSize = 600 / Width;
-        float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
-        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
+        cellSize = Mathf.Min(VIRTUAL_CANVAS_WIDTH / Width, VIRTUAL_CANVAS_HEIGHT / Height);
+        float originY = - (VIRTUAL_CANVAS_HEIGHT + (Height - 1) * CellSpaceBetweenRows) / 2;
+        float originX = - (VIRTUAL_CANVAS_WIDTH + (Width - 1) * CellSpaceBetweenColumns) / 2;
+        GridGameObject.transform.position = new Vector3(originX, originY);
         initTime = Time.time;
         scoreHUD.text = "";
         StartTutorial();
@@ -125,9 +128,10 @@ public class MemorillaController : GameController
         
         setGridSize(SessionMemorilla.numberOfRows, SessionMemorilla.numberOfColumns);
         numberOfLevels = SessionMemorilla.maxLevel;
-        cellSize = 600 / Width;
-        float originY = -(Height * CellSize + (Height - 1) * CellSpaceBetweenRows) / 2;
-        GridGameObject.transform.position = new Vector3(GridGameObject.transform.position.x, originY);
+        cellSize = Mathf.Min(VIRTUAL_CANVAS_WIDTH / Width, VIRTUAL_CANVAS_HEIGHT / Height);
+        float originY = -(VIRTUAL_CANVAS_HEIGHT + (Height - 1) * CellSpaceBetweenRows) / 2;
+        float originX = -(VIRTUAL_CANVAS_WIDTH + (Width - 1) * CellSpaceBetweenColumns) / 2;
+        GridGameObject.transform.position = new Vector3(originX, originY);
         CreateGrid();
         StartLevel();
         level.text = (levelsPlayed + 1).ToString() + " / " + numberOfLevels.ToString();

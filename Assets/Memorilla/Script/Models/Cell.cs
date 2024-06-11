@@ -47,8 +47,8 @@ public class Cell: MonoBehaviour
     private bool isActive;
     private MemorillaController controller;
 
-    public float PosX { get => column * (controller.CellSize + controller.CellSpaceBetweenColumns) - 310; }
-    public float PosY { get => row * (controller.CellSize + controller.CellSpaceBetweenRows) - (controller.CellSize * controller.Height / 2); }
+    public float PosX { get => column * (controller.CellSize + controller.CellSpaceBetweenColumns) - controller.Width * controller.CellSize / 2; }
+    public float PosY { get => row * (controller.CellSize + controller.CellSpaceBetweenRows) - controller.Height * controller.CellSize  / 2; }
     public int Row { get => row; set => row = value; }
     public int Column { get => column; set => column = value; }
     public STATES State
