@@ -531,7 +531,7 @@ public class MemorillaController : GameController
         cellGameObject.GetComponent<Transform>().localScale = new Vector3(CellSize, CellSize, 1);
         Cell cell = cellGameObject.GetComponent<Cell>();
         cell.Create(row, column, this);
-        cellGameObject.transform.localPosition = new Vector3(cell.PosX, cell.PosY, 0);
+        cellGameObject.transform.localPosition = new Vector3(cell.PosX, cell.PosY-80, 0);
         if (onTutorial)
         {
             cellGameObject.transform.localPosition = new Vector3(cell.PosX, (cell.PosY-110), 0);
