@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -18,15 +19,15 @@ public class LoginController : MonoBehaviour
 
     void Start()
     {
-        bool fileExists = System.IO.File.Exists(Application.persistentDataPath + "/settings.json");
-
-        if (!fileExists)
+        if (!SettingsStorage.hasCreatedSettings())
         {
-            createSettingsFile();
+            SettingsStorage.createSettings();
         }
 
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
+        settings = SettingsStorage.loadSettings();
+
         bool isLogged = settings.Login.isLogged;
+
         if (isLogged)
         {
             this.StartCoroutine(this.getPatientByIdRoutine(SendData.IP + endpoint + "/" + settings.Login.patient.id, this.getPatientResponseCallback));
@@ -43,15 +44,6 @@ public class LoginController : MonoBehaviour
         {
             loginButton.interactable = true;
         }
-    }
-    
-    public void createSettingsFile()
-    {
-        Settings settings = new Settings();
-        settings.Login = new Login();
-        settings.Login.isLogged = false;
-        settings.Login.patient = new Patient();
-        File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
     }
 
     /**
@@ -127,7 +119,7 @@ public class LoginController : MonoBehaviour
                 settings.Login.patient.lastName = patientJson.lastName;
                 settings.Login.patient.medals = patientJson.medals;
                 settings.Login.patient.trophies = patientJson.trophies;
-                File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+                SettingsStorage.saveSettings(settings);
             }
             else if (patientJson.loginCode == "" && patientJson.logged == true && patientJson.joinDate == settings.Login.joinDate)
             {
@@ -151,7 +143,7 @@ public class LoginController : MonoBehaviour
                     var joinDate = DateTime.Now;
                     patientJson.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
                     settings.Login.joinDate = joinDate.ToString("dd-MM-yyyy HH:mm:ss");
-                    File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+                    SettingsStorage.saveSettings(settings);
                     this.StartCoroutine(this.putPatientRoutine(SendData.IP + endpoint + "/" + patientJson.id));
                 }
             }
@@ -205,6 +197,7 @@ public class Login
     public string joinDate;
     public Patient patient;
 }
+
 [System.Serializable]
 public class Patient
 {

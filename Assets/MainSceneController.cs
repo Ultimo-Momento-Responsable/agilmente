@@ -1,8 +1,8 @@
 using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -43,7 +43,7 @@ public class MainSceneController : MonoBehaviour
      */
     public void Start()
     {
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
+        settings = SettingsStorage.loadSettings();
         medals.text = settings.Login.patient.medals.ToString();
         trophies.text = settings.Login.patient.trophies.ToString();
         getPlanning();
@@ -101,13 +101,13 @@ public class MainSceneController : MonoBehaviour
             startMedalAnimation();
             StartCoroutine(waitForAnimation(medalsAndTrophies));
             settings.Login.patient.medals = medalsAndTrophies.medals;
-            File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+            SettingsStorage.saveSettings(settings);
         }
         if (settings.Login.patient.trophies != medalsAndTrophies.trophies) {
             startTrophyAnimation();
             StartCoroutine(waitForAnimation(medalsAndTrophies));
             settings.Login.patient.trophies = medalsAndTrophies.trophies;
-            File.WriteAllText(Application.persistentDataPath + "/settings.json", JsonUtility.ToJson(settings));
+            SettingsStorage.saveSettings(settings);
         }
     }
 

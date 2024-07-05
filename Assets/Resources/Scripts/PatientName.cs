@@ -7,7 +7,7 @@ public class PatientName : MonoBehaviour
 
     void Start()
     {
-        settings = JsonUtility.FromJson<Settings>(System.IO.File.ReadAllText(Application.persistentDataPath + "/settings.json"));
+        settings = SettingsStorage.loadSettings();
         Text welcomePatientText = GetComponent<Text>();
         welcomePatientText.text = "¡Hola " + settings.Login.patient.firstName + "!";
 
