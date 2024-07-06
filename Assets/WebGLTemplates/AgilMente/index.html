@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>AgilMente - Aplicación de ejercicios</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="manifest" href="manifest.webmanifest">
-  </head>
+    <link rel="manifest" href="manifest.webmanifest">
+</head>
   <body>
+    <div class="toolbar">
+        <div class="toolbar-content">
+            <div class="back-button-container">
+                <a href="/">
+                    <svg width="24px" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M244 400L100 256l144-144M120 256h292" /></svg>
+                </a>
+            </div>
+            Agilmente - Aplicación de ejercicios
+        </div>
+    </div>
     <div id="unity-container">
       <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}} tabindex="-1"></canvas>
       <div id="unity-loading-bar">

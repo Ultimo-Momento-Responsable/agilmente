@@ -1,6 +1,6 @@
 var FileIO = {
   saveSettingsToLocalStorage : function(data) {
-    localStorage.setItem("settings", Pointer_stringify(data));
+    localStorage.setItem("settings", UTF8ToString(data));
   },
 
   loadSettingsFromLocalStorage : function() {

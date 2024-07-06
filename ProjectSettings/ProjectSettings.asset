@@ -47,7 +47,7 @@ PlayerSettings:
   defaultScreenWidth: 360
   defaultScreenHeight: 640
   defaultScreenWidthWeb: 360
-  defaultScreenHeightWeb: 680
+  defaultScreenHeightWeb: 640
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 0
   unsupportedMSAAFallback: 0
